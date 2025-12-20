@@ -4,11 +4,11 @@
   "description": "Backend for gaming platform like Steam/Epic",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "dev": "nodemon server.js",
-    "engines": {
-      "node": "18"
-    }
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "engines": {
+    "node": "18"
   },
   "keywords": [
     "gaming",
