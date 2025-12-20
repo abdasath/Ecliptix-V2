@@ -1,29 +1,20 @@
-const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
-const connectDB = require('./config/database');
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
+require("dotenv").config();
 
-// Connect to database
+const connectDB = require("./config/database");
 connectDB();
 
 const app = express();
-const path = require("path");
-
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ▼▼▼ PASTE THIS LINE HERE ▼▼▼
-app.use('/images', express.static('../frontend/images'));
-
-
-
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// ✅ Serve frontend (THIS IS THE KEY)
+app.use(express.static(path.join(__dirname, "../frontend")));
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
@@ -1152,6 +1143,8 @@ app.get('/seed/games', async (req, res) => {
 
 });
 
-const PORT = process.env.PORT || 5000;
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/index.html"));
+});
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
