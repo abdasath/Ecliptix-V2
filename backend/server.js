@@ -15,9 +15,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ Serve frontend (THIS IS THE KEY)
-app.use(express.static(path.join(__dirname, "../frontend/dist")));
-
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/games', require('./routes/games'));
@@ -1145,9 +1142,6 @@ app.get('/seed/games', async (req, res) => {
 
 });
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
-});
 
 app.get("/", (req, res) => {
   res.status(200).send("Ecliptix backend is running 🚀");
