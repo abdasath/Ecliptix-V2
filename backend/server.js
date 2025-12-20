@@ -3,6 +3,8 @@ const cors = require("cors");
 const path = require("path");
 require("dotenv").config();
 
+const PORT = process.env.PORT || 5000;
+
 const connectDB = require("./config/database");
 connectDB();
 
@@ -14,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // ✅ Serve frontend (THIS IS THE KEY)
-app.use(express.static(path.join(__dirname, "../frontend")));
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
@@ -1144,7 +1146,14 @@ app.get('/seed/games', async (req, res) => {
 });
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/index.html"));
+  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
 });
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.get("/", (req, res) => {
+  res.status(200).send("Ecliptix backend is running 🚀");
+});
+
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
