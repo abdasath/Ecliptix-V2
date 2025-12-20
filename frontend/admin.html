@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Ecliptix</title>
+    <link rel="icon" type="image/png" href="https://i.pinimg.com/736x/07/3e/90/073e9014436b6ce0c67ebded83e854ff.jpg">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html"><h1>Ecliptix</h1></a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Store</a></li>
+                <li><a href="admin.html" class="active">Admin Panel</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="logoutBtn" class="btn-secondary">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <section class="profile-section">
+            <h2 class="section-title">Game Management</h2>
+            
+            <div class="profile-card">
+                <h3>Add New Game</h3>
+                <form id="gameForm">
+                    <div class="form-group">
+                        <label>Title *</label>
+                        <input type="text" id="gameTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Short Description *</label>
+                        <input type="text" id="gameShortDesc" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Full Description *</label>
+                        <textarea id="gameDescription" required></textarea>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>Price *</label>
+                            <input type="number" id="gamePrice" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Discount (%)</label>
+                            <input type="number" id="gameDiscount" min="0" max="100" value="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Cover Image URL *</label>
+                        <input type="url" id="gameCoverImage" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional Images (comma-separated URLs)</label>
+                        <input type="text" id="gameImages" placeholder="url1, url2, url3">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>Developer *</label>
+                            <input type="text" id="gameDeveloper" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Publisher *</label>
+                            <input type="text" id="gamePublisher" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Release Date *</label>
+                        <input type="date" id="gameReleaseDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Genres (comma-separated) *</label>
+                        <input type="text" id="gameGenres" placeholder="Action, RPG, Adventure" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tags (comma-separated)</label>
+                        <input type="text" id="gameTags" placeholder="Open World, Story Rich">
+                    </div>
+                    <div class="form-group">
+                        <label>Rating (0-5)</label>
+                        <input type="number" id="gameRating" min="0" max="5" step="0.1" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="gameFeatured"> Featured Game
+                        </label>
+                    </div>
+                    <button type="submit" class="btn-primary">Add Game</button>
+                </form>
+            </div>
+
+            <div class="profile-card">
+                <h3>All Games</h3>
+                <div id="gamesList" class="games-grid">
+                    <!-- Games will be loaded here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
+

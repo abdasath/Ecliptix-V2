@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Library - Ecliptix</title>
+    <link rel="icon" type="image/png" href="https://i.pinimg.com/736x/07/3e/90/073e9014436b6ce0c67ebded83e854ff.jpg">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html">
+                    <h1>Ecliptix</h1>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Store</a></li>
+                <li><a href="library.html" class="active">Library</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="admin.html">Admin</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div class="search-box">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search games...">
+
+                    <button id="searchBtn" class="search-btn">
+                        <i class='bx bx-search'></i>
+                    </button>
+                </div>
+                <div class="cart-icon" id="cartIcon">
+                    <span>🛒</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+                <div class="user-menu">
+                    <span id="userWallet" class="wallet">₹0</span>
+                    <button id="loginBtn" class="btn-primary">Login</button>
+                    <button id="logoutBtn" class="btn-secondary" style="display: none;">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <section class="library-section">
+            <h2 class="section-title">My Game Library</h2>
+            <div id="libraryGames" class="games-grid">
+                <!-- Owned games will be loaded here -->
+            </div>
+            <div id="emptyLibrary" class="empty-state" style="display: none;">
+                <p>Your library is empty. Start building your collection!</p>
+                <a href="index.html" class="btn-primary">Browse Store</a>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/library.js"></script>
+</body>
+
+</html>
