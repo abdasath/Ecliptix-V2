@@ -293,6 +293,7 @@ function displayGameDetails(game) {
   const modal = document.getElementById('gameModal');
   const container = document.getElementById('gameDetails');
 
+
   if (!modal || !container) return;
 
   const finalPrice = game.discount > 0
@@ -401,13 +402,29 @@ function displayGameDetails(game) {
 
   modal.style.display = 'block';
 
-  // Close modal
-  const closeBtn = modal.querySelector('.close');
-  if (closeBtn) {
-    closeBtn.onclick = () => {
-      modal.style.display = 'none';
-    };
+  // 1. Show the modal
+  modal.style.display = 'block';
+  
+  // 2. Lock the background ONLY for mobile view
+  if (window.innerWidth <= 768) {
+    document.body.classList.add('modal-open');
   }
+
+  // 3. Unlock the background when closing
+  const closeBtn = modal.querySelector('.close');
+  closeBtn.onclick = () => {
+    modal.style.display = 'none';
+    document.body.classList.remove('modal-open');
+  };
+
+  // Also unlock if user clicks outside the modal
+  window.onclick = (e) => {
+    if (e.target === modal) {
+      modal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+    }
+  };
+  // Close modal
 
   window.onclick = (e) => {
     if (e.target === modal) {
@@ -419,7 +436,7 @@ function displayGameDetails(game) {
 // Setup filters
 function setupFilters() {
   const genreFilter = document.getElementById('genreFilter');
-  const sortFilter = document.getElementById('SORTFilter');
+  const sortFilter = document.getElementById('sortFilter');
 
   if (genreFilter) {
     genreFilter.addEventListener('change', () => {

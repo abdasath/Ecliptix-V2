@@ -33,11 +33,12 @@ body {
 }
 
 html {
-  scroll-behavior: smooth;
+    scroll-behavior: smooth;
 }
 
-button, a {
-  min-height: 44px;
+button,
+a {
+    min-height: 44px;
 }
 
 
@@ -50,14 +51,18 @@ button, a {
 /* Example: Adjust '.nav-links' to match your actual class name */
 .nav-links {
     display: flex;
-    align-items: center; /* Keeps items vertically centered */
-    white-space: nowrap; /* PREVENTS items from dropping to the next line */
-    gap: 20px; /* Adjust spacing between buttons if it's too crowded */
+    align-items: center;
+    /* Keeps items vertically centered */
+    white-space: nowrap;
+    /* PREVENTS items from dropping to the next line */
+    gap: 20px;
+    /* Adjust spacing between buttons if it's too crowded */
 }
 
 /* Optional: Make the Admin button stand out but fit better */
 a[href="admin.html"] {
-    margin-left: 10px; /* Give it a little breathing room */
+    margin-left: 10px;
+    /* Give it a little breathing room */
 }
 
 /* Navigation */
@@ -75,16 +80,23 @@ a[href="admin.html"] {
 
 
 .nav-brand a {
-  text-decoration: none;   /* removes underline */
-  color: inherit;          /* keeps same text color */
+    text-decoration: none;
+    /* removes underline */
+    color: inherit;
+    /* keeps same text color */
 }
 
 .nav-brand h1 {
-  font-size: 2.2rem;       /* increase size */
-  font-weight: 800;        /* make it bold */
-  color: white;            /* ensure it’s visible */
-  margin: 0;               /* remove extra space */
-  letter-spacing: 1px;     /* gives a sleek look */
+    font-size: 2.2rem;
+    /* increase size */
+    font-weight: 800;
+    /* make it bold */
+    color: white;
+    /* ensure it’s visible */
+    margin: 0;
+    /* remove extra space */
+    letter-spacing: 1px;
+    /* gives a sleek look */
 }
 
 
@@ -222,7 +234,7 @@ a[href="admin.html"] {
     left: 0;
     right: 0;
     bottom: 0;
-    background: 
+    background:
         radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
         radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
 }
@@ -255,7 +267,8 @@ a[href="admin.html"] {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    flex-wrap: nowrap !important; /* Crucial */
+    flex-wrap: nowrap !important;
+    /* Crucial */
     width: 100%;
     padding: 0 20px;
 }
@@ -264,17 +277,23 @@ a[href="admin.html"] {
 .nav-menu {
     display: flex;
     align-items: center;
-    gap: 1.5rem;          /* Slightly reduced gap to prevent overcrowding */
-    margin-left: 50px;    /* Reduced left margin so it fits better */
-    margin-right: auto;   /* Pushes the Search bar to the right */
-    white-space: nowrap;  /* Prevents text from breaking into two lines */
-    flex-shrink: 0;       /* Prevents the menu from collapsing */
+    gap: 1.5rem;
+    /* Slightly reduced gap to prevent overcrowding */
+    margin-left: 50px;
+    /* Reduced left margin so it fits better */
+    margin-right: auto;
+    /* Pushes the Search bar to the right */
+    white-space: nowrap;
+    /* Prevents text from breaking into two lines */
+    flex-shrink: 0;
+    /* Prevents the menu from collapsing */
 }
 
 /* 3. Make the Admin Link invisible by default (prevents flickering) */
 a[href="admin.html"] {
     display: none;
-    color: #ff4757;       /* Optional: Makes 'Admin' red so it stands out */
+    color: #ff4757;
+    /* Optional: Makes 'Admin' red so it stands out */
     font-weight: bold;
 }
 
@@ -283,8 +302,10 @@ a[href="admin.html"] {
     display: flex;
     align-items: center;
     gap: 1rem;
-    flex-shrink: 0;       /* Keeps search bar fixed size */
-    margin-left: auto;    /* Double check to push right */
+    flex-shrink: 0;
+    /* Keeps search bar fixed size */
+    margin-left: auto;
+    /* Double check to push right */
 }
 
 /* --- PROFESSIONAL ADMIN FORM --- */
@@ -292,15 +313,23 @@ a[href="admin.html"] {
 /* 1. The Main Form Card */
 #gameForm {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Split into 2 equal columns */
-    gap: 25px;                      /* Space between columns */
-    background: #151515;            /* Slightly lighter than body bg */
-    padding: 40px;                  /* Big comfortable padding */
-    border-radius: 12px;            /* Smooth corners */
-    border: 1px solid #333;         /* Subtle border */
+    grid-template-columns: 1fr 1fr;
+    /* Split into 2 equal columns */
+    gap: 25px;
+    /* Space between columns */
+    background: #151515;
+    /* Slightly lighter than body bg */
+    padding: 40px;
+    /* Big comfortable padding */
+    border-radius: 12px;
+    /* Smooth corners */
+    border: 1px solid #333;
+    /* Subtle border */
     max-width: 1100px;
-    margin: 30px auto;              /* Centers the form on page */
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5); /* Nice 3D drop shadow */
+    margin: 30px auto;
+    /* Centers the form on page */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    /* Nice 3D drop shadow */
 }
 
 /* 2. Fix the Headers (Add New Game) */
@@ -308,7 +337,8 @@ a[href="admin.html"] {
     font-size: 2rem;
     color: white;
     margin-bottom: 20px;
-    border-bottom: 2px solid #0074e4; /* Underline accent */
+    border-bottom: 2px solid #0074e4;
+    /* Underline accent */
     display: inline-block;
     padding-bottom: 10px;
 }
@@ -317,7 +347,8 @@ a[href="admin.html"] {
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 8px; /* Space between Label and Input */
+    gap: 8px;
+    /* Space between Label and Input */
 }
 
 .form-group label {
@@ -328,21 +359,23 @@ a[href="admin.html"] {
     letter-spacing: 0.5px;
 }
 
-.form-group input, 
-.form-group textarea, 
+.form-group input,
+.form-group textarea,
 .form-group select {
     background: #0a0a0a;
     border: 1px solid #444;
     color: white;
-    padding: 12px 15px;      /* Taller inputs are easier to click */
+    padding: 12px 15px;
+    /* Taller inputs are easier to click */
     border-radius: 6px;
     font-size: 1rem;
     transition: all 0.2s ease;
-    width: 100%;             /* Ensure they fill their column */
+    width: 100%;
+    /* Ensure they fill their column */
 }
 
 /* Input Focus Effect (Glow) */
-.form-group input:focus, 
+.form-group input:focus,
 .form-group textarea:focus {
     border-color: #0074e4;
     box-shadow: 0 0 0 3px rgba(0, 116, 228, 0.2);
@@ -351,10 +384,14 @@ a[href="admin.html"] {
 
 /* 4. Full Width Items (Description, Images, Buttons) */
 /* These specific children will stretch across both columns */
-.form-group:has(#gameDescription),  /* Description */
-.form-group:has(#gameCoverImage),   /* Cover Image */
-.form-group:has(#gameImages),       /* Extra Images */
-.form-group:has(button) {           /* Submit Button Container */
+.form-group:has(#gameDescription),
+/* Description */
+.form-group:has(#gameCoverImage),
+/* Cover Image */
+.form-group:has(#gameImages),
+/* Extra Images */
+.form-group:has(button) {
+    /* Submit Button Container */
     grid-column: span 2;
 }
 
@@ -397,17 +434,21 @@ a[href="admin.html"] {
 
 /* Make specific fields span across both columns (Full Width) */
 /* This targets the Description, Image URLs, and Buttons */
-#gameForm .form-group:nth-child(3), /* Full Description */
-#gameForm .form-group:nth-child(7), /* Cover Image */
-#gameForm .form-group:nth-child(8), /* Other Images */
-#gameForm .form-group:last-of-type, /* Checkbox area */
+#gameForm .form-group:nth-child(3),
+/* Full Description */
+#gameForm .form-group:nth-child(7),
+/* Cover Image */
+#gameForm .form-group:nth-child(8),
+/* Other Images */
+#gameForm .form-group:last-of-type,
+/* Checkbox area */
 #gameForm button {
     grid-column: span 2;
 }
 
 /* Style the inputs to look sharper */
-#gameForm input, 
-#gameForm textarea, 
+#gameForm input,
+#gameForm textarea,
 #gameForm select {
     background: #0a0a0a;
     border: 1px solid #333;
@@ -427,6 +468,7 @@ a[href="admin.html"] {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -752,172 +794,201 @@ a[href="admin.html"] {
     padding: 2rem 0;
 }
 
-@media (max-width: 480px) {
+/* ===============================
+   RESPONSIVE GAME GRID
+================================ */
 
-  /* GLOBAL */
-  body {
-    font-size: 14px;
-  }
-
-  .container {
-    padding: 0 12px;
-  }
-
-  /* NAVBAR */
-  .nav-brand h1 {
-    font-size: 1.4rem;
-  }
-
-  .nav-menu {
-    gap: 0.6rem;
-    margin-left: 10px;
-  }
-
-  .search-box {
-    display: none;
-  }
-
-  .wallet {
-    display: none;
-  }
-
-  /* HERO */
-  .hero {
-    height: 240px;
-    margin-bottom: 2rem;
-  }
-
-  .hero-content h2 {
-    font-size: 1.4rem;
-  }
-
-  .hero-content p {
-    font-size: 0.85rem;
-  }
-
-  /* GAME GRID */
-  .games-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .game-image {
-    height: 240px;
-  }
-
-  /* MODALS */
-  .modal-content {
-    width: 94%;
-    padding: 1.2rem;
-  }
-
-  .modal-large .modal-content {
-    max-width: 94%;
-  }
-
-  /* CART */
-  .cart-item {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .cart-item-image {
-    width: 100%;
-    height: 160px;
-  }
-
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
 }
 
-
-
-/* Responsive */
-@media (max-width: 768px) {
-
-  /* NAVBAR */
-  .navbar .container {
-    flex-wrap: wrap;
-  }
-
-  .nav-menu {
-    width: 100%;
-    justify-content: center;
-    margin-top: 1rem;
-  }
-
-  .nav-actions {
-    width: 100%;
-    justify-content: center;
-    margin-top: 0.8rem;
-  }
-
-  /* HERO */
-  .hero {
-    height: 300px;
-  }
-
-  .hero-content h2 {
-    font-size: 2rem;
-  }
-
-  /* GAME GRID */
-  .games-grid {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.4rem;
-  }
-
-  /* FILTERS */
-  .section-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .filters {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  /* ADMIN FORM */
-  #gameForm {
-    grid-template-columns: 1fr;
-  }
+/* Laptop */
+@media (max-width: 1200px) {
+    .games-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
-
+/* Tablet */
 @media (max-width: 1024px) {
+    .games-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
 
-  .container {
-    max-width: 95%;
-  }
+/* Mobile */
+@media (max-width: 768px) {
+    .games-grid {
+        grid-template-columns: 1fr;
+    }
+}
 
-  .games-grid {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  }
+/* Hamburger */
+.menu-toggle {
+    display: none;
+    font-size: 22px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
 
-  .hero-content h2 {
-    font-size: 2.4rem;
-  }
+/* ===============================
+   HERO RESPONSIVE
+================================ */
+
+@media (max-width: 768px) {
+    .hero {
+        height: auto;
+        padding: 40px 16px;
+        text-align: center;
+    }
+
+    .hero h1 {
+        font-size: 28px;
+    }
+
+    .hero p {
+        font-size: 14px;
+    }
 }
 
 
-@media (min-width: 1280px) {
-
-  .container {
-    max-width: 1400px;
-  }
-
-  .hero {
-    height: 420px;
-  }
-
-  .hero-content h2 {
-    font-size: 3.4rem;
-  }
-
-  .games-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  }
+/* Smooth hover for cards */
+.game-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
+.game-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
 
+/* ============================================================
+   PERFECT MOBILE MEDIA QUERY (Target: 768px and below)
+   ============================================================ */
 
+@media (max-width: 768px) {
+    /* 1. Ensure Navbar Toggle is ALWAYS visible on all pages */
+    .menu-toggle {
+        display: block !important;
+        font-size: 28px;
+        position: relative;
+        z-index: 2100; /* Stays above everything */
+        padding: 10px;
+    }
+
+    /* 2. Slide-in Navbar Menu Logic */
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        left: -100%; /* Hidden by default */
+        width: 80%;
+        height: 100vh;
+        background: #0b0b0b;
+        flex-direction: column !important;
+        padding: 100px 30px !important;
+        transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 2000;
+        box-shadow: 10px 0 30px rgba(0,0,0,0.9);
+    }
+
+    .nav-menu.open {
+        left: 0; /* Slides into view */
+    }
+
+    /* 3. Modal & Grid Fixes (Prevents spilling out of the box) */
+    .modal-large .modal-content {
+        width: 96% !important;
+        margin: 2% auto !important;
+        padding: 15px !important;
+        overflow-x: hidden;
+    }
+
+    /* Forces the 3-column requirements into 1 column on mobile */
+    .system-requirements div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important; 
+        gap: 1.5rem !important;
+    }
+
+    /* 4. Hide secondary actions to prevent mobile header clutter */
+    .nav-actions {
+        display: none; 
+    }
+
+    /* 5. LOCK BACKGROUND SCROLLING (Applied via JS below) */
+    body.modal-open {
+        overflow: hidden !important;
+        height: 100vh;
+    }
+}
+
+/* Media query for mobile screens */
+@media (max-width: 768px) {
+    /* This class will be added to the <body> via JavaScript */
+    body.modal-open {
+        overflow: hidden !important; /* Prevents background scrolling */
+    }
+
+    /* Dim and hide background content when the modal is active */
+    body.modal-open main, 
+    body.modal-open .hero, 
+    body.modal-open .navbar {
+        filter: blur(5px); /* Blurs the background things */
+        opacity: 0.3;      /* Dims the background things */
+        pointer-events: none; /* Prevents clicking things behind the pop-up */
+    }
+
+    /* Ensure the modal stays on top and is fully visible */
+    #gameModal {
+        z-index: 9999 !important;
+        background-color: rgba(0, 0, 0, 0.9); /* Solid dark background for the modal area */
+    }
+}
+
+/* ============================================================
+   ENHANCED MOBILE UI FIXES (Target: 768px and below)
+   ============================================================ */
+
+@media (max-width: 768px) {
+    /* 1. Show Login Button in Mobile Navbar */
+    .user-menu {
+        display: flex !important; /* Forces visibility */
+        margin-left: auto;
+        margin-right: 15px;
+    }
+
+    #loginBtn {
+        padding: 6px 15px !important;
+        font-size: 0.85rem !important;
+        min-height: 35px !important;
+    }
+
+    /* 2. Hide "Behind Things" when Pop-up is open */
+    /* This class is added to the <body> via JavaScript */
+    body.modal-open main, 
+    body.modal-open .hero, 
+    body.modal-open .navbar {
+        filter: blur(8px); /* Blurs the background */
+        opacity: 0.2;      /* Dims the content significantly */
+        pointer-events: none; /* Prevents clicking behind the pop-up */
+        transition: filter 0.3s ease;
+    }
+
+    /* 3. Perfect Modal Container for Mobile */
+    .modal-large .modal-content {
+        width: 96% !important;
+        margin: 2% auto !important;
+        padding: 1.2rem !important;
+        background: rgba(26, 26, 26, 0.98); /* Solid dark background */
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* 4. Fix System Requirements "Outside the Box" issue */
+    .system-requirements div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important; 
+        gap: 1.5rem !important;
+    }
+}
