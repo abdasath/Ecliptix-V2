@@ -3,20 +3,23 @@ const Game = require('../models/Game');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  try {
-    const { featured } = req.query;
+  const { page = 1, limit = 20 } = req.query;
 
-    let filter = {};
-    if (featured === 'true') {
-      filter.featured = true;
-    }
+  const skip = (page - 1) * limit;
 
-    const games = await Game.find(filter);
-    res.json(games);
-  } catch (err) {
-    res.status(500).json({ message: 'Server error' });
-  }
+  const total = await Game.countDocuments();
+  const games = await Game.find()
+    .skip(skip)
+    .limit(Number(limit));
+
+  res.json({
+    games,
+    page: Number(page),
+    pages: Math.ceil(total / limit),
+    total
+  });
 });
+
 
 // GET random featured games (limit = 6)
 router.get('/featured/random', async (req, res) => {

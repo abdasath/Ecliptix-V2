@@ -73,9 +73,13 @@ async function loadGames(page = 1) {
 
     const data = await res.json();
 
-    // Backend returns { games, page, pages, total }
-    const games = data.games || [];
+    const games = Array.isArray(data)
+      ? data
+      : data.games || [];
+
     allGames = games;
+    displayGames(games);
+
 
     totalPages = data.pages || data.totalPages || 1;
     currentPage = data.page || page;
