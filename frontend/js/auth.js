@@ -130,9 +130,11 @@ async function handleLogin() {
     updateUIForLoggedIn(response.user);
 
     checkAdminAccess();
+
+    closeLoginModal();
     
-    const loginModal = document.getElementById('loginModal');
-    if (loginModal) loginModal.style.display = 'none';
+    // const loginModal = document.getElementById('loginModal');
+    // if (loginModal) loginModal.style.display = 'none';
     
     // Clear form
     document.getElementById('email').value = '';
@@ -179,8 +181,10 @@ async function handleRegister() {
 
     checkAdminAccess();
     
-    const loginModal = document.getElementById('loginModal');
-    if (loginModal) loginModal.style.display = 'none';
+    // const loginModal = document.getElementById('loginModal');
+    // if (loginModal) loginModal.style.display = 'none';
+
+    closeLoginModal();
     
     // Clear form
     document.getElementById('email').value = '';
@@ -275,3 +279,34 @@ function showNotification(message, type = 'info') {
   }, 3000);
 }
 
+// Function that opens the login modal
+function openLoginModal() {
+  const loginModal = document.getElementById('loginModal');
+  if (loginModal) {
+    loginModal.style.display = 'block';
+    
+    // Trigger the background blur for mobile
+    if (window.innerWidth <= 768) {
+      document.body.classList.add('modal-open');
+    }
+  }
+}
+
+// Function that closes the login modal
+function closeLoginModal() {
+  const loginModal = document.getElementById('loginModal');
+  if (loginModal) {
+    loginModal.style.display = 'none';
+    
+    // Restore the background
+    document.body.classList.remove('modal-open');
+  }
+}
+
+// Ensure the "X" button and outside-clicks also remove the class
+document.addEventListener('click', (e) => {
+  const loginModal = document.getElementById('loginModal');
+  if (e.target.classList.contains('close') || e.target === loginModal) {
+    closeLoginModal();
+  }
+});
