@@ -1,3 +1,24 @@
+// 🚨 HARD BLOCK any browser navigation to /cart
+document.addEventListener("click", (e) => {
+  const target = e.target.closest("a, button");
+  if (!target) return;
+
+  const href = target.getAttribute("href");
+  if (href && href.startsWith("/cart")) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.warn("Blocked native cart navigation:", href);
+  }
+});
+
+// 🚨 Prevent ANY form from submitting
+document.addEventListener("submit", (e) => {
+  e.preventDefault();
+  console.warn("Blocked form submit:", e.target);
+});
+
+
+
 // Shopping Cart Management
 let cartItems = [];
 

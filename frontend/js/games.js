@@ -17,13 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
 // Load featured games
 async function loadFeaturedGames() {
   try {
-    const games = await gamesAPI.getFeatured();
-    featuredGames = games;
-    displayFeaturedGames(games);
+    const data = await gamesAPI.getAll("page=1&limit=5");
+    featuredGames = data.games || [];
+    displayFeaturedGames(featuredGames);
   } catch (error) {
     console.error('Failed to load featured games:', error);
   }
 }
+
 
 // In frontend/games.js, around line 45 (or wherever your fetch call is)
 
@@ -55,8 +56,9 @@ async function loadGames(page = 1) {
     queryParams.append('limit', 20);
 
     const res = await fetch(
-      `http://127.0.0.1:5000/api/games?${queryParams.toString()}`
+      `https://ecliptix-5c00.onrender.com/api/games?${queryParams.toString()}`
     );
+
 
     if (!res.ok) {
       throw new Error('Failed to fetch games');
@@ -201,7 +203,14 @@ function createGameCard(game, isFeatured = false) {
         </div>
         <div class="game-actions">
           <button class="btn-primary" onclick="viewGameDetails('${game._id}')">View Details</button>
-          <button class="btn-secondary" onclick="addToCart('${game._id}')">Add to Cart</button>
+          <button
+  type="button"
+  class="btn-secondary"
+  onclick="addToCart('${game._id}')"
+>
+  Add to Cart
+</button>
+
         </div>
       </div>
     </div>

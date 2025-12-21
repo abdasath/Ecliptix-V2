@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = "https://ecliptix-5c00.onrender.com";
 
 // Helper function to get auth token
 function getAuthToken() {
@@ -8,107 +8,83 @@ function getAuthToken() {
 
 // Helper function to make API requests
 async function apiRequest(endpoint, options = {}) {
-  const url = `${API_BASE_URL}${endpoint}`;
-  const token = getAuthToken();
+  const token = localStorage.getItem('token');
 
-  const config = {
+  const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method: options.method || 'GET',
     headers: {
       'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...options.headers
+      ...(token && { Authorization: `Bearer ${token}` })
     },
-    ...options
-  };
+    body: options.body ? JSON.stringify(options.body) : undefined
+  });
 
-  if (config.body && typeof config.body === 'object') {
-    config.body = JSON.stringify(config.body);
-  }
+  const text = await res.text();
 
   try {
-    const response = await fetch(url, config);
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || 'Request failed');
-    }
-
-    return data;
-  } catch (error) {
-    console.error('API Error:', error);
-    throw error;
+    return JSON.parse(text);
+  } catch {
+    console.error('Non-JSON response:', text);
+    throw new Error('Server error');
   }
 }
 
-// Auth API
-const authAPI = {
-  register: (username, email, password) => 
-    apiRequest('/auth/register', {
+window.cartAPI = {
+  get: () => apiRequest('/api/cart'),
+
+  add: (gameId) =>
+    apiRequest(`/api/cart/add/${gameId}`, {
+      method: 'POST'
+    }),
+
+  remove: (gameId) =>
+    apiRequest(`/api/cart/remove/${gameId}`, {
+      method: 'DELETE'
+    }),
+
+  clear: () =>
+    apiRequest('/api/cart/clear', {
+      method: 'DELETE'
+    })
+};
+
+window.ordersAPI = {
+  checkout: () =>
+    apiRequest('/api/orders/checkout', {
+      method: 'POST'
+    })
+};
+
+// ✅ MAKE GLOBAL
+window.authAPI = {
+  register: (username, email, password) =>
+    apiRequest('/api/auth/register', {
       method: 'POST',
       body: { username, email, password }
     }),
 
   login: (email, password) =>
-    apiRequest('/auth/login', {
+    apiRequest('/api/auth/login', {
       method: 'POST',
       body: { email, password }
     }),
 
   getCurrentUser: () =>
-    apiRequest('/auth/me')
+    apiRequest('/api/auth/me')
 };
 
-// Games API
-const gamesAPI = {
-  getAll: (params = {}) => {
-    const queryString = new URLSearchParams(params).toString();
-    return apiRequest(`/games?${queryString}`);
-  },
 
-  getById: (id) =>
-    apiRequest(`/games/${id}`),
+window.gamesAPI = {
+  getAll: (query) =>
+    fetch(`${API_BASE_URL}/api/games?${query}`).then(res => res.json()),
 
   getFeatured: () =>
-    apiRequest('/games/featured/list'),
+    fetch(`${API_BASE_URL}/api/games?featured=true`).then(res => res.json()),
 
-  getGenres: () =>
-    apiRequest('/games/meta/genres')
+  getById: (id) =>
+    fetch(`${API_BASE_URL}/api/games/${id}`).then(res => res.json())
 };
 
-// Cart API
-const cartAPI = {
-  get: () =>
-    apiRequest('/cart'),
 
-  add: (gameId) =>
-    apiRequest(`/cart/add/${gameId}`, {
-      method: 'POST'
-    }),
 
-  remove: (gameId) =>
-    apiRequest(`/cart/remove/${gameId}`, {
-      method: 'DELETE'
-    }),
-
-  clear: () =>
-    apiRequest('/cart/clear', {
-      method: 'DELETE'
-    })
-};
-
-// Orders API
-const ordersAPI = {
-  getAll: () =>
-    apiRequest('/orders'),
-
-  checkout: () =>
-    apiRequest('/orders/checkout', {
-      method: 'POST'
-    }),
-
-  addFunds: (amount) =>
-    apiRequest('/orders/wallet/add', {
-      method: 'POST',
-      body: { amount }
-    })
-};
 
