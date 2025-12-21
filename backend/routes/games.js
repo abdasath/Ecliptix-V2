@@ -4,67 +4,20 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    let query = {};
-    let sortOptions = { createdAt: -1 }; // Default sort is newest
+    const { featured } = req.query;
 
-    // --- 1. SEARCH AND FILTER LOGIC (Keep existing) ---
-    if (req.query.search) {
-      query.$or = [
-        { title: { $regex: req.query.search, $options: 'i' } },
-        { description: { $regex: req.query.search, $options: 'i' } }
-      ];
-    }
-    if (req.query.genre && req.query.genre !== 'All Genres') {
-      query.genres = req.query.genre;
+    let filter = {};
+    if (featured === 'true') {
+      filter.featured = true;
     }
 
-    // --- 2. NEW SORTING LOGIC ---
-    if (req.query.sort) {
-      switch (req.query.sort) {
-        case 'newest':
-          sortOptions = { createdAt: -1 };
-          break;
-        case 'price-low':
-          // Sort by price ascending (1)
-          sortOptions = { price: 1 };
-          break;
-        case 'price-high':
-          // Sort by price descending (-1)
-          sortOptions = { price: -1 };
-          break;
-        case 'rating':
-          // Sort by rating descending (-1). Assuming your rating field is 'rating'.
-          // If you have a calculated average rating field, use that name instead (e.g., 'avgRating').
-          sortOptions = { rating: -1 };
-          break;
-        default:
-          // Use default sort if value is unrecognized or empty
-          sortOptions = { createdAt: -1 }; 
-      }
-    }
-    
-    // --- 3. PAGINATION AND QUERY EXECUTION ---
-    const page  = parseInt(req.query.page)  || 1;
-    const limit = parseInt(req.query.limit) || 20;
-    const skip  = (page - 1) * limit;
-
-    const total = await Game.countDocuments(query);
-
-    const games = await Game.find(query)
-      .sort(sortOptions) // <-- ✅ APPLY THE DYNAMIC SORT OBJECT HERE
-      .skip(skip)
-      .limit(limit);
-
-    res.json({
-      games,
-      page,
-      pages: Math.ceil(total / limit),
-      total
-    });
+    const games = await Game.find(filter);
+    res.json(games);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 
 // Get single game

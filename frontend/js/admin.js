@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Load all games for admin
 async function loadAdminGames() {
   try {
-    const games = await apiRequest('/admin/games');
+    const games = await apiRequest('/api/admin/games');
     allAdminGames = games;
     displayAdminGames(games);
   } catch (error) {
@@ -41,8 +41,8 @@ function displayAdminGames(games) {
 
 // Create admin game card
 function createAdminGameCard(game) {
-  const finalPrice = game.discount > 0 
-    ? game.price * (1 - game.discount / 100) 
+  const finalPrice = game.discount > 0
+    ? game.price * (1 - game.discount / 100)
     : game.price;
 
   return `
@@ -106,35 +106,36 @@ async function handleAddGame() {
 
   // Add system requirements (basic)
   formData.systemRequirements = {
-  minimum: {
-    os: 'Windows 10/11',
-    processor: 'Intel Core i5 (12th gen) / AMD Ryzen 5 (5000-series) or better',
-    memory: '16 GB RAM',
-    graphics: 'NVIDIA GeForce RTX 3050 / 4050 (or equivalent) with 6 GB VRAM (mobile GPU)',
-    storage: '50 GB (SSD preferred; NVMe SSD strongly recommended)'
-  },
-  recommended: {
-    os: 'Windows 11',
-    processor: 'Intel Core i7 (13th-14th gen) / AMD Ryzen 7 (7000-series) or better',
-    memory: '16–32 GB RAM (DDR5 or high-speed DDR4)',
-    graphics: 'NVIDIA GeForce RTX 4060 / 4050 (or better) with ≥8 GB VRAM (mobile GPU)',
-    storage: '50 GB on SSD (ideally NVMe SSD, 512 GB+ total storage)'
-  },
-  ideal: {
-    os: 'Windows 11',
-    processor: 'Intel Core i7/i9 (latest gen) or AMD Ryzen 9 (latest gen)',
-    memory: '32 GB RAM (DDR5)',
-    graphics: 'NVIDIA GeForce RTX 4060 Ti / 4070 or AMD RX 7000-series (mobile GPU) with ≥8 GB VRAM',
-    storage: '1 TB NVMe SSD'
-  }
-};
+    minimum: {
+      os: 'Windows 10/11',
+      processor: 'Intel Core i5 (12th gen) / AMD Ryzen 5 (5000-series) or better',
+      memory: '16 GB RAM',
+      graphics: 'NVIDIA GeForce RTX 3050 / 4050 (or equivalent) with 6 GB VRAM (mobile GPU)',
+      storage: '50 GB (SSD preferred; NVMe SSD strongly recommended)'
+    },
+    recommended: {
+      os: 'Windows 11',
+      processor: 'Intel Core i7 (13th-14th gen) / AMD Ryzen 7 (7000-series) or better',
+      memory: '16–32 GB RAM (DDR5 or high-speed DDR4)',
+      graphics: 'NVIDIA GeForce RTX 4060 / 4050 (or better) with ≥8 GB VRAM (mobile GPU)',
+      storage: '50 GB on SSD (ideally NVMe SSD, 512 GB+ total storage)'
+    },
+    ideal: {
+      os: 'Windows 11',
+      processor: 'Intel Core i7/i9 (latest gen) or AMD Ryzen 9 (latest gen)',
+      memory: '32 GB RAM (DDR5)',
+      graphics: 'NVIDIA GeForce RTX 4060 Ti / 4070 or AMD RX 7000-series (mobile GPU) with ≥8 GB VRAM',
+      storage: '1 TB NVMe SSD'
+    }
+  };
 
 
   try {
-    await apiRequest('/admin/games', {
+    await apiRequest('/api/admin/games', {
       method: 'POST',
       body: formData
     });
+
 
     showNotification('Game added successfully!', 'success');
     form.reset();
@@ -209,13 +210,13 @@ async function handleUpdateGame(gameId) {
   };
 
   try {
-    await apiRequest(`/admin/games/${gameId}`, {
+    await apiRequest(`/api/admin/games/${gameId}`, {
       method: 'PUT',
       body: formData
     });
 
     showNotification('Game updated successfully!', 'success');
-    
+
     // Reset form
     const form = document.getElementById('gameForm');
     form.reset();
@@ -240,7 +241,7 @@ async function deleteGame(gameId) {
   }
 
   try {
-    await apiRequest(`/admin/games/${gameId}`, {
+    await apiRequest(`/api/admin/games/${gameId}`, {
       method: 'DELETE'
     });
 

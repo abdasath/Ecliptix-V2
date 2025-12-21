@@ -17,13 +17,21 @@ document.addEventListener('DOMContentLoaded', () => {
 // Load featured games
 async function loadFeaturedGames() {
   try {
-    const data = await gamesAPI.getAll("page=1&limit=5");
-    featuredGames = data.games || [];
+    const res = await fetch(
+      'https://ecliptix-5c00.onrender.com/api/games?featured=true'
+    );
+
+    if (!res.ok) throw new Error('Failed to load featured games');
+
+    const data = await res.json();
+    featuredGames = Array.isArray(data) ? data : data.games || [];
+
     displayFeaturedGames(featuredGames);
   } catch (error) {
     console.error('Failed to load featured games:', error);
   }
 }
+
 
 
 // In frontend/games.js, around line 45 (or wherever your fetch call is)
