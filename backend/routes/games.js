@@ -3,22 +3,55 @@ const Game = require('../models/Game');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const { page = 1, limit = 20 } = req.query;
+  try {
+    const {
+      page = 1,
+      limit = 20,
+      search = '',
+      genre,
+      sort
+    } = req.query;
 
-  const skip = (page - 1) * limit;
+    const query = {};
 
-  const total = await Game.countDocuments();
-  const games = await Game.find()
-    .skip(skip)
-    .limit(Number(limit));
+    // 🔍 SEARCH (title + description)
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } }
+      ];
+    }
 
-  res.json({
-    games,
-    page: Number(page),
-    pages: Math.ceil(total / limit),
-    total
-  });
+    // 🎮 GENRE FILTER
+    if (genre && genre !== 'All Genres') {
+      query.genres = genre;
+    }
+
+    // 🔃 SORTING
+    let sortOption = {};
+    if (sort === 'priceLowHigh') sortOption.price = 1;
+    if (sort === 'priceHighLow') sortOption.price = -1;
+    if (sort === 'highestRated') sortOption.rating = -1;
+    if (sort === 'newest') sortOption.createdAt = -1;
+
+    const total = await Game.countDocuments(query);
+
+    const games = await Game.find(query)
+      .sort(sortOption)
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
+
+    res.json({
+      games,
+      page: Number(page),
+      totalPages: Math.ceil(total / limit)
+    });
+
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
 });
+
 
 
 // GET random featured games (limit = 6)

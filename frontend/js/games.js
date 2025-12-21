@@ -30,6 +30,40 @@ async function loadFeaturedGames() {
   }
 }
 
+async function loadAllGames() {
+  try {
+    const res = await gamesAPI.getAll('page=1&limit=50');
+    allGames = res.games || res;   // IMPORTANT
+    renderAllGames(allGames);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function renderAllGames(games) {
+  const container = document.getElementById('allGamesGrid');
+  if (!container) return;
+
+  if (!games.length) {
+    container.innerHTML = `<p class="empty-state">No games found</p>`;
+    return;
+  }
+
+  container.innerHTML = games.map(game => `
+    <div class="game-card">
+      <img src="${game.coverImage}" class="game-image">
+      <div class="game-info">
+        <h3>${game.title}</h3>
+        <p>${game.description}</p>
+        <div class="game-price">₹${game.price.toLocaleString('en-IN')}</div>
+        <div class="game-actions">
+          <button onclick="openGame('${game._id}')">View Details</button>
+          <button onclick="addToCart('${game._id}')">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
 
 
 
@@ -385,12 +419,13 @@ function displayGameDetails(game) {
 // Setup filters
 function setupFilters() {
   const genreFilter = document.getElementById('genreFilter');
-  const sortFilter = document.getElementById('sortFilter');
+  const sortFilter = document.getElementById('SORTFilter');
 
   if (genreFilter) {
     genreFilter.addEventListener('change', () => {
       currentPage = 1;
       loadGames(1);
+      scrollToGamesSection();
     });
   }
 
@@ -398,34 +433,30 @@ function setupFilters() {
     sortFilter.addEventListener('change', () => {
       currentPage = 1;
       loadGames(1);
+      scrollToGamesSection();
     });
   }
 }
+
 
 function setupSearch() {
   const searchInput = document.getElementById('searchInput');
-  const searchBtn = document.getElementById('searchBtn');
 
-  if (searchBtn) {
-    searchBtn.addEventListener('click', (e) => {
-      e.preventDefault();
+  if (!searchInput) return;
+
+  let searchTimeout;
+
+  searchInput.addEventListener('input', () => {
+    clearTimeout(searchTimeout);
+
+    searchTimeout = setTimeout(() => {
       currentPage = 1;
-      loadGames(1);          // backend search + pagination
-      scrollToGamesSection(); // ⬅️ jump to results
-    });
-  }
-
-  if (searchInput) {
-    searchInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        currentPage = 1;
-        loadGames(1);
-        scrollToGamesSection(); // ⬅️ jump to results
-      }
-    });
-  }
+      loadGames(1);              // 🔥 backend search
+      scrollToGamesSection();    // smooth UX
+    }, 400); // debounce like Steam
+  });
 }
+
 
 function displayPagination() {
   const container = document.getElementById('pagination');
