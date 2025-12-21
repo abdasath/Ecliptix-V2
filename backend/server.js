@@ -8,6 +8,14 @@ const PORT = process.env.PORT || 5000;
 const connectDB = require("./config/database");
 connectDB();
 
+app.use(cors({
+  origin: [
+    "https://ecliptix-hub.vercel.app",
+    "http://127.0.0.1:5500"
+  ],
+  credentials: true
+}));
+
 const app = express();
 
 // Middleware
