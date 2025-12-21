@@ -18,19 +18,18 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadFeaturedGames() {
   try {
     const res = await fetch(
-      'https://ecliptix-5c00.onrender.com/api/games?featured=true'
+      `${API_BASE_URL}/api/games/featured/random`
     );
 
     if (!res.ok) throw new Error('Failed to load featured games');
 
-    const data = await res.json();
-    featuredGames = Array.isArray(data) ? data : data.games || [];
-
-    displayFeaturedGames(featuredGames);
-  } catch (error) {
-    console.error('Failed to load featured games:', error);
+    const games = await res.json();
+    displayFeaturedGames(games);
+  } catch (err) {
+    console.error(err);
   }
 }
+
 
 
 
@@ -64,7 +63,7 @@ async function loadGames(page = 1) {
     queryParams.append('limit', 20);
 
     const res = await fetch(
-      `https://ecliptix-5c00.onrender.com/api/games?${queryParams.toString()}`
+      `${API_BASE_URL}/api/games?${queryParams.toString()}`
     );
 
 

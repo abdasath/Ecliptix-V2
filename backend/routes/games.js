@@ -18,7 +18,19 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET random featured games (limit = 6)
+router.get('/featured/random', async (req, res) => {
+  try {
+    const games = await Game.aggregate([
+      { $match: { featured: true } },
+      { $sample: { size: 10 } }   // 👈 RANDOM every request
+    ]);
 
+    res.json(games);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 // Get single game
 router.get('/:id', async (req, res) => {
