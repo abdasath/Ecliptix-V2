@@ -328,7 +328,7 @@ function displayGameDetails(game) {
    <div class="system-requirements">
   <h4>System Requirements</h4>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2rem;">
+  <div class="req-grid" style="display: grid; gap: 2rem;">
     
     <!-- Minimum -->
     <div>
