@@ -88,5 +88,12 @@ window.gamesAPI = {
 };
 
 
-
+/* --- Add this to js/api.js --- */
+window.walletAPI = {
+  addFunds: (amount) =>
+    apiRequest('/api/wallet/add', {
+      method: 'POST',
+      body: { amount: parseFloat(amount) }
+    })
+};
 

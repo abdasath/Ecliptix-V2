@@ -22,6 +22,7 @@ app.use('/api/games', require('./routes/games'));
 app.use('/api/cart', require('./routes/cart'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/wallet', require('./routes/wallet'));
 
 // Health check
 app.get('/api/health', (req, res) => {

@@ -174,38 +174,39 @@ function setupCartModal() {
   }
 }
 
-// Handle checkout
+// Handle checkout in cart.js
 async function handleCheckout() {
-  if (!isAuthenticated()) {
-    alert('Please login to checkout');
-    return;
-  }
+    try {
+        // Calls the checkout endpoint defined in api.js
+        const response = await ordersAPI.checkout();
+        
+        // Ensure we check for success or a success message
+        if (response.success || response.message === "Purchase successful") {
+            showNotification('Purchase successful!', 'success');
+            
+            // 1. Clear the local cart data and UI
+            cartItems = []; 
+            updateCartUI(); 
+            
+            // 2. Refresh the wallet balance in the navbar
+            if (response.newBalance !== undefined) {
+                const userWallet = document.getElementById('userWallet');
+                if (userWallet) userWallet.textContent = `₹${response.newBalance.toLocaleString('en-IN')}`;
+            }
+            
+            // 3. Close the modal and restore background
+            document.getElementById('cartModal').style.display = 'none';
+            document.body.classList.remove('modal-open');
 
-  if (cartItems.length === 0) {
-    alert('Your cart is empty');
-    return;
-  }
-
-  if (!confirm('Proceed with checkout?')) {
-    return;
-  }
-
-  try {
-    const order = await ordersAPI.checkout();
-    showNotification('Purchase successful!', 'success');
-    
-    const cartModal = document.getElementById('cartModal');
-    if (cartModal) cartModal.style.display = 'none';
-
-    await loadCart();
-    
-    // Reload page data
-    if (typeof loadGames === 'function') loadGames();
-    if (typeof loadLibrary === 'function') loadLibrary();
-    if (typeof loadProfile === 'function') loadProfile();
-    if (typeof checkAuthStatus === 'function') checkAuthStatus();
-  } catch (error) {
-    alert(error.message || 'Checkout failed');
-  }
+            // 4. Reload page data based on current location
+            if (window.location.pathname.includes('library.html')) loadLibrary();
+            if (window.location.pathname.includes('profile.html')) loadProfile();
+        } else {
+            // Handle specific errors like "Insufficient funds"
+            alert(response.message || 'Checkout failed');
+        }
+    } catch (error) {
+        alert('Checkout failed: ' + error.message);
+    }
 }
 

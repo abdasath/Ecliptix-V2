@@ -110,7 +110,7 @@ function setupWalletActions() {
   }
 }
 
-// Handle add funds
+// Handle add funds in profile.js
 async function handleAddFunds() {
   const amountInput = document.getElementById('fundAmount');
   const amount = parseFloat(amountInput?.value);
@@ -121,14 +121,19 @@ async function handleAddFunds() {
   }
 
   try {
-    const response = await ordersAPI.addFunds(amount);
+    // FIX: Change ordersAPI.addFunds to walletAPI.addFunds
+    const response = await walletAPI.addFunds(amount);
+    
+    // Check if the server returned an error
+    if (response.error) throw new Error(response.error);
+
     showNotification(`₹${amount.toLocaleString('en-IN')} added to wallet!`, 'success');
     
     if (amountInput) amountInput.value = '';
     
-    // Reload profile
+    // Reload profile to update balance on screen
     await loadProfile();
-    if (typeof checkAuthStatus === 'function') checkAuthStatus();
+    
   } catch (error) {
     alert(error.message || 'Failed to add funds');
   }
