@@ -48,6 +48,64 @@ function handleLoggedOutCleanup() {
     checkAdminAccess();
 }
 
+// Add this helper function at the top of auth.js
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+// Unified Handle Register Function
+async function handleRegister() {
+  const username = document.getElementById('username')?.value;
+  const emailInput = document.getElementById('email');
+  const password = document.getElementById('password')?.value;
+
+  // 1. Trigger browser's built-in validation (bubbles)
+  if (emailInput && !emailInput.checkValidity()) {
+    emailInput.reportValidity();
+    return;
+  }
+
+  const email = emailInput?.value;
+
+  // 2. Manual empty field check
+  if (!username || !email || !password) {
+    alert('Please fill in all fields');
+    return;
+  }
+
+  // 3. Regex check for extra security
+  if (!isValidEmail(email)) {
+    alert('Please enter a valid email address (e.g., name@example.com)');
+    return;
+  }
+
+  // 4. Password length check
+  if (password.length < 6) {
+    alert('Password must be at least 6 characters');
+    return;
+  }
+
+  try {
+    const response = await authAPI.register(username, email, password);
+    localStorage.setItem('token', response.token);
+    localStorage.setItem('userInfo', JSON.stringify(response.user));
+    
+    currentUser = response.user;
+    updateUIForLoggedIn(response.user);
+    checkAdminAccess();
+    closeLoginModal();
+    
+    // Clear form
+    document.getElementById('email').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('username').value = '';
+
+    showNotification('Registration successful!', 'success');
+  } catch (error) {
+    alert(error.message || 'Registration failed');
+  }
+}
 
 /* --- Update in auth.js --- */
 function checkAdminAccess() {
@@ -122,8 +180,17 @@ function setupAuthModals() {
 
 // Handle login
 async function handleLogin() {
-  const email = document.getElementById('email')?.value;
-  const password = document.getElementById('password')?.value;
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+
+  // 1. ADD THIS: Trigger browser validation for type="email"
+  if (emailInput && !emailInput.checkValidity()) {
+    emailInput.reportValidity();
+    return;
+  }
+
+  const email = emailInput?.value;
+  const password = passwordInput?.value;
 
   if (!email || !password) {
     alert('Please enter email and password');
@@ -161,49 +228,6 @@ async function handleLogin() {
   }
 }
 
-// Handle register
-async function handleRegister() {
-  const username = document.getElementById('username')?.value;
-  const email = document.getElementById('email')?.value;
-  const password = document.getElementById('password')?.value;
-
-  if (!username || !email || !password) {
-    alert('Please fill in all fields');
-    return;
-  }
-
-  if (password.length < 6) {
-    alert('Password must be at least 6 characters');
-    return;
-  }
-
-  try {
-    const response = await authAPI.register(username, email, password);
-    localStorage.setItem('token', response.token);
-
-    localStorage.setItem('userInfo', JSON.stringify(response.user));
-    checkAdminAccess();
-
-    currentUser = response.user;
-    updateUIForLoggedIn(response.user);
-
-    checkAdminAccess();
-    
-    // const loginModal = document.getElementById('loginModal');
-    // if (loginModal) loginModal.style.display = 'none';
-
-    closeLoginModal();
-    
-    // Clear form
-    document.getElementById('email').value = '';
-    document.getElementById('password').value = '';
-    document.getElementById('username').value = '';
-
-    showNotification('Registration successful!', 'success');
-  } catch (error) {
-    alert(error.message || 'Registration failed');
-  }
-}
 
 // Handle logout
 function handleLogout() {
