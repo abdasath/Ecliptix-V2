@@ -74,15 +74,17 @@ window.authAPI = {
 };
 
 
+/* --- Updated gamesAPI to use the authenticated helper --- */
 window.gamesAPI = {
-  getAll: (query) =>
-    fetch(`${API_BASE_URL}/api/games?${query}`).then(res => res.json()),
+  // Now uses apiRequest to ensure headers are included if available
+  getAll: (query) => 
+    apiRequest(`/api/games?${query}`),
 
-  getFeatured: () =>
-    fetch(`${API_BASE_URL}/api/games?featured=true`).then(res => res.json()),
+  getFeatured: () => 
+    apiRequest('/api/games?featured=true'),
 
-  getById: (id) =>
-    fetch(`${API_BASE_URL}/api/games/${id}`).then(res => res.json())
+  getById: (id) => 
+    apiRequest(`/api/games/${id}`)
 };
 
 

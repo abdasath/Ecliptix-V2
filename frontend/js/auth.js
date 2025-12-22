@@ -8,61 +8,69 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Check if user is logged in
+/* --- Update in auth.js --- */
 async function checkAuthStatus() {
   const token = localStorage.getItem('token');
+  const savedUser = localStorage.getItem('userInfo');
 
   if (!token) {
-    // Not logged in at all
-    currentUser = null;
-    localStorage.removeItem('userInfo');   // 🔹 make sure stale userInfo is gone
-    updateUIForLoggedOut();
-    checkAdminAccess();                    // 🔹 hide Admin link
+    handleLoggedOutCleanup();
     return;
+  }
+
+  // Immediately show UI based on saved data while we verify the token
+  if (savedUser) {
+    currentUser = JSON.parse(savedUser);
+    updateUIForLoggedIn(currentUser);
+    checkAdminAccess(); // This shows the admin link immediately
   }
 
   try {
     const user = await authAPI.getCurrentUser();
     currentUser = user;
-    updateUIForLoggedIn(user);
-
-    // Optional: keep userInfo in sync with latest data
     localStorage.setItem('userInfo', JSON.stringify(user));
-
-    checkAdminAccess();                    // 🔹 show/hide Admin correctly
+    updateUIForLoggedIn(user);
+    checkAdminAccess();
   } catch (error) {
     console.error('Auth check failed:', error);
-    localStorage.removeItem('token');
-    localStorage.removeItem('userInfo');   // 🔹 VERY important
-    currentUser = null;
-    updateUIForLoggedOut();
-    checkAdminAccess();                    // 🔹 hide Admin link
+    // ONLY logout if it's a 401 Unauthorized error
+    if (error.status === 401) {
+      handleLogout();
+    }
   }
 }
 
+// Helper for clean state
+function handleLoggedOutCleanup() {
+    currentUser = null;
+    localStorage.removeItem('userInfo');
+    updateUIForLoggedOut();
+    checkAdminAccess();
+}
 
+
+/* --- Update in auth.js --- */
 function checkAdminAccess() {
-    // 1. Get user from local storage
-    const userString = localStorage.getItem('userInfo'); // Or whatever key you use to save user
-    
-    // 2. Get the Admin Link element from HTML
-    const adminLink = document.querySelector('a[href="admin.html"]'); // Adjust selector to match your HTML
-    // OR if it's a list item:
-    // const adminLink = document.getElementById('admin-nav-item');
+    const userString = localStorage.getItem('userInfo');
+    const adminLink = document.querySelector('a[href="admin.html"]');
 
-    if (!adminLink) return; // Exit if link doesn't exist on this page
+    if (!adminLink) return;
+
+    // Target the parent <li> to maintain flexbox spacing
+    const adminNavItem = adminLink.parentElement;
 
     if (userString) {
         const user = JSON.parse(userString);
         
-        // 3. Check if role is admin
         if (user.role === 'admin') {
-            adminLink.style.display = 'block'; // Show it
+            // Show the whole list item so it flows perfectly in the menu
+            adminNavItem.style.setProperty('display', 'block', 'important');
+            adminLink.style.setProperty('display', 'inline-block', 'important');
         } else {
-            adminLink.style.display = 'none';  // Hide it
+            adminNavItem.style.setProperty('display', 'none', 'important');
         }
     } else {
-        // Not logged in? Hide it.
-        adminLink.style.display = 'none';
+        adminNavItem.style.setProperty('display', 'none', 'important');
     }
 }
 

@@ -8,6 +8,34 @@ document.addEventListener('DOMContentLoaded', () => {
     // Games page specific initialization
     console.log('Games page loaded');
   }
+
+  /* --- JavaScript Update in app.js --- */
+const checkAdminStatus = () => {
+    // Note: auth.js uses 'userInfo', so we check that key
+    const userString = localStorage.getItem('userInfo');
+    const adminLinks = document.querySelectorAll('a[href="admin.html"]');
+
+    if (userString) {
+        const user = JSON.parse(userString);
+        // Match the role check used in your auth.js (user.role === 'admin')
+        if (user.role === 'admin') {
+            adminLinks.forEach(link => {
+                link.style.setProperty('display', 'block', 'important');
+                if (link.parentElement.tagName === 'LI') {
+                    link.parentElement.style.setProperty('display', 'block', 'important');
+                }
+            });
+        }
+    } else {
+        adminLinks.forEach(link => {
+            link.style.display = 'none';
+            if (link.parentElement.tagName === 'LI') {
+                link.parentElement.style.display = 'none';
+            }
+        });
+    }
+};
+
 });
 
 const menuBtn = document.querySelector('.menu-toggle');
@@ -54,4 +82,12 @@ window.addEventListener('click', (e) => {
     if (e.target.classList.contains('modal')) {
         document.body.classList.remove('modal-open');
     }
+});
+
+// Add this to your existing app.js
+document.querySelectorAll('.nav-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+        const navMenu = document.querySelector('.nav-menu');
+        navMenu.classList.remove('open'); // cite: 2
+    });
 });

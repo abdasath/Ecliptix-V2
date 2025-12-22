@@ -59,12 +59,6 @@ a {
     /* Adjust spacing between buttons if it's too crowded */
 }
 
-/* Optional: Make the Admin button stand out but fit better */
-a[href="admin.html"] {
-    margin-left: 10px;
-    /* Give it a little breathing room */
-}
-
 /* Navigation */
 .navbar {
     background: rgba(0, 0, 0, 0.95);
@@ -143,38 +137,51 @@ a[href="admin.html"] {
     width: 60%;
 }
 
-
-
+/* Update the container of the search input and button */
 .search-box {
     display: flex;
     background: rgba(26, 26, 26, 0.8);
     border-radius: 4px;
-    padding: 0.5rem 1rem;
+    /* Reduced vertical padding from 0.5rem to 0.3rem */
+    padding: 0.3rem 0.8rem; 
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.2s;
     backdrop-filter: blur(10px);
+    /* Explicitly set a smaller max-height if needed */
+    height: 34px; 
+    align-items: center;
 }
 
-.search-box:focus-within {
-    border-color: rgba(255, 255, 255, 0.3);
-    background: rgba(26, 26, 26, 1);
-}
-
+/* Update the actual text input field */
 .search-box input {
     background: transparent;
     border: none;
     color: var(--text-primary);
     outline: none;
     width: 200px;
+    /* Reduced font size slightly for a tighter look */
+    font-size: 0.85rem; 
 }
 
+/* Update the search icon button */
 .search-box button {
     background: transparent;
     border: none;
     color: var(--text-secondary);
     cursor: pointer;
-    font-size: 1.2rem;
+    /* Reduced icon size slightly to fit the new height */
+    font-size: 1rem; 
+    display: flex;
+    align-items: center;
 }
+
+
+.search-box:focus-within {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(26, 26, 26, 1);
+}
+
+
 
 .cart-icon {
     position: relative;
@@ -291,10 +298,39 @@ a[href="admin.html"] {
 
 /* 3. Make the Admin Link invisible by default (prevents flickering) */
 a[href="admin.html"] {
-    display: none;
+    display: none ; /* cite: 144 */
     color: #ff4757;
     /* Optional: Makes 'Admin' red so it stands out */
     font-weight: bold;
+     margin-left: 10px;
+}
+
+.nav-menu li:has(a[href="admin.html"]) {
+    display: none;
+}
+
+/* --- Update in style.css --- */
+
+/* 1. Ensure the Admin link follows the exact same style as Store/Library/Profile */
+.nav-menu li a[href="admin.html"] {
+    display: none; /* Controlled by JS checkAdminAccess() */
+    color: var(--text-secondary); /* Same color as others */
+    font-weight: 400; /* Same weight as others */
+    margin-left: 0; /* REMOVE the extra margin that causes floating */
+}
+
+/* 2. Add the dot/indicator effect to the Admin link for Desktop */
+.nav-menu li a[href="admin.html"]::before {
+    content: '•';
+    margin-right: 8px;
+    color: #ff4757; /* Keep the red color only for the dot */
+    font-weight: bold;
+}
+
+/* 3. Re-enable the hover effect so it matches other links */
+.nav-menu li a[href="admin.html"]:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 /* 4. Ensure the Search Bar area doesn't break the layout */
@@ -818,10 +854,88 @@ a[href="admin.html"] {
     }
 }
 
-/* Mobile */
+/* Locate this specific media query in your style.css */
 @media (max-width: 768px) {
+    
+    /* Change the grid from 2 columns to 1 column */
     .games-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important; /* cite: 14 */
+        gap: 25px !important; /* Increased gap for better spacing between single cards */
+        padding: 0 10px; /* Optional: adds slight breathing room on the sides */
+    }
+
+    /* Adjust the game image height for a better mobile aspect ratio */
+    .game-image {
+        height: 300px !important; 
+    }
+}
+@media (max-width: 768px) {
+    /* 1. Fix the Navbar Container */
+    .navbar .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: nowrap;
+        padding: 0 15px;
+    }
+
+    /* 2. Professional Slide-out Menu (No Collapsing) */
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        left: -100%; 
+        width: 280px; /* Slightly narrower for a sleek look */
+        height: 100vh;
+        background: rgba(10, 10, 10, 0.98);
+        display: flex !important;
+        backdrop-filter: blur(15px);
+        flex-direction: column !important;
+        justify-content: flex-start;
+        padding: 80px 40px !important;
+        margin: 0 !important;
+        gap: 30px !important; /* Large gaps to prevent squashing */
+        transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 2000;
+        border-right: 1px solid #333;
+    }
+
+    .nav-menu.open {
+        left: 0;
+    }
+
+    /* 3. High-End Link Styling */
+    .nav-menu li {
+        width: 100%;
+    }
+
+    
+
+    /* 4. Ensure the Menu Toggle is visible and clean */
+    .menu-toggle {
+        display: block !important;
+        order: -1; /* Keeps it on the far left */
+        margin-right: 15px;
+    }
+
+    /* 5. Hide search on mobile to save space */
+    .search-box {
+        display: none !important;
+    }
+    .nav-menu a {
+        /* Reduced from 1.5rem to 1.1rem for a cleaner look */
+        font-size: 1.1rem !important; 
+        font-weight: 500;
+        display: block;
+        width: 100%;
+        padding: 15px 0;
+        border-bottom: 1px solid #222;
+        color: var(--text-secondary);
+    }
+
+    /* Target the Admin link specifically to look like a dot/indicator if desired */
+    /* Or simply keep it hidden by default */
+    .nav-menu li:has(a[href="admin.html"]) {
+        display: none; /* Hidden until JS confirms Admin status */
     }
 }
 
@@ -893,6 +1007,9 @@ a[href="admin.html"] {
         transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 2000;
         box-shadow: 10px 0 30px rgba(0,0,0,0.9);
+        list-style: none !important; /* Removes default dots/bullets */
+    padding: 0;
+    margin: 0;
     }
 
     .nav-menu.open {
