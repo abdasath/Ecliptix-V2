@@ -178,12 +178,12 @@ function setupAuthModals() {
   }
 }
 
-// Handle login
+
+/* --- Updated handleLogin in auth.js --- */
 async function handleLogin() {
   const emailInput = document.getElementById('email');
   const passwordInput = document.getElementById('password');
 
-  // 1. ADD THIS: Trigger browser validation for type="email"
   if (emailInput && !emailInput.checkValidity()) {
     emailInput.reportValidity();
     return;
@@ -192,39 +192,30 @@ async function handleLogin() {
   const email = emailInput?.value;
   const password = passwordInput?.value;
 
-  if (!email || !password) {
-    alert('Please enter email and password');
-    return;
-  }
-
   try {
     const response = await authAPI.login(email, password);
-    localStorage.setItem('token', response.token);
-    localStorage.setItem('userInfo', JSON.stringify(response.user));
-    currentUser = response.user;
-    updateUIForLoggedIn(response.user);
 
-    checkAdminAccess();
+    // FIX: Only proceed if the server actually returned a user
+    if (response && response.user) {
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('userInfo', JSON.stringify(response.user));
+        currentUser = response.user;
 
-    closeLoginModal();
-    
-    // const loginModal = document.getElementById('loginModal');
-    // if (loginModal) loginModal.style.display = 'none';
-    
-    // Clear form
-    document.getElementById('email').value = '';
-    document.getElementById('password').value = '';
-    document.getElementById('username').value = '';
-
-    // Reload page data
-    if (typeof loadGames === 'function') loadGames();
-    if (typeof loadCart === 'function') loadCart();
-    if (typeof loadLibrary === 'function') loadLibrary();
-    if (typeof loadProfile === 'function') loadProfile();
-
-    showNotification('Login successful!', 'success');
+        updateUIForLoggedIn(response.user);
+        checkAdminAccess();
+        closeLoginModal();
+        showNotification('Login successful!', 'success');
+    } else {
+        alert(response.message || 'Login failed. Please check credentials.');
+    }
   } catch (error) {
-    alert(error.message || 'Login failed');
+    console.error('Login Error:', error);
+    // If account doesn't exist, the backend sends 401
+    if (error.status === 401) {
+        alert('Account not found. Please register first!');
+    } else {
+        alert(error.message || 'Login failed');
+    }
   }
 }
 

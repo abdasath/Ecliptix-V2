@@ -6,7 +6,7 @@ function getAuthToken() {
   return localStorage.getItem('token');
 }
 
-// Helper function to make API requests
+/* --- Updated apiRequest in js/api.js --- */
 async function apiRequest(endpoint, options = {}) {
   const token = localStorage.getItem('token');
 
@@ -19,14 +19,23 @@ async function apiRequest(endpoint, options = {}) {
     body: options.body ? JSON.stringify(options.body) : undefined
   });
 
+  // Read the response text ONLY ONCE
   const text = await res.text();
+  let data;
 
   try {
-    return JSON.parse(text);
+    data = JSON.parse(text);
   } catch {
-    console.error('Non-JSON response:', text);
     throw new Error('Server error');
   }
+
+  if (!res.ok) {
+    const error = new Error(data.message || 'Server error');
+    error.status = res.status;
+    throw error;
+  }
+
+  return data;
 }
 
 window.cartAPI = {
@@ -88,10 +97,11 @@ window.gamesAPI = {
 };
 
 
-/* --- Add this to js/api.js --- */
+/* --- Update this section in js/api.js --- */
 window.walletAPI = {
   addFunds: (amount) =>
-    apiRequest('/api/wallet/add', {
+    // FIX: Added /orders to the path to match your backend
+    apiRequest('/api/orders/wallet/add', { 
       method: 'POST',
       body: { amount: parseFloat(amount) }
     })

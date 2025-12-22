@@ -174,39 +174,36 @@ function setupCartModal() {
   }
 }
 
-// Handle checkout in cart.js
+/* --- Update handleCheckout in js/cart.js --- */
 async function handleCheckout() {
     try {
-        // Calls the checkout endpoint defined in api.js
         const response = await ordersAPI.checkout();
         
-        // Ensure we check for success or a success message
-        if (response.success || response.message === "Purchase successful") {
+        // Backend returns the order object on success
+        if (response._id) {
             showNotification('Purchase successful!', 'success');
             
-            // 1. Clear the local cart data and UI
+            // 1. Clear the local cart data
             cartItems = []; 
             updateCartUI(); 
             
-            // 2. Refresh the wallet balance in the navbar
-            if (response.newBalance !== undefined) {
-                const userWallet = document.getElementById('userWallet');
-                if (userWallet) userWallet.textContent = `₹${response.newBalance.toLocaleString('en-IN')}`;
+            // 2. Update the navbar wallet balance globally
+            if (typeof checkAuthStatus === 'function') {
+                await checkAuthStatus(); 
             }
             
-            // 3. Close the modal and restore background
+            // 3. Close the modal
             document.getElementById('cartModal').style.display = 'none';
             document.body.classList.remove('modal-open');
 
-            // 4. Reload page data based on current location
-            if (window.location.pathname.includes('library.html')) loadLibrary();
-            if (window.location.pathname.includes('profile.html')) loadProfile();
+            // 4. Safely refresh page-specific data if functions exist
+            if (typeof loadLibrary === 'function') loadLibrary();
+            if (typeof loadProfile === 'function') loadProfile();
+            
         } else {
-            // Handle specific errors like "Insufficient funds"
             alert(response.message || 'Checkout failed');
         }
     } catch (error) {
-        alert('Checkout failed: ' + error.message);
+        alert(error.message || 'Checkout failed');
     }
 }
-
