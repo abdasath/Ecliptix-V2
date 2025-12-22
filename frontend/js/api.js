@@ -57,7 +57,12 @@ window.cartAPI = {
     })
 };
 
+/* --- Update in js/api.js --- */
 window.ordersAPI = {
+  // ADD THIS LINE: Fetches all orders for the logged-in user
+  getAll: () => 
+    apiRequest('/api/orders'),
+
   checkout: () =>
     apiRequest('/api/orders/checkout', {
       method: 'POST'

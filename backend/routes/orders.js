@@ -5,7 +5,7 @@ const Game = require('../models/Game');
 const auth = require('../middleware/auth');
 const router = express.Router();
 
-// Get user orders
+// This is the backend route in orders.js that your new API call will hit
 router.get('/', auth, async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user._id })
