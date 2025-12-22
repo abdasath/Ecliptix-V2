@@ -194,9 +194,7 @@ async function handleLogin() {
 
   try {
     const response = await authAPI.login(email, password);
-
-    // FIX: Only proceed if the server actually returned a user
-    if (response && response.user) {
+    if (response && response.token) {
         localStorage.setItem('token', response.token);
         localStorage.setItem('userInfo', JSON.stringify(response.user));
         currentUser = response.user;
@@ -204,11 +202,15 @@ async function handleLogin() {
         updateUIForLoggedIn(response.user);
         checkAdminAccess();
         closeLoginModal();
+        
+        // Sana's Fix: Immediately fetch this specific user's cart
+        if (typeof loadCart === 'function') {
+            await loadCart(); 
+        }
+
         showNotification('Login successful!', 'success');
-    } else {
-        alert(response.message || 'Login failed. Please check credentials.');
     }
-  } catch (error) {
+   } catch (error) {
     console.error('Login Error:', error);
     // If account doesn't exist, the backend sends 401
     if (error.status === 401) {
@@ -220,26 +222,38 @@ async function handleLogin() {
 }
 
 
-// Handle logout
+/* --- Update handleLogout in js/auth.js --- */
 function handleLogout() {
   localStorage.removeItem('token');
   localStorage.removeItem('userInfo');
-
   currentUser = null;
-  updateUIForLoggedOut();
 
+  updateUIForLoggedOut();
   checkAdminAccess();
-  // 2. ADD THIS: Force the admin button to hide immediately
-  const adminLink = document.querySelector('a[href="admin.html"]'); // Adjust selector if needed
-  if (adminLink) adminLink.style.display = 'none';
+
+  // 1. Clear the global items array
+  if (typeof cartItems !== 'undefined') {
+    cartItems = []; 
+  }
+  
+  // 2. Clear the Cart Modal list so the next person doesn't see your games
+  const cartItemsContainer = document.getElementById('cartItems');
+  const cartTotal = document.getElementById('cartTotal');
+  if (cartItemsContainer) {
+    cartItemsContainer.innerHTML = '<p class="empty-state">Please login to view your cart</p>';
+  }
+  if (cartTotal) {
+    cartTotal.textContent = '0';
+  }
+
+  // 3. Reset the count badge
+  const cartCount = document.getElementById('cartCount');
+  if (cartCount) {
+    cartCount.textContent = '0';
+    cartCount.style.display = 'none';
+  }
 
   showNotification('Logged out successfully', 'info');
-  
-  // Reload page
-  if (window.location.pathname.includes('library.html') || 
-      window.location.pathname.includes('profile.html')) {
-    window.location.href = 'index.html';
-  }
 }
 
 // Update UI for logged in user

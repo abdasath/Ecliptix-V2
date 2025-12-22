@@ -97,8 +97,9 @@ function updateCartUI() {
 
   // Update cart count
   if (cartCount) {
-    cartCount.textContent = cartItems.length;
-    cartCount.style.display = cartItems.length > 0 ? 'flex' : 'none';
+    const count = isAuthenticated() ? cartItems.length : 0;
+    cartCount.textContent = count;
+    cartCount.style.display = count > 0 ? 'flex' : 'none';
   }
 
   // Update cart items display
@@ -135,23 +136,30 @@ function updateCartUI() {
   }
 }
 
-// Setup cart modal
+/* --- Corrected setupCartModal in js/cart.js --- */
 function setupCartModal() {
   const cartIcon = document.getElementById('cartIcon');
   const cartModal = document.getElementById('cartModal');
   const closeBtn = cartModal?.querySelector('.close');
   const checkoutBtn = document.getElementById('checkoutBtn');
+  const cartItemsContainer = document.getElementById('cartItems'); // ADDED this selector
 
   if (cartIcon) {
     cartIcon.addEventListener('click', () => {
       if (!isAuthenticated()) {
+        // Sana's Fix: Wipe the modal's HTML so no "ghost" items appear
+        if (cartItemsContainer) {
+          cartItemsContainer.innerHTML = '<p class="empty-state">Please login to view your cart</p>';
+        }
+        
         alert('Please login to view your cart');
         const loginModal = document.getElementById('loginModal');
         if (loginModal) loginModal.style.display = 'block';
         return;
       }
+      
       if (cartModal) cartModal.style.display = 'block';
-      loadCart();
+      loadCart(); // Fetches fresh data only for logged-in users
     });
   }
 
