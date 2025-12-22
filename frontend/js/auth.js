@@ -208,11 +208,13 @@ async function handleLogin() {
     } else {
         alert(response.message || 'Login failed. Please check credentials.');
     }
-  } catch (error) {
+    } catch (error) {
     console.error('Login Error:', error);
-    // If account doesn't exist, the backend sends 401
+    
+    // Prioritize the specific message from the server (e.g., "Invalid password")
     if (error.status === 401) {
-        alert('Account not found. Please register first!');
+        // If the server sent a specific message, use it. Otherwise, use a generic one.
+        alert(error.message || 'Invalid email or password.');
     } else {
         alert(error.message || 'Login failed');
     }
