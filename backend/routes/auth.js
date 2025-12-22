@@ -41,28 +41,44 @@ router.post('/register', async (req, res) => {
   }
 });
 
-/* --- Logic for backend/routes/auth.js --- */
+// Login
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // 1. Check if user exists
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Please provide email and password' });
+    }
+
     const user = await User.findOne({ email });
     if (!user) {
-      // Send 401 but with a specific "User not found" message
-      return res.status(401).json({ message: 'Account not found. Please register.' });
+      return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    // 2. Check if password is correct
-    const isMatch = await user.comparePassword(password); 
+    const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      // Send 401 but with a specific "Invalid password" message
-      return res.status(401).json({ message: 'Incorrect password. Please check and try again.' });
+      return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    // ... Generate token and send success response
-  } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+
+    const token = jwt.sign(
+      { userId: user._id, role: user.role }, // (Optional) Add role to token too
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '7d' }
+    );
+
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        wallet: user.wallet,
+        role: user.role // <--- THIS IS THE KEY CHANGE
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 
