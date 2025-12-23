@@ -191,7 +191,7 @@ function setupAuthModals() {
 }
 
 
-/* --- Updated handleLogin in auth.js --- */
+/* --- Corrected handleLogin in js/auth.js --- */
 async function handleLogin() {
   const emailInput = document.getElementById('email');
   const passwordInput = document.getElementById('password');
@@ -215,7 +215,6 @@ async function handleLogin() {
         checkAdminAccess();
         closeLoginModal();
         
-        // Sana's Fix: Immediately fetch this specific user's cart
         if (typeof loadCart === 'function') {
             await loadCart(); 
         }
@@ -224,9 +223,12 @@ async function handleLogin() {
     }
    } catch (error) {
     console.error('Login Error:', error);
-    // If account doesn't exist, the backend sends 401
+    
+    // SANA'S FIX: Use the error message coming from the server
+    // Instead of hardcoding "Account not found", we use error.message
     if (error.status === 401) {
-        alert('Account not found. Please register first!');
+        // This will now show "Incorrect password" if the server sends it
+        alert(error.message || 'Invalid email or password.');
     } else {
         alert(error.message || 'Login failed');
     }
@@ -269,7 +271,7 @@ function handleLogout() {
   showNotification('Logged out successfully', 'info');
 }
 
-// Update UI for logged in user
+/* --- Updated updateUIForLoggedIn in js/auth.js --- */
 function updateUIForLoggedIn(user) {
   const loginBtn = document.getElementById('loginBtn');
   const logoutBtn = document.getElementById('logoutBtn');
@@ -277,8 +279,16 @@ function updateUIForLoggedIn(user) {
 
   if (loginBtn) loginBtn.style.display = 'none';
   if (logoutBtn) logoutBtn.style.display = 'inline-block';
+
   if (userWallet) {
-    userWallet.textContent = `₹${(user.wallet || 0).toLocaleString('en-IN')}`;
+    const balance = user.wallet || 0;
+
+    // Sana's Visual Fix: Compact numbers for mobile (e.g., ₹1.2k)
+    if (window.innerWidth <= 768 && balance >= 100000) {
+        userWallet.textContent = `₹${(balance / 1000).toFixed(1)}k`;
+    } else {
+        userWallet.textContent = `₹${balance.toLocaleString('en-IN')}`;
+    }
   }
 }
 

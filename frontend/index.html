@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ecliptix - Your Ultimate Gaming Platform</title>
-    <link rel="icon" type="image/png" href="https://i.pinimg.com/736x/07/3e/90/073e9014436b6ce0c67ebded83e854ff.jpg">
+    <link rel="icon" type="image/png" href="images/icon.png">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/components.css">
 </head>
@@ -13,7 +13,10 @@
 <body>
     <!-- Navigation -->
     <nav class="navbar">
-        <button class="menu-toggle" style="display: none;">☰</button>
+        <button class="menu-toggle">
+            <span class="icon hamburger">☰</span>
+            <span class="icon close">✕</span>
+        </button>
 
         <div class="container">
             <div class="nav-brand">
@@ -22,6 +25,8 @@
                 </a>
             </div>
             <ul class="nav-menu">
+
+                <li class="menu-close">✕</li>
                 <li><a href="index.html" class="active">Store</a></li>
                 <li><a href="library.html">Library</a></li>
                 <li><a href="profile.html">Profile</a></li>

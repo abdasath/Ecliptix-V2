@@ -110,30 +110,33 @@ function setupWalletActions() {
   }
 }
 
-/* --- Update handleAddFunds in js/profile.js --- */
+/* --- Logic for Adding Funds based on Role --- */
 async function handleAddFunds() {
   const amountInput = document.getElementById('fundAmount');
   const amount = parseFloat(amountInput?.value);
 
   if (!amount || amount <= 0) {
-    alert('Please enter a valid amount');
+    showNotification('Please enter a valid amount', 'error');
+    return;
+  }
+
+  // SANA'S LOGIC FIX: Check user role before allowing addition
+  const user = getCurrentUser(); // Uses helper in auth.js
+  const USER_LIMIT = 10000; // Define a limit for standard users
+
+  if (user.role !== 'admin' && amount > USER_LIMIT) {
+    showNotification(`Max limit: ₹${USER_LIMIT.toLocaleString()}`, 'error');
     return;
   }
 
   try {
-    // FIX: Use walletAPI instead of ordersAPI
-    const response = await walletAPI.addFunds(amount);
+    const response = await walletAPI.addFunds(amount); //
+    showNotification(`₹${amount} added successfully!`, 'success');
     
-    showNotification(`₹${amount.toLocaleString('en-IN')} added to wallet!`, 'success');
-    
-    if (amountInput) amountInput.value = '';
-    
-    // Refresh the profile info and the global navbar wallet
-    await loadProfile();
-    if (typeof checkAuthStatus === 'function') await checkAuthStatus();
-    
+    // Refresh user data to update the UI
+    checkAuthStatus(); 
   } catch (error) {
-    alert(error.message || 'Failed to add funds');
+    showNotification(error.message || 'Failed to add funds', 'error');
   }
 }
 

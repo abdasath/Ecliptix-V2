@@ -1271,3 +1271,154 @@ a[href="admin.html"] {
         opacity: 0.1;
     }
 }
+
+/* --- Optimized Mobile Navigation Fix in style.css --- */
+@media (max-width: 768px) {
+    /* 1. Prevent the Brand and Wallet from touching */
+    .navbar .container {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 0 10px !important;
+        height: 60px !important;
+    }
+
+    /* 2. Scale down the brand name so it doesn't take up 50% of the screen */
+    .nav-brand h1 {
+        font-size: 2rem !important; 
+        letter-spacing: 0.5px !important;
+    }
+
+    /* 3. Group the Wallet and Logout/Login together tightly */
+    .nav-actions {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important; /* Tight gap prevents spill-over */
+        margin-left: auto !important;
+    }
+
+    /* 4. Fix the "Awful" Wallet look */
+    .wallet {
+        font-size: 0.8rem !important;
+        padding: 4px 8px !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-radius: 4px !important;
+        white-space: nowrap !important; /* Prevents the currency symbol from dropping */
+    }
+
+    /* 5. Shrink the Cart icon so it fits beside the name */
+    .cart-icon {
+        font-size: 1.1rem !important;
+        margin-left: 5px !important;
+    }
+
+    .cart-count {
+        width: 16px !important;
+        height: 16px !important;
+        font-size: 0.6rem !important;
+        top: -5px !important;
+        right: -5px !important;
+    }
+
+    /* 6. Make Login/Logout buttons compact */
+    #loginBtn, #logoutBtn {
+        padding: 4px 10px !important;
+        font-size: 0.75rem !important;
+        min-height: 30px !important;
+        border-radius: 4px !important;
+    }
+    .hero {
+        height: 250px !important; /* Reduced height for mobile balance */
+        margin-bottom: 2rem !important;
+    }
+
+    .hero-content h2 {
+        font-size: 1.7rem !important; /* Shrunk from 3.5rem for a sleek look */
+        line-height: 1.2 !important;
+        margin-bottom: 0.8rem !important;
+        padding: 0 15px !important; /* Prevents text from hitting screen edges */
+    }
+
+    .hero-content p {
+        font-size: 0.95rem !important; /* Smaller subtext to match the headline */
+        padding: 0 20px !important;
+        opacity: 0.8;
+    }
+    .menu-close {
+        display: block !important;
+        position: absolute;
+        top: 20px;
+        right: 25px;
+        font-size: 2rem;
+        color: var(--text-primary);
+        cursor: pointer;
+        z-index: 2100;
+        transition: color 0.3s;
+    }
+
+    .menu-close:hover {
+        color: #e94560; /* Optional: Changes to red on hover/tap */
+    }
+
+    /* Ensure the menu list items don't overlap with the X */
+    .nav-menu {
+        padding-top: 80px !important;
+    }
+    /* ===== MENU ICON ANIMATION ===== */
+.menu-toggle {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        position: relative; /* Keep relative for stacking context */
+        padding: 0;
+        z-index: 2100;
+    }
+
+    /* 2. Unified icon styling */
+    .menu-toggle .icon {
+        position: absolute; /* Stack them on top of each other */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        font-size: 28px;
+        color: white !important;
+        transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        line-height: 1;
+    }
+
+    /* 3. Initial States: Hamburger visible, Close hidden/rotated */
+    .menu-toggle .hamburger {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+
+    .menu-toggle .close {
+        opacity: 0;
+        transform: scale(0.5) rotate(-90deg);
+    }
+
+    /* 4. Active States: Hamburger hides/rotates, Close scales in */
+    .menu-toggle.active .hamburger {
+        opacity: 0;
+        transform: scale(0.5) rotate(90deg);
+    }
+
+    .menu-toggle.active .close {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+
+
+}
+
+.menu-close {
+    display: none;
+}

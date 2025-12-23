@@ -1,3 +1,7 @@
+const menuBtn = document.querySelector('.menu-toggle');
+const navMenu = document.querySelector('.nav-menu');
+const menuClose = document.querySelector('.menu-close');
+
 // Main application initialization
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize all modules
@@ -38,11 +42,27 @@ const checkAdminStatus = () => {
 
 });
 
-const menuBtn = document.querySelector('.menu-toggle');
-const navMenu = document.querySelector('.nav-menu');
 
+// Toggle menu
 menuBtn.addEventListener('click', () => {
-  navMenu.classList.toggle('open');
+    navMenu.classList.toggle('open');
+    menuBtn.classList.toggle('active');
+});
+
+// Close from X inside menu
+if (menuClose) {
+    menuClose.addEventListener('click', () => {
+        navMenu.classList.remove('open');
+        menuBtn.classList.remove('active');
+    });
+}
+
+// Close on link click
+document.querySelectorAll('.nav-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+        navMenu.classList.remove('open');
+        menuBtn.classList.remove('active');
+    });
 });
 
 // In your app.js where you handle the login button click
@@ -84,10 +104,5 @@ window.addEventListener('click', (e) => {
     }
 });
 
-// Add this to your existing app.js
-document.querySelectorAll('.nav-menu a').forEach(link => {
-    link.addEventListener('click', () => {
-        const navMenu = document.querySelector('.nav-menu');
-        navMenu.classList.remove('open'); // cite: 2
-    });
-});
+
+
