@@ -40,6 +40,17 @@ async function checkAuthStatus() {
   }
 }
 
+// Helper to clear the login/register form fields
+function clearAuthFields() {
+  const username = document.getElementById('username');
+  const email = document.getElementById('email');
+  const password = document.getElementById('password');
+
+  if (username) username.value = '';
+  if (email) email.value = '';
+  if (password) password.value = '';
+}
+
 // Helper for clean state
 function handleLoggedOutCleanup() {
     currentUser = null;
@@ -147,6 +158,7 @@ function setupAuthModals() {
 
   if (loginBtn) {
     loginBtn.addEventListener('click', () => {
+      clearAuthFields();
       if (loginModal) loginModal.style.display = 'block';
     });
   }
@@ -230,6 +242,7 @@ function handleLogout() {
 
   updateUIForLoggedOut();
   checkAdminAccess();
+  clearAuthFields();
 
   // 1. Clear the global items array
   if (typeof cartItems !== 'undefined') {
