@@ -40,29 +40,21 @@ async function loadAllGames() {
   }
 }
 
+/* --- Update renderAllGames in js/games.js --- */
 function renderAllGames(games) {
-  const container = document.getElementById('allGamesGrid');
+  const container = document.getElementById('allGamesGrid'); // Double check this ID in index.html
   if (!container) return;
 
-  if (!games.length) {
+  if (!games || !games.length) {
     container.innerHTML = `<p class="empty-state">No games found</p>`;
     return;
   }
 
-  container.innerHTML = games.map(game => `
-    <div class="game-card">
-      <img src="${game.coverImage}" class="game-image">
-      <div class="game-info">
-        <h3>${game.title}</h3>
-        <p>${game.description}</p>
-        <div class="game-price">₹${game.price.toLocaleString('en-IN')}</div>
-        <div class="game-actions">
-          <button onclick="openGame('${game._id}')">View Details</button>
-          <button onclick="addToCart('${game._id}')">Add to Cart</button>
-        </div>
-      </div>
-    </div>
-  `).join('');
+  // Use the standard card template to ensure it gets all your latest fixes
+  container.innerHTML = games.map(game => createGameCard(game)).join('');
+  
+  // Re-attach listeners so clicking the card itself also resets the scroll
+  attachGameCardListeners(); 
 }
 
 
@@ -262,7 +254,7 @@ function createGameCard(game, isFeatured = false) {
   `;
 }
 
-// Attach event listeners to game cards
+// 2. Updated attachGameCardListeners: Now safely calls the gatekeeper
 function attachGameCardListeners() {
   document.querySelectorAll('.game-card').forEach(card => {
     card.addEventListener('click', (e) => {
@@ -271,20 +263,51 @@ function attachGameCardListeners() {
 
       const gameId = card.dataset.gameId;
       if (gameId) {
-        viewGameDetails(gameId);
+        // This now triggers the scroll reset correctly!
+        viewGameDetails(gameId); 
       }
     });
   });
 }
 
-// View game details
+/* --- Replace viewGameDetails in js/games.js --- */
 async function viewGameDetails(gameId) {
+  const modal = document.getElementById('gameModal');
+  const container = document.getElementById('gameDetails');
+
+  if (!modal || !container) return;
+
+  // 1. CLEAR AND RESET: Wipe the old content immediately so the scrollbar resets
+  container.innerHTML = ''; 
+  modal.style.display = 'none'; // Hide briefly to force a redraw
+  
+  modal.scrollTop = 0;
+  container.scrollTop = 0;
+
   try {
     const game = await gamesAPI.getById(gameId);
+    
+    // 2. RENDER: Put the new HTML into the container
     displayGameDetails(game);
+
+    // 3. SHOW: Make the modal visible again
+    modal.style.display = 'block';
+
+    // 4. SANA'S TRIPLE-RESET: Force the snap-to-top across different browser frames
+    // This solves the timing bug seen in your 12.07.58 PM recording
+    requestAnimationFrame(() => {
+        modal.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        container.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        
+        // Final safety delay for heavy rendering
+        setTimeout(() => {
+            modal.scrollTop = 0;
+            container.scrollTop = 0;
+        }, 50);
+    });
+
   } catch (error) {
-    alert('Failed to load game details');
-    console.error(error);
+    console.error('Failed to load game details:', error);
   }
 }
 
@@ -296,9 +319,18 @@ function displayGameDetails(game) {
 
   if (!modal || !container) return;
 
+  // SANA'S NUCLEAR FIX: Wipe the content and reset scroll BEFORE rendering
+  container.innerHTML = '';
+  modal.scrollTop = 0;
+  container.scrollTop = 0;
+
+  modal.scrollTop = 0;
+  if (container) container.scrollTop = 0;
+
   const finalPrice = game.discount > 0
     ? game.price * (1 - game.discount / 100)
     : game.price;
+
 
   const discountBadge = game.discount > 0
     ? `<span class="discount-badge">-${game.discount}% OFF</span>`
@@ -402,20 +434,24 @@ function displayGameDetails(game) {
 
   modal.style.display = 'block';
 
-  // 1. Show the modal
-  modal.style.display = 'block';
-  
-  // 2. Lock the background ONLY for mobile view
+  setTimeout(() => {
+    modal.scrollTo(0, 0);
+    container.scrollTo(0, 0);
+  }, 0);
+
+  // Background lock for mobile
   if (window.innerWidth <= 768) {
     document.body.classList.add('modal-open');
   }
 
-  // 3. Unlock the background when closing
+  // Handle Closing
   const closeBtn = modal.querySelector('.close');
-  closeBtn.onclick = () => {
-    modal.style.display = 'none';
-    document.body.classList.remove('modal-open');
-  };
+  if (closeBtn) {
+    closeBtn.onclick = () => {
+      modal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+    };
+  }
 
   // Also unlock if user clicks outside the modal
   window.onclick = (e) => {

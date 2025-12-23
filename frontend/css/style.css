@@ -840,6 +840,15 @@ a[href="admin.html"] {
     gap: 20px;
 }
 
+/* --- Ensure this is in your style.css --- */
+#gameModal {
+    overflow-y: auto !important; /* The scrollbar should be here */
+}
+
+#gameDetails {
+    overflow-y: visible !important; /* Prevent double scrollbars */
+}
+
 /* Laptop */
 @media (max-width: 1200px) {
     .games-grid {
@@ -1062,6 +1071,7 @@ a[href="admin.html"] {
     #gameModal {
         z-index: 9999 !important;
         background-color: rgba(0, 0, 0, 0.9); /* Solid dark background for the modal area */
+        
     }
 }
 
