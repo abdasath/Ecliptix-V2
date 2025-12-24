@@ -64,6 +64,29 @@
         </section>
     </main>
 
+    <div id="loginModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Login / Register</h2>
+        <form id="authForm">
+            <div class="form-group">
+                <label>Username (for register)</label>
+                <input type="text" id="username" placeholder="Username">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" placeholder="Email">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Password">
+            </div>
+            <button type="button" id="loginSubmit" class="btn-primary">Login</button>
+            <button type="button" id="registerSubmit" class="btn-secondary">Register</button>
+        </form>
+    </div>
+</div>
+
     <script src="js/api.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/cart.js"></script>

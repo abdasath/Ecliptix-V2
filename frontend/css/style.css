@@ -2,6 +2,14 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:focus,
+a:focus,
+input:focus,
+textarea:focus {
+    outline: none !important;
 }
 
 :root {
@@ -931,14 +939,25 @@ a[href="admin.html"] {
         display: none !important;
     }
     .nav-menu a {
-        /* Reduced from 1.5rem to 1.1rem for a cleaner look */
-        font-size: 1.1rem !important; 
-        font-weight: 500;
+        padding: 12px 20px !important; /* Internal spacing for touch comfort */
+        margin: 5px 0;
         display: block;
-        width: 100%;
-        padding: 15px 0;
-        border-bottom: 1px solid #222;
-        color: var(--text-secondary);
+        border-radius: 8px; /* Softens the look of the tap area */
+    }
+    .nav-menu a::after {
+        bottom: 8px !important; /* Moves the line away from the bottom of the link */
+        height: 3px !important; /* Slightly thicker for better mobile visibility */
+        width: 0;
+        background: var(--text-primary);
+        transition: width 0.3s ease;
+    }
+    .nav-menu a.active {
+        background: rgba(255, 255, 255, 0.1); /* Subtle highlight behind text */
+    }
+    .nav-menu a.active::after {
+        width: 40px !important; /* Smaller, cleaner indicator line */
+        left: 20px !important; /* Aligns with the text's new padding */
+        transform: none !important; /* Removes the centering for a sleek side-aligned look */
     }
 
     /* Target the Admin link specifically to look like a dot/indicator if desired */

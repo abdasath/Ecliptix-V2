@@ -191,7 +191,7 @@ function setupAuthModals() {
 }
 
 
-/* --- Corrected handleLogin in js/auth.js --- */
+/* --- Updated handleLogin in js/auth.js --- */
 async function handleLogin() {
   const emailInput = document.getElementById('email');
   const passwordInput = document.getElementById('password');
@@ -220,15 +220,18 @@ async function handleLogin() {
         }
 
         showNotification('Login successful!', 'success');
+
+        // SANA'S AUTO-REDIRECT FIX:
+        // After 1 second (so the user can see the green success message), 
+        // automatically send them to the Store page (index.html).
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 100); 
     }
    } catch (error) {
     console.error('Login Error:', error);
-    
-    // SANA'S FIX: Use the error message coming from the server
-    // Instead of hardcoding "Account not found", we use error.message
     if (error.status === 401) {
-        // This will now show "Incorrect password" if the server sends it
-        alert(error.message || 'Invalid email or password.');
+        alert('Account not found. Please register first!');
     } else {
         alert(error.message || 'Login failed');
     }
