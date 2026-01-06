@@ -70,11 +70,10 @@ function createAdminGameCard(game) {
 function setupGameForm() {
   const form = document.getElementById('gameForm');
   if (!form) return;
-
-  form.addEventListener('submit', async (e) => {
+  form.onsubmit = async (e) => {
     e.preventDefault();
     await handleAddGame();
-  });
+  };
 }
 
 // Handle add game
