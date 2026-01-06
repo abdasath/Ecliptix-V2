@@ -28,7 +28,7 @@ router.get('/', async (req, res) => {
     }
 
     // 🔃 SORTING
-    let sortOption = {};
+    let sortOption = { createdAt: -1 };
     if (sort === 'priceLowHigh') sortOption.price = 1;
     if (sort === 'priceHighLow') sortOption.price = -1;
     if (sort === 'highestRated') sortOption.rating = -1;
