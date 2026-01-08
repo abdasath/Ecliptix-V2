@@ -49,6 +49,12 @@ a {
     min-height: 44px;
 }
 
+/* GLOBAL SCROLL LOCK (Applies to Desktop & Mobile) */
+body.modal-open {
+    overflow: hidden !important; /* Stops the background from scrolling */
+    height: 100vh;              /* Locks the height to the screen size */
+    padding-right: 15px;        /* Optional: Prevents layout shift when scrollbar disappears */
+}
 
 .container {
     max-width: 1400px;
@@ -592,6 +598,7 @@ a[href="admin.html"] {
     width: 100%;
     height: 360px;
     object-fit: cover;
+    object-position: center center; /* Tries to keep the middle visible */
     background: #0a0a0a;
     transition: transform 0.4s ease;
     position: relative;

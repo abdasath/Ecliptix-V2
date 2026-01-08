@@ -4,16 +4,6 @@ let featuredGames = [];
 let currentPage = 1;
 let totalPages = 1;
 
-
-// Initialize games on page load
-document.addEventListener('DOMContentLoaded', () => {
-  loadFeaturedGames();
-  loadGames();
-  setupFilters();
-  setupSearch();
-
-});
-
 // Load featured games
 async function loadFeaturedGames() {
   try {
@@ -30,98 +20,8 @@ async function loadFeaturedGames() {
   }
 }
 
-async function loadAllGames() {
-  try {
-    const res = await gamesAPI.getAll('page=1&limit=50');
-    allGames = res.games || res;   // IMPORTANT
-    renderAllGames(allGames);
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-/* --- Update renderAllGames in js/games.js --- */
-function renderAllGames(games) {
-  const container = document.getElementById('allGamesGrid'); // Double check this ID in index.html
-  if (!container) return;
-
-  if (!games || !games.length) {
-    container.innerHTML = `<p class="empty-state">No games found</p>`;
-    return;
-  }
-
-  // Use the standard card template to ensure it gets all your latest fixes
-  container.innerHTML = games.map(game => createGameCard(game)).join('');
-  
-  // Re-attach listeners so clicking the card itself also resets the scroll
-  attachGameCardListeners(); 
-}
-
-
-
-// In frontend/games.js, around line 45 (or wherever your fetch call is)
-
-async function loadGames(page = 1) {
-  try {
-    const genreFilterEl = document.getElementById('genreFilter');
-    const sortFilterEl = document.getElementById('sortFilter');
-    const searchInputEl = document.getElementById('searchInput');
-
-    const genreFilter = genreFilterEl ? genreFilterEl.value : '';
-    const sortFilter = sortFilterEl ? sortFilterEl.value : '';
-    const searchQuery = searchInputEl ? searchInputEl.value.trim() : '';
-
-    const queryParams = new URLSearchParams();
-
-    if (genreFilter && genreFilter !== 'All Genres') {
-      queryParams.append('genre', genreFilter);
-    }
-
-    if (sortFilter) {
-      queryParams.append('sort', sortFilter);
-    }
-
-    if (searchQuery) {
-      queryParams.append('search', searchQuery);
-    }
-
-    queryParams.append('page', page);
-    queryParams.append('limit', 20);
-
-    const res = await fetch(
-      `${API_BASE_URL}/api/games?${queryParams.toString()}`
-    );
-
-
-    if (!res.ok) {
-      throw new Error('Failed to fetch games');
-    }
-
-    const data = await res.json();
-
-    const games = Array.isArray(data)
-      ? data
-      : data.games || [];
-
-    allGames = games;
-    displayGames(games);
-
-
-    totalPages = data.pages || data.totalPages || 1;
-    currentPage = data.page || page;
-
-    displayGames(games);
-    displayPagination();
-  } catch (error) {
-    console.error('Failed to load games:', error);
-    displayGames(null); // will show error state
-  }
-}
-
-
 /* --- SEARCH FUNCTIONALITY --- */
 function applySearch() {
-  // Always start from first page when searching
   currentPage = 1;
   loadGames(1);
 }
@@ -136,27 +36,86 @@ function scrollToGamesSection() {
   }
 }
 
-
-
-// Load genres for filter
-
+// --- LOAD GENRES FOR DROPDOWN ---
 async function loadGenres() {
   try {
-    const genres = await gamesAPI.getGenres();
+    // Updated URL to match the backend route
+    const res = await fetch(`${API_BASE_URL}/api/games/meta/genres`);
+
+    if (!res.ok) throw new Error('Failed to fetch genres');
+
+    const genres = await res.json();
     const genreFilter = document.getElementById('genreFilter');
 
-    if (genreFilter && genreFilter.children.length === 1) {
-      genres.forEach(genre => {
-        const option = document.createElement('option');
-        option.value = genre;
-        option.textContent = genre;
-        genreFilter.appendChild(option);
-      });
-    }
+    // Reset dropdown
+    genreFilter.innerHTML = '<option value="">All Genres</option>';
+
+    // Populate
+    genres.forEach(genre => {
+      const option = document.createElement('option');
+      option.value = genre;
+      option.textContent = genre;
+      genreFilter.appendChild(option);
+    });
   } catch (error) {
     console.error('Failed to load genres:', error);
   }
 }
+
+// --- LOAD GAMES WITH FILTERS ---
+async function loadGames(page = 1) {
+  try {
+    const genreFilter = document.getElementById('genreFilter').value;
+    const sortFilter = document.getElementById('sortFilter').value;
+    const searchQuery = document.getElementById('searchInput').value.trim();
+
+    // Build URL Params
+    const queryParams = new URLSearchParams({
+      page: page,
+      limit: 20
+    });
+
+    if (genreFilter) queryParams.append('genre', genreFilter);
+    if (sortFilter) queryParams.append('sort', sortFilter);
+    if (searchQuery) queryParams.append('search', searchQuery);
+
+    console.log("Loading games with:", queryParams.toString());
+
+    const res = await fetch(`${API_BASE_URL}/api/games?${queryParams}`);
+    const data = await res.json();
+
+    // Update Global Variables
+    allGames = data.games || [];
+    totalPages = data.totalPages || 1;
+    currentPage = data.page || 1; // Note: backend returns 'page', not 'currentPage'
+
+    displayGames(allGames);
+    displayPagination();
+
+  } catch (error) {
+    console.error('Failed to load games:', error);
+  }
+}
+
+// --- INITIALIZATION ---
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. Load Data
+  loadFeaturedGames(); // If you have this function
+  loadGames();
+  loadGenres(); // <--- Important: Call this!
+  setupFilters();
+  setupSearch();
+
+  // 2. Setup Filter Listeners
+  document.getElementById('genreFilter').addEventListener('change', () => loadGames(1));
+  document.getElementById('sortFilter').addEventListener('change', () => loadGames(1));
+
+  // 3. Setup Search Listener
+  const searchBtn = document.getElementById('searchBtn');
+  if (searchBtn) {
+    searchBtn.addEventListener('click', () => loadGames(1));
+  }
+});
 
 // Display featured games
 function displayFeaturedGames(games) {
@@ -264,7 +223,7 @@ function attachGameCardListeners() {
       const gameId = card.dataset.gameId;
       if (gameId) {
         // This now triggers the scroll reset correctly!
-        viewGameDetails(gameId); 
+        viewGameDetails(gameId);
       }
     });
   });
@@ -278,15 +237,15 @@ async function viewGameDetails(gameId) {
   if (!modal || !container) return;
 
   // 1. CLEAR AND RESET: Wipe the old content immediately so the scrollbar resets
-  container.innerHTML = ''; 
+  container.innerHTML = '';
   modal.style.display = 'none'; // Hide briefly to force a redraw
-  
+
   modal.scrollTop = 0;
   container.scrollTop = 0;
 
   try {
     const game = await gamesAPI.getById(gameId);
-    
+
     // 2. RENDER: Put the new HTML into the container
     displayGameDetails(game);
 
@@ -296,14 +255,14 @@ async function viewGameDetails(gameId) {
     // 4. SANA'S TRIPLE-RESET: Force the snap-to-top across different browser frames
     // This solves the timing bug seen in your 12.07.58 PM recording
     requestAnimationFrame(() => {
-        modal.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-        container.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-        
-        // Final safety delay for heavy rendering
-        setTimeout(() => {
-            modal.scrollTop = 0;
-            container.scrollTop = 0;
-        }, 50);
+      modal.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      container.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
+      // Final safety delay for heavy rendering
+      setTimeout(() => {
+        modal.scrollTop = 0;
+        container.scrollTop = 0;
+      }, 50);
     });
 
   } catch (error) {
@@ -400,7 +359,7 @@ function displayGameDetails(game) {
   container.innerHTML = `
     <div class="game-details">
       <div class="game-details-header">
-        <img src="${game.images[0]}" alt="${game.title}" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 10px; margin-bottom: 2rem;">
+<img src="${game.images[0]}" alt="${game.title}" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 10px; margin-bottom: 2rem;">
         <h2>${game.title}</h2>
         <div class="game-details-meta">
           <p><strong>Developer:</strong> ${game.developer}</p>
@@ -439,10 +398,8 @@ function displayGameDetails(game) {
     container.scrollTo(0, 0);
   }, 0);
 
-  // Background lock for mobile
-  if (window.innerWidth <= 768) {
-    document.body.classList.add('modal-open');
-  }
+  // Background lock for EVERYONE (Mobile & Desktop)
+  document.body.classList.add('modal-open');
 
   // Handle Closing
   const closeBtn = modal.querySelector('.close');
@@ -462,11 +419,7 @@ function displayGameDetails(game) {
   };
   // Close modal
 
-  window.onclick = (e) => {
-    if (e.target === modal) {
-      modal.style.display = 'none';
-    }
-  };
+
 }
 
 // Setup filters
@@ -485,10 +438,14 @@ function setupFilters() {
   if (sortFilter) {
     sortFilter.addEventListener('change', () => {
       currentPage = 1;
+
+      // FORCE reload even if same option is selected again
       loadGames(1);
+
       scrollToGamesSection();
     });
   }
+
 }
 
 
