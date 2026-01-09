@@ -233,37 +233,38 @@ function attachGameCardListeners() {
 async function viewGameDetails(gameId) {
   const modal = document.getElementById('gameModal');
   const container = document.getElementById('gameDetails');
+  const modalContent = modal.querySelector('.modal-content'); // Get the wrapper too
 
   if (!modal || !container) return;
 
-  // 1. CLEAR AND RESET: Wipe the old content immediately so the scrollbar resets
-  container.innerHTML = '';
-  modal.style.display = 'none'; // Hide briefly to force a redraw
-
-  modal.scrollTop = 0;
-  container.scrollTop = 0;
+  // 1. Hide briefly to ensure a clean state
+  modal.style.display = 'none';
+  document.body.classList.remove('modal-open');
 
   try {
-    const game = await gamesAPI.getById(gameId);
+    const game = await gamesAPI.getById(gameId); // Ensure this API call works, otherwise use fetch logic
 
-    // 2. RENDER: Put the new HTML into the container
+    // 2. RENDER: Generate HTML
     displayGameDetails(game);
 
-    // 3. SHOW: Make the modal visible again
+    // 3. SHOW: Make visible
     modal.style.display = 'block';
+    document.body.classList.add('modal-open');
 
-    // 4. SANA'S TRIPLE-RESET: Force the snap-to-top across different browser frames
-    // This solves the timing bug seen in your 12.07.58 PM recording
-    requestAnimationFrame(() => {
-      modal.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-      container.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    // 4. RESET SCROLL (The "Nuclear" Option)
+    // We target every possible scrollable element
+    modal.scrollTop = 0;
+    container.scrollTop = 0;
+    if (modalContent) modalContent.scrollTop = 0;
 
-      // Final safety delay for heavy rendering
-      setTimeout(() => {
+    // 5. FORCE RESET with setTimeout
+    // This waits 10ms for the browser to finish 'painting' the modal, 
+    // then snaps it to the top again to override browser memory.
+    setTimeout(() => {
         modal.scrollTop = 0;
         container.scrollTop = 0;
-      }, 50);
-    });
+        if (modalContent) modalContent.scrollTop = 0;
+    }, 10);
 
   } catch (error) {
     console.error('Failed to load game details:', error);
@@ -272,24 +273,14 @@ async function viewGameDetails(gameId) {
 
 // Display game details in modal
 function displayGameDetails(game) {
-  const modal = document.getElementById('gameModal');
   const container = document.getElementById('gameDetails');
-
-
+  const modal = document.getElementById('gameModal');
   if (!modal || !container) return;
 
-  // SANA'S NUCLEAR FIX: Wipe the content and reset scroll BEFORE rendering
-  container.innerHTML = '';
-  modal.scrollTop = 0;
-  container.scrollTop = 0;
-
-  modal.scrollTop = 0;
-  if (container) container.scrollTop = 0;
-
+  // Pricing Logic
   const finalPrice = game.discount > 0
     ? game.price * (1 - game.discount / 100)
     : game.price;
-
 
   const discountBadge = game.discount > 0
     ? `<span class="discount-badge">-${game.discount}% OFF</span>`
@@ -298,76 +289,51 @@ function displayGameDetails(game) {
   const priceDisplay = finalPrice === 0
     ? `<div class="price-current" style="font-size: 2rem; color: #00ff88;">FREE</div>`
     : game.discount > 0
-      ? `
-      <div style="display: flex; align-items: center; gap: 1rem;">
-        <span class="price-current" style="font-size: 2rem;">₹${finalPrice.toLocaleString('en-IN')}</span>
-        <span class="price-original">₹${game.price.toLocaleString('en-IN')}</span>
-        ${discountBadge}
-      </div>
-    `
+      ? `<div style="display: flex; align-items: center; gap: 1rem;">
+           <span class="price-current" style="font-size: 2rem;">₹${finalPrice.toLocaleString('en-IN')}</span>
+           <span class="price-original">₹${game.price.toLocaleString('en-IN')}</span>
+           ${discountBadge}
+         </div>`
       : `<div class="price-current" style="font-size: 2rem;">₹${finalPrice.toLocaleString('en-IN')}</div>`;
 
-  const genres = game.genres?.map(genre =>
-    `<span class="genre-tag">${genre}</span>`
-  ).join('') || '';
+  const genres = game.genres?.map(g => `<span class="genre-tag">${g}</span>`).join('') || '';
+  const tags = game.tags?.map(t => `<span class="genre-tag">${t}</span>`).join('') || '';
 
-  const tags = game.tags?.map(tag =>
-    `<span class="genre-tag">${tag}</span>`
-  ).join('') || '';
-
+  // Generate System Requirements HTML
   const systemReq = game.systemRequirements ? `
    <div class="system-requirements">
-  <h4>System Requirements</h4>
+      <h4>System Requirements</h4>
+      <div class="req-grid" style="display: grid; gap: 2rem;">
+        <div>
+          <h5>Minimum</h5>
+          <p><strong>OS:</strong> ${game.systemRequirements.minimum?.os || 'N/A'}</p>
+          <p><strong>Processor:</strong> ${game.systemRequirements.minimum?.processor || 'N/A'}</p>
+          <p><strong>Memory:</strong> ${game.systemRequirements.minimum?.memory || 'N/A'}</p>
+          <p><strong>Graphics:</strong> ${game.systemRequirements.minimum?.graphics || 'N/A'}</p>
+          <p><strong>Storage:</strong> ${game.systemRequirements.minimum?.storage || 'N/A'}</p>
+        </div>
+        <div>
+          <h5>Recommended</h5>
+          <p><strong>OS:</strong> ${game.systemRequirements.recommended?.os || 'N/A'}</p>
+          <p><strong>Processor:</strong> ${game.systemRequirements.recommended?.processor || 'N/A'}</p>
+          <p><strong>Memory:</strong> ${game.systemRequirements.recommended?.memory || 'N/A'}</p>
+          <p><strong>Graphics:</strong> ${game.systemRequirements.recommended?.graphics || 'N/A'}</p>
+          <p><strong>Storage:</strong> ${game.systemRequirements.recommended?.storage || 'N/A'}</p>
+        </div>
+      </div>
+   </div>` : '';
 
-  <div class="req-grid" style="display: grid; gap: 2rem;">
-    
-    <!-- Minimum -->
-    <div>
-      <h5>Minimum</h5>
-      <p><strong>OS:</strong> ${game.systemRequirements.minimum?.os || 'N/A'}</p>
-      <p><strong>Processor:</strong> ${game.systemRequirements.minimum?.processor || 'N/A'}</p>
-      <p><strong>Memory:</strong> ${game.systemRequirements.minimum?.memory || 'N/A'}</p>
-      <p><strong>Graphics:</strong> ${game.systemRequirements.minimum?.graphics || 'N/A'}</p>
-      <p><strong>Storage:</strong> ${game.systemRequirements.minimum?.storage || 'N/A'}</p>
-    </div>
-
-    <!-- Recommended -->
-    <div>
-      <h5>Recommended</h5>
-      <p><strong>OS:</strong> ${game.systemRequirements.recommended?.os || 'N/A'}</p>
-      <p><strong>Processor:</strong> ${game.systemRequirements.recommended?.processor || 'N/A'}</p>
-      <p><strong>Memory:</strong> ${game.systemRequirements.recommended?.memory || 'N/A'}</p>
-      <p><strong>Graphics:</strong> ${game.systemRequirements.recommended?.graphics || 'N/A'}</p>
-      <p><strong>Storage:</strong> ${game.systemRequirements.recommended?.storage || 'N/A'}</p>
-    </div>
-
-    <!-- Ideal -->
-    <div>
-      <h5>Ideal</h5>
-      <p><strong>OS:</strong> ${game.systemRequirements.ideal?.os || 'N/A'}</p>
-      <p><strong>Processor:</strong> ${game.systemRequirements.ideal?.processor || 'N/A'}</p>
-      <p><strong>Memory:</strong> ${game.systemRequirements.ideal?.memory || 'N/A'}</p>
-      <p><strong>Graphics:</strong> ${game.systemRequirements.ideal?.graphics || 'N/A'}</p>
-      <p><strong>Storage:</strong> ${game.systemRequirements.ideal?.storage || 'N/A'}</p>
-    </div>
-
-  </div>
-</div>
-
-  ` : '';
-
+  // Inject HTML
   container.innerHTML = `
     <div class="game-details">
       <div class="game-details-header">
-<img src="${game.images[0]}" alt="${game.title}" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 10px; margin-bottom: 2rem;">
+        <img src="${game.images[0]}" alt="${game.title}" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 10px; margin-bottom: 2rem;">
         <h2>${game.title}</h2>
         <div class="game-details-meta">
           <p><strong>Developer:</strong> ${game.developer}</p>
           <p><strong>Publisher:</strong> ${game.publisher}</p>
           <p><strong>Release Date:</strong> ${new Date(game.releaseDate).toLocaleDateString()}</p>
-          <div class="game-rating" style="margin-top: 1rem;">
-            ⭐ ${game.rating?.toFixed(1) || '0.0'} Rating
-          </div>
+          <div class="game-rating" style="margin-top: 1rem;">⭐ ${game.rating?.toFixed(1) || '0.0'} Rating</div>
         </div>
       </div>
       <div class="game-details-content">
@@ -384,24 +350,14 @@ function displayGameDetails(game) {
         <div class="game-details-actions" style="margin-top: 2rem; display: flex; gap: 1rem;">
           ${priceDisplay}
           <div style="display: flex; gap: 1rem; align-items: center;">
-            <button class="btn-primary" onclick="addToCart('${game._id}'); document.getElementById('gameModal').style.display='none';">Add to Cart</button>
+            <button class="btn-primary" onclick="addToCart('${game._id}'); document.getElementById('gameModal').style.display='none'; document.body.classList.remove('modal-open');">Add to Cart</button>
           </div>
         </div>
       </div>
     </div>
   `;
 
-  modal.style.display = 'block';
-
-  setTimeout(() => {
-    modal.scrollTo(0, 0);
-    container.scrollTo(0, 0);
-  }, 0);
-
-  // Background lock for EVERYONE (Mobile & Desktop)
-  document.body.classList.add('modal-open');
-
-  // Handle Closing
+  // Re-attach Close Event Listener (Best practice is to do this here or once globally)
   const closeBtn = modal.querySelector('.close');
   if (closeBtn) {
     closeBtn.onclick = () => {
@@ -410,16 +366,13 @@ function displayGameDetails(game) {
     };
   }
 
-  // Also unlock if user clicks outside the modal
+  // Click outside to close
   window.onclick = (e) => {
     if (e.target === modal) {
       modal.style.display = 'none';
       document.body.classList.remove('modal-open');
     }
   };
-  // Close modal
-
-
 }
 
 // Setup filters
