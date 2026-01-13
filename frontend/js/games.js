@@ -338,9 +338,15 @@ function displayGameDetails(game) {
       </div>
       <div class="game-details-content">
         <div class="game-description-full">
-          <h3>About</h3>
-          <p>${game.description}</p>
-        </div>
+  <h3>About</h3>
+  ${
+    (game.description || '')
+      .split(/\n\s*\n/)   // split by empty line
+      .map(paragraph => `<p>${paragraph.trim()}</p>`)
+      .join('')
+  }
+</div>
+
         <div class="game-genres-tags">
           <h4>Genres</h4>
           <div class="game-genres">${genres}</div>
@@ -356,6 +362,8 @@ function displayGameDetails(game) {
       </div>
     </div>
   `;
+
+  
 
   // Re-attach Close Event Listener (Best practice is to do this here or once globally)
   const closeBtn = modal.querySelector('.close');
@@ -374,6 +382,9 @@ function displayGameDetails(game) {
     }
   };
 }
+
+
+
 
 // Setup filters
 function setupFilters() {

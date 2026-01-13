@@ -593,6 +593,15 @@ a[href="admin.html"] {
 .game-card:hover .game-image {
     transform: scale(1.05);
 }
+.game-description-full p {
+  margin-bottom: 1.25rem;   /* space between paragraphs */
+  line-height: 1.7;         /* comfortable reading */
+  color: #dcdcdc;
+}
+
+.game-description-full p:last-child {
+  margin-bottom: 0;         /* no extra gap at end */
+}
 
 .game-image {
     width: 100%;
