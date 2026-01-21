@@ -110,7 +110,7 @@ function setupWalletActions() {
   }
 }
 
-/* --- Logic for Adding Funds based on Role --- */
+/* --- Updated handleAddFunds in js/profile.js --- */
 async function handleAddFunds() {
   const amountInput = document.getElementById('fundAmount');
   const amount = parseFloat(amountInput?.value);
@@ -120,21 +120,34 @@ async function handleAddFunds() {
     return;
   }
 
-  // SANA'S LOGIC FIX: Check user role before allowing addition
-  const user = getCurrentUser(); // Uses helper in auth.js
-  const USER_LIMIT = 10000; // Define a limit for standard users
+  // 1. Get Current User Data
+  const user = getCurrentUser(); 
+  
+  // 2. Define Limits
+  const DAILY_LIMIT = 50000; // 50k Limit for users
 
-  if (user.role !== 'admin' && amount > USER_LIMIT) {
-    showNotification(`Max limit: ₹${USER_LIMIT.toLocaleString()}`, 'error');
-    return;
+  // 3. Admin Bypass Check
+  if (user.role === 'admin') {
+      // Admins can add ANY amount (No limit logic applied)
+      console.log("Admin override: Adding funds without limit.");
+  } else {
+      // Regular Users: Check if THIS transaction exceeds 50k
+      if (amount > DAILY_LIMIT) {
+          showNotification(`You can only add up to ₹${DAILY_LIMIT.toLocaleString()} per transaction.`, 'error');
+          return;
+      }
   }
 
   try {
-    const response = await walletAPI.addFunds(amount); //
-    showNotification(`₹${amount} added successfully!`, 'success');
+    const response = await walletAPI.addFunds(amount);
+    showNotification(`₹${amount.toLocaleString()} added successfully!`, 'success');
     
-    // Refresh user data to update the UI
+    // Refresh to show new balance
     checkAuthStatus(); 
+    
+    // Clear input
+    if(amountInput) amountInput.value = '';
+
   } catch (error) {
     showNotification(error.message || 'Failed to add funds', 'error');
   }

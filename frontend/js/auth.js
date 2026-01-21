@@ -40,23 +40,42 @@ async function checkAuthStatus() {
   }
 }
 
-// Helper to clear the login/register form fields
+// 1. Update the Clear Fields helper to use the new prefixed IDs
 function clearAuthFields() {
-  const username = document.getElementById('username');
-  const email = document.getElementById('email');
-  const password = document.getElementById('password');
+  const fields = [
+    'regUsername', 
+    'loginEmail', 
+    'regEmail', 
+    'loginPassword', 
+    'regPassword'
+  ];
 
-  if (username) username.value = '';
-  if (email) email.value = '';
-  if (password) password.value = '';
+  fields.forEach(id => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.value = ''; // Safety check: only sets if element exists
+    }
+  });
+
+  const regUsername = document.getElementById('regUsername');
+  const loginEmail = document.getElementById('loginEmail');
+  const regEmail = document.getElementById('regEmail');
+  const loginPassword = document.getElementById('loginPassword');
+  const regPassword = document.getElementById('regPassword');
+
+  if (regUsername) regUsername.value = '';
+  if (loginEmail) loginEmail.value = '';
+  if (regEmail) regEmail.value = '';
+  if (loginPassword) loginPassword.value = '';
+  if (regPassword) regPassword.value = '';
 }
 
 // Helper for clean state
 function handleLoggedOutCleanup() {
-    currentUser = null;
-    localStorage.removeItem('userInfo');
-    updateUIForLoggedOut();
-    checkAdminAccess();
+  currentUser = null;
+  localStorage.removeItem('userInfo');
+  updateUIForLoggedOut();
+  checkAdminAccess();
 }
 
 // Add this helper function at the top of auth.js
@@ -65,13 +84,12 @@ function isValidEmail(email) {
   return emailRegex.test(email);
 }
 
-// Unified Handle Register Function
+/* --- Updated handleRegister in auth.js (Removes Alerts) --- */
 async function handleRegister() {
-  const username = document.getElementById('username')?.value;
-  const emailInput = document.getElementById('email');
-  const password = document.getElementById('password')?.value;
+  const username = document.getElementById('regUsername')?.value;
+  const emailInput = document.getElementById('regEmail');
+  const password = document.getElementById('regPassword')?.value;
 
-  // 1. Trigger browser's built-in validation (bubbles)
   if (emailInput && !emailInput.checkValidity()) {
     emailInput.reportValidity();
     return;
@@ -79,21 +97,19 @@ async function handleRegister() {
 
   const email = emailInput?.value;
 
-  // 2. Manual empty field check
   if (!username || !email || !password) {
-    alert('Please fill in all fields');
+    showNotification('Please fill in all fields', 'error');
     return;
   }
 
-  // 3. Regex check for extra security
   if (!isValidEmail(email)) {
-    alert('Please enter a valid email address (e.g., name@example.com)');
+    showNotification('Invalid email address', 'error');
     return;
   }
 
-  // 4. Password length check
   if (password.length < 6) {
-    alert('Password must be at least 6 characters');
+    // REPLACED ALERT
+    showNotification('Password must be at least 6 characters', 'error');
     return;
   }
 
@@ -101,46 +117,44 @@ async function handleRegister() {
     const response = await authAPI.register(username, email, password);
     localStorage.setItem('token', response.token);
     localStorage.setItem('userInfo', JSON.stringify(response.user));
-    
+
     currentUser = response.user;
     updateUIForLoggedIn(response.user);
     checkAdminAccess();
     closeLoginModal();
-    
+
     // Clear form
-    document.getElementById('email').value = '';
-    document.getElementById('password').value = '';
-    document.getElementById('username').value = '';
+    clearAuthFields();
 
     showNotification('Registration successful!', 'success');
   } catch (error) {
-    alert(error.message || 'Registration failed');
+    showNotification(error.message || 'Registration failed', 'error');
   }
 }
 
 /* --- Update in auth.js --- */
 function checkAdminAccess() {
-    const userString = localStorage.getItem('userInfo');
-    const adminLink = document.querySelector('a[href="admin.html"]');
+  const userString = localStorage.getItem('userInfo');
+  const adminLink = document.querySelector('a[href="admin.html"]');
 
-    if (!adminLink) return;
+  if (!adminLink) return;
 
-    // Target the parent <li> to maintain flexbox spacing
-    const adminNavItem = adminLink.parentElement;
+  // Target the parent <li> to maintain flexbox spacing
+  const adminNavItem = adminLink.parentElement;
 
-    if (userString) {
-        const user = JSON.parse(userString);
-        
-        if (user.role === 'admin') {
-            // Show the whole list item so it flows perfectly in the menu
-            adminNavItem.style.setProperty('display', 'block', 'important');
-            adminLink.style.setProperty('display', 'inline-block', 'important');
-        } else {
-            adminNavItem.style.setProperty('display', 'none', 'important');
-        }
+  if (userString) {
+    const user = JSON.parse(userString);
+
+    if (user.role === 'admin') {
+      // Show the whole list item so it flows perfectly in the menu
+      adminNavItem.style.setProperty('display', 'block', 'important');
+      adminLink.style.setProperty('display', 'inline-block', 'important');
     } else {
-        adminNavItem.style.setProperty('display', 'none', 'important');
+      adminNavItem.style.setProperty('display', 'none', 'important');
     }
+  } else {
+    adminNavItem.style.setProperty('display', 'none', 'important');
+  }
 }
 
 // Run this when page loads
@@ -153,25 +167,38 @@ function setupAuthModals() {
   const logoutBtn = document.getElementById('logoutBtn');
   const loginModal = document.getElementById('loginModal');
   const closeBtn = loginModal?.querySelector('.close');
-  const loginSubmit = document.getElementById('loginSubmit');
-  const registerSubmit = document.getElementById('registerSubmit');
+  const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+  const registerSubmitBtn = document.getElementById('registerSubmitBtn');
+  const authContainer = document.getElementById('authContainer');
+  const toRegisterBtn = document.getElementById('toRegister');
+  const toLoginBtn = document.getElementById('toLogin');
+
+  // Toggle logic for the sliding effect
+    if (toRegisterBtn && toLoginBtn) {
+        toRegisterBtn.addEventListener('click', () => {
+            authContainer.classList.add('active');
+        });
+        toLoginBtn.addEventListener('click', () => {
+            authContainer.classList.remove('active');
+        });
+    }
 
   if (loginBtn) {
-    loginBtn.addEventListener('click', () => {
-      clearAuthFields();
-      if (loginModal) loginModal.style.display = 'block';
-    });
-  }
+  loginBtn.addEventListener('click', () => {
+    clearAuthFields(); // Correctly clears fields
+    openLoginModal();  // FIX: Calls the smooth transition function
+  });
+}
 
   if (logoutBtn) {
     logoutBtn.addEventListener('click', handleLogout);
   }
 
   if (closeBtn) {
-    closeBtn.addEventListener('click', () => {
-      if (loginModal) loginModal.style.display = 'none';
-    });
-  }
+  closeBtn.addEventListener('click', () => {
+    closeLoginModal(); // FIX: Calls the smooth fade-out function
+  });
+}
 
   if (loginModal) {
     window.addEventListener('click', (e) => {
@@ -181,20 +208,20 @@ function setupAuthModals() {
     });
   }
 
-  if (loginSubmit) {
-    loginSubmit.addEventListener('click', handleLogin);
+  if (loginSubmitBtn) {
+    loginSubmitBtn.addEventListener('click', handleLogin);
   }
 
-  if (registerSubmit) {
-    registerSubmit.addEventListener('click', handleRegister);
+  if (registerSubmitBtn) {
+    registerSubmitBtn.addEventListener('click', handleRegister);
   }
 }
 
 
-/* --- Updated handleLogin in js/auth.js --- */
+/* --- Updated handleLogin in auth.js (Removes Alerts) --- */
 async function handleLogin() {
-  const emailInput = document.getElementById('email');
-  const passwordInput = document.getElementById('password');
+  const emailInput = document.getElementById('loginEmail');
+  const passwordInput = document.getElementById('loginPassword');
 
   if (emailInput && !emailInput.checkValidity()) {
     emailInput.reportValidity();
@@ -204,36 +231,40 @@ async function handleLogin() {
   const email = emailInput?.value;
   const password = passwordInput?.value;
 
+  if (!email || !password) {
+    showNotification('Please fill in all fields', 'error');
+    return;
+  }
+
   try {
     const response = await authAPI.login(email, password);
     if (response && response.token) {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('userInfo', JSON.stringify(response.user));
-        currentUser = response.user;
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('userInfo', JSON.stringify(response.user));
+      currentUser = response.user;
 
-        updateUIForLoggedIn(response.user);
-        checkAdminAccess();
-        closeLoginModal();
-        
-        if (typeof loadCart === 'function') {
-            await loadCart(); 
-        }
+      updateUIForLoggedIn(response.user);
+      checkAdminAccess();
+      closeLoginModal();
 
-        showNotification('Login successful!', 'success');
+      if (typeof loadCart === 'function') {
+        await loadCart();
+      }
 
-        // SANA'S AUTO-REDIRECT FIX:
-        // After 1 second (so the user can see the green success message), 
-        // automatically send them to the Store page (index.html).
-        setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 100); 
+      showNotification('Login successful!', 'success');
+
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 2000);
     }
-   } catch (error) {
+  } catch (error) {
     console.error('Login Error:', error);
     if (error.status === 401) {
-        alert('Account not found. Please register first!');
+      // REPLACED ALERT
+      showNotification('Account not found. Please register first!', 'error');
     } else {
-        alert(error.message || 'Login failed');
+      // REPLACED ALERT
+      showNotification(error.message || 'Login failed', 'error');
     }
   }
 }
@@ -251,9 +282,9 @@ function handleLogout() {
 
   // 1. Clear the global items array
   if (typeof cartItems !== 'undefined') {
-    cartItems = []; 
+    cartItems = [];
   }
-  
+
   // 2. Clear the Cart Modal list so the next person doesn't see your games
   const cartItemsContainer = document.getElementById('cartItems');
   const cartTotal = document.getElementById('cartTotal');
@@ -288,9 +319,9 @@ function updateUIForLoggedIn(user) {
 
     // Sana's Visual Fix: Compact numbers for mobile (e.g., ₹1.2k)
     if (window.innerWidth <= 768 && balance >= 100000) {
-        userWallet.textContent = `₹${(balance / 1000).toFixed(1)}k`;
+      userWallet.textContent = `₹${(balance / 1000).toFixed(1)}k`;
     } else {
-        userWallet.textContent = `₹${balance.toLocaleString('en-IN')}`;
+      userWallet.textContent = `₹${balance.toLocaleString('en-IN')}`;
     }
   }
 }
@@ -316,53 +347,94 @@ function isAuthenticated() {
   return !!localStorage.getItem('token');
 }
 
-// Show notification
-function showNotification(message, type = 'info') {
+// ✅ MAKE IT GLOBAL: Attach to window so cart.js and games.js can use it
+window.showNotification = function(message, type = 'info') {
+  // Remove any existing notifications to prevent stacking overload
+  const existing = document.querySelector('.notification');
+  if (existing) existing.remove();
+
   // Create notification element
   const notification = document.createElement('div');
   notification.className = `notification notification-${type}`;
   notification.textContent = message;
+  
+  // Custom Styles to match Ecliptix Theme (Black/Red/Blue)
+  const colors = {
+      success: '#0074e4', // Ecliptix Blue
+      error: '#e94560',   // Red Neon
+      info: '#1a1a1a'     // Dark Grey
+  };
+
   notification.style.cssText = `
     position: fixed;
     top: 20px;
     right: 20px;
-    padding: 1rem 2rem;
-    background: ${type === 'success' ? '#4caf50' : type === 'error' ? '#e94560' : '#0f3460'};
+    padding: 15px 25px;
+    background: ${colors[type] || colors.info};
     color: white;
-    border-radius: 5px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
     z-index: 10000;
-    animation: slideIn 0.3s ease;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    border-left: 5px solid rgba(255,255,255,0.3);
+    animation: slideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   `;
+
+  // Add keyframe for the nice slide effect if it doesn't exist
+  if (!document.getElementById('notify-style')) {
+      const style = document.createElement('style');
+      style.id = 'notify-style';
+      style.innerHTML = `
+        @keyframes slideInRight {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutRight {
+          from { transform: translateX(0); opacity: 1; }
+          to { transform: translateX(100%); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+  }
 
   document.body.appendChild(notification);
 
+  // Auto remove after 3 seconds
   setTimeout(() => {
-    notification.style.animation = 'slideOut 0.3s ease';
-    setTimeout(() => notification.remove(), 300);
+    notification.style.animation = 'slideOutRight 0.4s ease forwards';
+    setTimeout(() => notification.remove(), 400);
   }, 3000);
-}
+};
 
-// Function that opens the login modal
+
+
 function openLoginModal() {
   const loginModal = document.getElementById('loginModal');
   if (loginModal) {
+    // 1. Make it exist
     loginModal.style.display = 'block';
     
-    // Trigger the background blur for mobile
-    if (window.innerWidth <= 768) {
-      document.body.classList.add('modal-open');
-    }
+    // 2. Animate and Lock Scroll
+    requestAnimationFrame(() => {
+      loginModal.classList.add('show');
+      document.body.classList.add('modal-open'); // LOCK SCROLL
+    });
   }
 }
 
-// Function that closes the login modal
 function closeLoginModal() {
   const loginModal = document.getElementById('loginModal');
   if (loginModal) {
-    loginModal.style.display = 'none';
-    
-    // Restore the background
-    document.body.classList.remove('modal-open');
+    // 1. Remove 'show' to trigger the fade-out
+    loginModal.classList.remove('show');
+
+    // 2. Wait for the CSS transition (400ms) before hiding it completely
+    setTimeout(() => {
+      loginModal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+    }, 400);
   }
 }
 

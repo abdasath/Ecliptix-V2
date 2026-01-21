@@ -23,10 +23,17 @@ const userSchema = new mongoose.Schema({
     minlength: 6
   }, 
   role: { type: String, default: 'user' },
-  wallet: {
-    type: Number,
-    default: 0
-  },
+  
+  wallet: { type: Number, default: 0 },
+
+  // --- NEW: Track history to calculate daily limits ---
+  walletHistory: [{
+    amount: Number,
+    type: { type: String, enum: ['deposit', 'purchase', 'refund'] },
+    date: { type: Date, default: Date.now }
+  }],
+  // ----------------------------------------------------
+
   ownedGames: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Game'
@@ -58,4 +65,3 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 };
 
 module.exports = mongoose.model('User', userSchema);
-

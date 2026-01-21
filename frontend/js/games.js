@@ -100,9 +100,9 @@ async function loadGames(page = 1) {
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Load Data
-  loadFeaturedGames(); // If you have this function
+  loadFeaturedGames(); 
   loadGames();
-  loadGenres(); // <--- Important: Call this!
+  loadGenres(); 
   setupFilters();
   setupSearch();
 
@@ -115,6 +115,34 @@ document.addEventListener('DOMContentLoaded', () => {
   if (searchBtn) {
     searchBtn.addEventListener('click', () => loadGames(1));
   }
+
+  /* --- Update handleGridClick in js/games.js --- */
+const handleGridClick = (e) => {
+  const detailsBtn = e.target.closest('.btn-view-details') || e.target.closest('.btn-primary');
+  const addToCartBtn = e.target.closest('.btn-add-cart') || e.target.closest('.btn-secondary');
+  const gameCard = e.target.closest('.game-card');
+
+  // 1. Handle Add to Cart Button cite: 144
+  if (addToCartBtn) {
+    e.stopPropagation(); // CRITICAL: Stops the card click from firing cite: 144
+    const gameId = addToCartBtn.dataset.id;
+    if (typeof addToCart === 'function') {
+      addToCart(gameId); // Calls cart.js logic cite: 144
+    }
+    return; // Exit so we don't trigger details cite: 144
+  }
+
+  // 2. Handle Details cite: 144
+  if (detailsBtn || gameCard) {
+    const gameId = gameCard ? gameCard.dataset.gameId : null;
+    if (gameId) {
+      viewGameDetails(gameId); // cite: 144
+    }
+  }
+};
+
+  document.getElementById('gamesGrid')?.addEventListener('click', handleGridClick);
+  document.getElementById('featuredGames')?.addEventListener('click', handleGridClick);
 });
 
 // Display featured games
@@ -197,17 +225,13 @@ function createGameCard(game, isFeatured = false) {
             ⭐ ${game.rating?.toFixed(1) || '0.0'}
           </div>
         </div>
-        <div class="game-actions">
-          <button class="btn-primary" onclick="viewGameDetails('${game._id}')">View Details</button>
-          <button
-  type="button"
-  class="btn-secondary"
-  onclick="addToCart('${game._id}')"
->
-  Add to Cart
-</button>
-
-        </div>
+        
+<div class="game-actions">
+  <button class="btn-primary btn-view-details" data-id="${game._id}">View Details</button>
+  <button type="button" class="btn-secondary btn-add-cart" data-id="${game._id}">
+    Add to Cart
+  </button>
+</div>
       </div>
     </div>
   `;
@@ -229,47 +253,39 @@ function attachGameCardListeners() {
   });
 }
 
-/* --- Replace viewGameDetails in js/games.js --- */
+/* --- Replace the old viewGameDetails in games.js with this synced version --- */
 async function viewGameDetails(gameId) {
   const modal = document.getElementById('gameModal');
   const container = document.getElementById('gameDetails');
-  const modalContent = modal.querySelector('.modal-content'); // Get the wrapper too
 
   if (!modal || !container) return;
 
-  // 1. Hide briefly to ensure a clean state
-  modal.style.display = 'none';
-  document.body.classList.remove('modal-open');
-
   try {
-    const game = await gamesAPI.getById(gameId); // Ensure this API call works, otherwise use fetch logic
+    // 1. Fetch data from API
+    const game = await gamesAPI.getById(gameId); 
+    
+    // 2. Render content into the modal
+    displayGameDetails(game); 
 
-    // 2. RENDER: Generate HTML
-    displayGameDetails(game);
-
-    // 3. SHOW: Make visible
+    // 3. PREPARE MODAL
     modal.style.display = 'block';
-    document.body.classList.add('modal-open');
-
-    // 4. RESET SCROLL (The "Nuclear" Option)
-    // We target every possible scrollable element
-    modal.scrollTop = 0;
+    
+    // Reset scroll of the INTERNAL container so the 'X' stays put
     container.scrollTop = 0;
-    if (modalContent) modalContent.scrollTop = 0;
 
-    // 5. FORCE RESET with setTimeout
-    // This waits 10ms for the browser to finish 'painting' the modal, 
-    // then snaps it to the top again to override browser memory.
-    setTimeout(() => {
-        modal.scrollTop = 0;
-        container.scrollTop = 0;
-        if (modalContent) modalContent.scrollTop = 0;
-    }, 10);
+    // 4. TRIGGER SMOOTH TRANSITION
+    requestAnimationFrame(() => {
+        modal.classList.add('show');
+        document.body.classList.add('modal-open'); 
+    });
 
   } catch (error) {
     console.error('Failed to load game details:', error);
+    if (typeof showNotification === 'function') {
+        showNotification('Error loading game information', 'error');
+    }
   }
-}
+} // Removed the trailing comma here
 
 // Display game details in modal
 function displayGameDetails(game) {
@@ -339,12 +355,11 @@ function displayGameDetails(game) {
       <div class="game-details-content">
         <div class="game-description-full">
   <h3>About</h3>
-  ${
-    (game.description || '')
+  ${(game.description || '')
       .split(/\n\s*\n/)   // split by empty line
       .map(paragraph => `<p>${paragraph.trim()}</p>`)
       .join('')
-  }
+    }
 </div>
 
         <div class="game-genres-tags">
@@ -363,27 +378,47 @@ function displayGameDetails(game) {
     </div>
   `;
 
-  
 
-  // Re-attach Close Event Listener (Best practice is to do this here or once globally)
-  const closeBtn = modal.querySelector('.close');
-  if (closeBtn) {
-    closeBtn.onclick = () => {
-      modal.style.display = 'none';
-      document.body.classList.remove('modal-open');
-    };
-  }
 
-  // Click outside to close
-  window.onclick = (e) => {
-    if (e.target === modal) {
-      modal.style.display = 'none';
-      document.body.classList.remove('modal-open');
+/* --- Global Modal Closing Logic in games.js --- */
+document.addEventListener('click', (e) => {
+    const gameModal = document.getElementById('gameModal');
+    const loginModal = document.getElementById('loginModal');
+
+    // 1. Check if the 'X' button was clicked
+    if (e.target.classList.contains('close')) {
+        const modal = e.target.closest('.modal');
+        if (modal) {
+            closeSpecificModal(modal);
+        }
     }
-  };
+
+    // 2. Check if the user clicked outside the card (on the darkened background)
+    if (e.target === gameModal || e.target === loginModal) {
+        closeSpecificModal(e.target);
+    }
+});
+
+// Helper function to handle the 400ms smooth fade-out
+function closeSpecificModal(modal) {
+    modal.classList.remove('show'); // Triggers CSS fade-out cite: 15
+    setTimeout(() => {
+        modal.style.display = 'none'; // Fully hides after animation cite: 15
+        document.body.classList.remove('modal-open'); // Removes background blur cite: 15
+    }, 400);
+}
 }
 
-
+// Restoration logic in games.js
+window.addEventListener('click', (e) => {
+    const gameModal = document.getElementById('gameModal');
+    const loginModal = document.getElementById('loginModal');
+    
+    // If the user clicks exactly on the darkened background area
+    if (e.target === gameModal || e.target === loginModal) {
+        closeLoginModal(); // Triggers the smooth fade-out and removes 'modal-open'
+    }
+}); 
 
 
 // Setup filters

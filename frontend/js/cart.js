@@ -49,12 +49,20 @@ async function loadCart() {
   }
 }
 
-// Add game to cart
+/* --- Updated addToCart in cart.js --- */
 async function addToCart(gameId) {
   if (!isAuthenticated()) {
-    alert('Please login to add games to cart');
+    // REPLACED ALERT
+    showNotification('Please login to add games to cart', 'error');
+    
     const loginModal = document.getElementById('loginModal');
-    if (loginModal) loginModal.style.display = 'block';
+    if (loginModal) {
+        loginModal.style.display = 'block';
+        requestAnimationFrame(() => {
+            loginModal.classList.add('show');
+            document.body.classList.add('modal-open');
+        });
+    }
     return;
   }
 
@@ -63,29 +71,32 @@ async function addToCart(gameId) {
     await loadCart();
     showNotification('Game added to cart!', 'success');
   } catch (error) {
-    alert(error.message || 'Failed to add game to cart');
+    // REPLACED ALERT
+    showNotification(error.message || 'Failed to add game', 'error');
   }
 }
 
-// Remove game from cart
+/* --- Updated removeFromCart in cart.js --- */
 async function removeFromCart(gameId) {
   try {
     await cartAPI.remove(gameId);
     await loadCart();
-    showNotification('Game removed from cart', 'info');
+    showNotification('Game removed', 'info');
   } catch (error) {
-    alert(error.message || 'Failed to remove game from cart');
+    // REPLACED ALERT
+    showNotification(error.message || 'Failed to remove game', 'error');
   }
 }
 
-// Clear cart
+/* --- Updated clearCart in cart.js --- */
 async function clearCart() {
   try {
     await cartAPI.clear();
     await loadCart();
     showNotification('Cart cleared', 'info');
   } catch (error) {
-    alert(error.message || 'Failed to clear cart');
+    // REPLACED ALERT
+    showNotification(error.message || 'Failed to clear cart', 'error');
   }
 }
 
@@ -136,43 +147,42 @@ function updateCartUI() {
   }
 }
 
-/* --- Corrected setupCartModal in js/cart.js --- */
+/* --- Updated setupCartModal in cart.js --- */
 function setupCartModal() {
   const cartIcon = document.getElementById('cartIcon');
   const cartModal = document.getElementById('cartModal');
-  const closeBtn = cartModal?.querySelector('.close');
   const checkoutBtn = document.getElementById('checkoutBtn');
-  const cartItemsContainer = document.getElementById('cartItems'); // ADDED this selector
+  const cartItemsContainer = document.getElementById('cartItems');
 
   if (cartIcon) {
-    cartIcon.addEventListener('click', () => {
+    cartIcon.addEventListener('click', (e) => {
+      e.preventDefault();
+
       if (!isAuthenticated()) {
-        // Sana's Fix: Wipe the modal's HTML so no "ghost" items appear
         if (cartItemsContainer) {
           cartItemsContainer.innerHTML = '<p class="empty-state">Please login to view your cart</p>';
         }
+        // REPLACED ALERT
+        showNotification('Please login to view your cart', 'error');
         
-        alert('Please login to view your cart');
         const loginModal = document.getElementById('loginModal');
-        if (loginModal) loginModal.style.display = 'block';
+        if (loginModal) {
+            loginModal.style.display = 'block';
+            setTimeout(() => {
+                loginModal.classList.add('show');
+                document.body.classList.add('modal-open'); 
+            }, 10);
+        }
         return;
       }
       
-      if (cartModal) cartModal.style.display = 'block';
-      loadCart(); // Fetches fresh data only for logged-in users
-    });
-  }
-
-  if (closeBtn) {
-    closeBtn.addEventListener('click', () => {
-      if (cartModal) cartModal.style.display = 'none';
-    });
-  }
-
-  if (cartModal) {
-    window.addEventListener('click', (e) => {
-      if (e.target === cartModal) {
-        cartModal.style.display = 'none';
+      if (cartModal) {
+          cartModal.style.display = 'block';
+          requestAnimationFrame(() => {
+              cartModal.classList.add('show');
+              document.body.classList.add('modal-open');
+          });
+          loadCart(); 
       }
     });
   }
@@ -182,36 +192,34 @@ function setupCartModal() {
   }
 }
 
-/* --- Update handleCheckout in js/cart.js --- */
+/* --- Updated handleCheckout in cart.js --- */
 async function handleCheckout() {
     try {
         const response = await ordersAPI.checkout();
         
-        // Backend returns the order object on success
         if (response._id) {
             showNotification('Purchase successful!', 'success');
             
-            // 1. Clear the local cart data
             cartItems = []; 
             updateCartUI(); 
             
-            // 2. Update the navbar wallet balance globally
             if (typeof checkAuthStatus === 'function') {
                 await checkAuthStatus(); 
             }
             
-            // 3. Close the modal
             document.getElementById('cartModal').style.display = 'none';
             document.body.classList.remove('modal-open');
+            document.querySelector('.modal.show')?.classList.remove('show');
 
-            // 4. Safely refresh page-specific data if functions exist
             if (typeof loadLibrary === 'function') loadLibrary();
             if (typeof loadProfile === 'function') loadProfile();
             
         } else {
-            alert(response.message || 'Checkout failed');
+            // REPLACED ALERT
+            showNotification(response.message || 'Checkout failed', 'error');
         }
     } catch (error) {
-        alert(error.message || 'Checkout failed');
+        // REPLACED ALERT
+        showNotification(error.message || 'Checkout failed', 'error');
     }
 }
