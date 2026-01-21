@@ -69,9 +69,11 @@ function showLoginPrompt() {
   if (container) container.style.display = 'none';
   if (emptyState) {
     emptyState.style.display = 'block';
+    
+    // FIX: Changed onclick to use your global openLoginModal() function
     emptyState.innerHTML = `
       <p>Please login to view your game library</p>
-      <button class="btn-primary" onclick="document.getElementById('loginModal').style.display='block'">Login</button>
+      <button class="btn-primary" onclick="openLoginModal()">Login</button>
     `;
   }
 }

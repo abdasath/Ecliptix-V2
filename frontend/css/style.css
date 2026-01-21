@@ -38,6 +38,9 @@ body {
     min-height: 100vh;
     line-height: 1.6;
     overflow-x: hidden;
+    
+    /* ADD THIS: Pushes content down so Fixed Navbar doesn't cover it */
+    padding-top: 85px; 
 }
 
 html {
@@ -83,16 +86,22 @@ body.modal-open {
     /* Adjust spacing between buttons if it's too crowded */
 }
 
-/* Navigation */
+/* --- FIXED NAVBAR UPDATE --- */
 .navbar {
     background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(20px);
     padding: 1rem 0;
-    position: sticky;
+    
+    /* CHANGED from sticky to fixed for stability */
+    position: fixed; 
+    width: 100%;
     top: 0;
+    left: 0;
+    
     z-index: 1000;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease; /* Smooths out any rendering shifts */
 }
 
 

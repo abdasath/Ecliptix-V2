@@ -157,10 +157,11 @@ async function handleAddFunds() {
 function showLoginPrompt() {
   const profileSection = document.querySelector('.profile-section');
   if (profileSection) {
+    // FIX: Changed onclick to use your global openLoginModal() function
     profileSection.innerHTML = `
       <div class="empty-state">
         <p>Please login to view your profile</p>
-        <button class="btn-primary" onclick="document.getElementById('loginModal').style.display='block'">Login</button>
+        <button class="btn-primary" onclick="openLoginModal()">Login</button>
       </div>
     `;
   }

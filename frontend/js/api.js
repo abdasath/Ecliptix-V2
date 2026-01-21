@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = "https://ecliptix-5c00.onrender.com";
+const API_BASE_URL = "https://ecliptix-v2.onrender.com";
 
 // Helper function to get auth token
 function getAuthToken() {

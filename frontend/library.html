@@ -16,7 +16,7 @@
         <button class="menu-toggle" style="display: none;">
             <span class="icon hamburger">☰</span>
             <span class="icon close">✕</span>
-        </button> 
+        </button>
         <div class="container">
             <div class="nav-brand">
                 <a href="index.html">
@@ -64,28 +64,58 @@
         </section>
     </main>
 
-    <div id="loginModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Login / Register</h2>
-        <form id="authForm">
-            <div class="form-group">
-                <label>Username (for register)</label>
-                <input type="text" id="username" placeholder="Username">
+     <div id="loginModal" class="modal">
+        <div class="container-auth" id="authContainer">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+
+            <div class="form-box login">
+                <form id="loginForm">
+                    <h1>Login</h1>
+                    <div class="input-box">
+                        <input type="email" id="loginEmail" placeholder="Email" required>
+                        <i class='bx bxs-envelope'></i>
+                    </div>
+                    <div class="input-box">
+                        <input type="password" id="loginPassword" placeholder="Password" required>
+                        <i class='bx bxs-lock-alt'></i>
+                    </div>
+                    <button type="button" id="loginSubmitBtn" class="btn-auth">Login</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="email" placeholder="Email">
+
+            <div class="form-box register">
+                <form id="registerForm">
+                    <h1>Registration</h1>
+                    <div class="input-box">
+                        <input type="text" id="regUsername" placeholder="Username" required>
+                        <i class='bx bxs-user'></i>
+                    </div>
+                    <div class="input-box">
+                        <input type="email" id="regEmail" placeholder="Email" required>
+                        <i class='bx bxs-envelope'></i>
+                    </div>
+                    <div class="input-box">
+                        <input type="password" id="regPassword" placeholder="Password" required>
+                        <i class='bx bxs-lock-alt'></i>
+                    </div>
+                    <button type="button" id="registerSubmitBtn" class="btn-auth">Register</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="password" placeholder="Password">
+
+            <div class="toggle-box">
+                <div class="toggle-panel toggle-left">
+                    <h1>Welcome to Ecliptix</h1>
+                    <p>Create an account to get started.</p>
+                    <button class="btn-auth toggle-btn" id="toRegister">Create Account</button>
+                </div>
+                <div class="toggle-panel toggle-right">
+                    <h1>Welcome Back</h1>
+                    <p>Sign in to continue.</p>
+                    <button class="btn-auth toggle-btn" id="toLogin">Sign In</button>
+                </div>
             </div>
-            <button type="button" id="loginSubmit" class="btn-primary">Login</button>
-            <button type="button" id="registerSubmit" class="btn-secondary">Register</button>
-        </form>
+        </div>
     </div>
-</div>
 
     <script src="js/api.js"></script>
     <script src="js/auth.js"></script>
