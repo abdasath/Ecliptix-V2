@@ -1549,6 +1549,17 @@ a[href="admin.html"] {
 
 /* Locate this specific media query in your style.css */
 @media (max-width: 768px) {
+    /* Add extra breathing room for pages without a Hero banner */
+    .library-section, 
+    .profile-section,
+    .admin-section {
+        padding-top: 60px !important; /* Pushes the title down so Nav doesn't hide it */
+    }
+
+    /* Optional: If the title itself needs more gap from the new padding */
+    .section-title {
+        margin-bottom: 1.5rem !important;
+    }
     /* =======================================================
    FINAL POLISH (Menu Lock & Hero Spacing)
    ======================================================= */
