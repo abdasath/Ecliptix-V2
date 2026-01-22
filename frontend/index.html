@@ -103,55 +103,63 @@
 
     <div id="loginModal" class="modal">
         <div class="container-auth" id="authContainer">
-            <span class="close" onclick="closeLoginModal()">&times;</span>
+    <span class="close" onclick="closeLoginModal()">&times;</span>
 
-            <div class="form-box login">
-                <form id="loginForm">
-                    <h1>Login</h1>
-                    <div class="input-box">
-                        <input type="email" id="loginEmail" placeholder="Email" required>
-                        <i class='bx bxs-envelope'></i>
-                    </div>
-                    <div class="input-box">
-                        <input type="password" id="loginPassword" placeholder="Password" required>
-                        <i class='bx bxs-lock-alt'></i>
-                    </div>
-                    <button type="button" id="loginSubmitBtn" class="btn-auth">Login</button>
-                </form>
+    <div class="form-box login">
+        <form id="loginForm">
+            <h1>Login</h1>
+            <div class="input-box">
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <i class='bx bxs-envelope'></i>
             </div>
+            <div class="input-box">
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <i class='bx bxs-lock-alt'></i>
+            </div>
+            <button type="button" id="loginSubmitBtn" class="btn-auth">Login</button>
+            
+            <p class="mobile-auth-switch">
+                Don't have an account? <b id="mobileToRegister">Register</b>
+            </p>
+        </form>
+    </div>
 
-            <div class="form-box register">
-                <form id="registerForm">
-                    <h1>Registration</h1>
-                    <div class="input-box">
-                        <input type="text" id="regUsername" placeholder="Username" required>
-                        <i class='bx bxs-user'></i>
-                    </div>
-                    <div class="input-box">
-                        <input type="email" id="regEmail" placeholder="Email" required>
-                        <i class='bx bxs-envelope'></i>
-                    </div>
-                    <div class="input-box">
-                        <input type="password" id="regPassword" placeholder="Password" required>
-                        <i class='bx bxs-lock-alt'></i>
-                    </div>
-                    <button type="button" id="registerSubmitBtn" class="btn-auth">Register</button>
-                </form>
+    <div class="form-box register">
+        <form id="registerForm">
+            <h1>Registration</h1>
+            <div class="input-box">
+                <input type="text" id="regUsername" placeholder="Username" required>
+                <i class='bx bxs-user'></i>
             </div>
+            <div class="input-box">
+                <input type="email" id="regEmail" placeholder="Email" required>
+                <i class='bx bxs-envelope'></i>
+            </div>
+            <div class="input-box">
+                <input type="password" id="regPassword" placeholder="Password" required>
+                <i class='bx bxs-lock-alt'></i>
+            </div>
+            <button type="button" id="registerSubmitBtn" class="btn-auth">Register</button>
+            
+            <p class="mobile-auth-switch">
+                Already have an account? <b id="mobileToLogin">Login</b>
+            </p>
+        </form>
+    </div>
 
-            <div class="toggle-box">
-                <div class="toggle-panel toggle-left">
-                    <h1>Welcome to Ecliptix</h1>
-                    <p>Create an account to get started.</p>
-                    <button class="btn-auth toggle-btn" id="toRegister">Create Account</button>
-                </div>
-                <div class="toggle-panel toggle-right">
-                    <h1>Welcome Back</h1>
-                    <p>Sign in to continue.</p>
-                    <button class="btn-auth toggle-btn" id="toLogin">Sign In</button>
-                </div>
-            </div>
+    <div class="toggle-box">
+        <div class="toggle-panel toggle-left">
+            <h1>Welcome to Ecliptix</h1>
+            <p>Create an account to get started.</p>
+            <button class="btn-auth toggle-btn" id="toRegister">Create Account</button>
         </div>
+        <div class="toggle-panel toggle-right">
+            <h1>Welcome Back</h1>
+            <p>Sign in to continue.</p>
+            <button class="btn-auth toggle-btn" id="toLogin">Sign In</button>
+        </div>
+    </div>
+</div>
     </div>
 
     <!-- Cart Modal -->

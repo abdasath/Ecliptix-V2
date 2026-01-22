@@ -31,6 +31,22 @@ textarea:focus {
     --epic-dark: #0e0e0e;
 }
 
+/* =========================================
+   1. FIX THE "RIGHT SIDE GAP" (Global)
+   ========================================= */
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    /* Cuts off any element spilling over the edge */
+}
+
+/* 1. HIDE the "Switch" links on Desktop by default */
+.mobile-auth-switch {
+    display: none !important;
+}
+
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     background: var(--primary-color);
@@ -38,14 +54,15 @@ body {
     min-height: 100vh;
     line-height: 1.6;
     overflow-x: hidden;
-    
+
     /* ADD THIS: Pushes content down so Fixed Navbar doesn't cover it */
-    padding-top: 85px; 
+    padding-top: 85px;
 }
 
 html {
     scroll-behavior: smooth;
 }
+
 /* Prevent the whole page from shaking when a modal opens cite: 14 */
 html {
     scrollbar-gutter: stable;
@@ -64,9 +81,12 @@ a {
 
 /* GLOBAL SCROLL LOCK (Applies to Desktop & Mobile) */
 body.modal-open {
-    overflow: hidden !important; /* Stops the background from scrolling */
-    height: 100vh;              /* Locks the height to the screen size */
-    padding-right: 15px;        /* Optional: Prevents layout shift when scrollbar disappears */
+    overflow: hidden !important;
+    /* Stops the background from scrolling */
+    height: 100vh;
+    /* Locks the height to the screen size */
+    padding-right: 15px;
+    /* Optional: Prevents layout shift when scrollbar disappears */
 }
 
 .container {
@@ -91,17 +111,18 @@ body.modal-open {
     background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(20px);
     padding: 1rem 0;
-    
+
     /* CHANGED from sticky to fixed for stability */
-    position: fixed; 
+    position: fixed;
     width: 100%;
     top: 0;
     left: 0;
-    
+
     z-index: 1000;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    transition: all 0.3s ease; /* Smooths out any rendering shifts */
+    transition: all 0.3s ease;
+    /* Smooths out any rendering shifts */
 }
 
 
@@ -176,12 +197,12 @@ body.modal-open {
     background: rgba(26, 26, 26, 0.8);
     border-radius: 4px;
     /* Reduced vertical padding from 0.5rem to 0.3rem */
-    padding: 0.3rem 0.8rem; 
+    padding: 0.3rem 0.8rem;
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.2s;
     backdrop-filter: blur(10px);
     /* Explicitly set a smaller max-height if needed */
-    height: 34px; 
+    height: 34px;
     align-items: center;
 }
 
@@ -193,7 +214,7 @@ body.modal-open {
     outline: none;
     width: 200px;
     /* Reduced font size slightly for a tighter look */
-    font-size: 0.85rem; 
+    font-size: 0.85rem;
 }
 
 /* Update the search icon button */
@@ -203,7 +224,7 @@ body.modal-open {
     color: var(--text-secondary);
     cursor: pointer;
     /* Reduced icon size slightly to fit the new height */
-    font-size: 1rem; 
+    font-size: 1rem;
     display: flex;
     align-items: center;
 }
@@ -267,9 +288,11 @@ body.modal-open {
 
 /* --- CLEAN & SMOOTH MODAL REVEAL --- */
 .modal {
-    display: none; /* Keep hidden by default for layout */
+    display: none;
+    /* Keep hidden by default for layout */
     position: fixed;
-    z-index: 5000; /* Ensure it is ABOVE the navbar (which is 1000) */
+    z-index: 5000;
+    /* Ensure it is ABOVE the navbar (which is 1000) */
     left: 0;
     top: 0;
     width: 100%;
@@ -312,12 +335,14 @@ body.modal-open {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center; /* Centering text horizontally */
+    align-items: center;
+    /* Centering text horizontally */
     padding: 40px;
     background: #000;
     z-index: 1;
     transition: 0.6s ease-in-out 1.2s, visibility 0s 1s;
-    text-align: center; /* Centering heading text */
+    text-align: center;
+    /* Centering heading text */
 }
 
 .form-box h1 {
@@ -365,6 +390,7 @@ body.modal-open {
     border-radius: 8px;
     color: #c7c7c7;
 }
+
 /* --- ECLIPTIX SYNCED AUTH UI --- */
 .container-auth {
     position: relative;
@@ -390,10 +416,13 @@ body.modal-open {
     right: 25px;
     font-size: 35px;
     font-weight: bold;
-    color: #c7c7c7; /* cite: 14 */
-    z-index: 9999 !important; /* Forces it above all card content cite: 14 */
+    color: #c7c7c7;
+    /* cite: 14 */
+    z-index: 9999 !important;
+    /* Forces it above all card content cite: 14 */
     cursor: pointer;
-    padding: 10px; /* Expands the clickable hit-box */
+    padding: 10px;
+    /* Expands the clickable hit-box */
     line-height: 1;
     transition: transform 0.2s ease, color 0.3s ease;
 }
@@ -433,9 +462,17 @@ body.modal-open {
     right: 50%;
 }
 
-.form-box.register { visibility: hidden; }
-.container-auth.active .form-box.register { visibility: visible; }
-.container-auth.active .form-box.login { visibility: hidden; }
+.form-box.register {
+    visibility: hidden;
+}
+
+.container-auth.active .form-box.register {
+    visibility: visible;
+}
+
+.container-auth.active .form-box.login {
+    visibility: hidden;
+}
 
 /* The White Sliding Panel */
 .toggle-box::before {
@@ -465,13 +502,15 @@ body.modal-open {
     align-items: center;
     z-index: 2;
     transition: 0.6s ease-in-out;
-    color: #000; /* Default black for the white side */
+    color: #000;
+    /* Default black for the white side */
 }
 
 /* Logic to switch text color based on which side is showing */
 .toggle-panel.toggle-left {
     left: 0;
-    color: #000 !important; /* Black text on white background */
+    color: #000 !important;
+    /* Black text on white background */
     transition-delay: 1.2s;
 }
 
@@ -482,13 +521,15 @@ body.modal-open {
 
 .toggle-panel.toggle-right {
     right: -50%;
-    color: #c7c7c7 !important; /* White text on black background */
+    color: #c7c7c7 !important;
+    /* White text on black background */
     transition-delay: 0.6s;
 }
 
 .container-auth.active .toggle-panel.toggle-right {
     right: 0;
-    color: #000 !important; /* Switches to black when white panel slides under */
+    color: #000 !important;
+    /* Switches to black when white panel slides under */
     transition-delay: 1.2s;
 }
 
@@ -496,7 +537,8 @@ body.modal-open {
 .container-auth .input-box {
     position: relative;
     width: 100%;
-    max-width: 450px; /* Uniform width as requested */
+    max-width: 450px;
+    /* Uniform width as requested */
     margin: 15px auto;
 }
 
@@ -504,16 +546,19 @@ body.modal-open {
 /* --- SHORTENED AUTH BUTTONS --- */
 .container-auth .btn-auth {
     width: 100% !important;
-    max-width: 220px !important; /* This shortens the button width */
+    max-width: 220px !important;
+    /* This shortens the button width */
     height: 48px;
     background: #c7c7c7;
     color: #000;
     border: none;
     border-radius: 8px;
-    font-size: 1rem;  /* Increased font size for better visibility */
+    font-size: 1rem;
+    /* Increased font size for better visibility */
     font-weight: 800;
     cursor: pointer;
-    margin-top: 20px; /* Added more space between inputs and button */
+    margin-top: 20px;
+    /* Added more space between inputs and button */
     transition: background 0.3s ease;
 }
 
@@ -525,7 +570,7 @@ body.modal-open {
 .container-auth .form-box form {
     display: flex;
     flex-direction: column;
-    align-items: center; 
+    align-items: center;
     width: 100%;
 }
 
@@ -533,18 +578,23 @@ body.modal-open {
 .input-box {
     position: relative;
     width: 100%;
-    max-width: 400px;  /* Uniform width for symmetry */
+    max-width: 400px;
+    /* Uniform width for symmetry */
     margin: 15px 0;
 }
 
 /* --- Input Field Styling --- */
 .input-box input {
     width: 100%;
-    padding: 13px 45px 13px 20px; /* Space on right for the icon */
-    background: #111; /* Dark background cite: 14 */
-    border: 1px solid #2a2a2a; /* cite: 14 */
+    padding: 13px 45px 13px 20px;
+    /* Space on right for the icon */
+    background: #111;
+    /* Dark background cite: 14 */
+    border: 1px solid #2a2a2a;
+    /* cite: 14 */
     border-radius: 8px;
-    color: #c7c7c7; /* Dim White text */
+    color: #c7c7c7;
+    /* Dim White text */
     font-size: 16px;
     outline: none;
     transition: border-color 0.3s;
@@ -554,17 +604,24 @@ body.modal-open {
     border-color: #c7c7c7;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
+
 /* --- Icon Positioning --- */
 .input-box i {
     position: absolute;
-    right: 20px; /* Aligned to the right cite: 144 */
+    right: 20px;
+    /* Aligned to the right cite: 144 */
     top: 50%;
     transform: translateY(-50%);
     font-size: 20px;
-    color: #c7c7c7; /* Matches dim white theme */
-    pointer-events: none; /* Prevents icon from blocking clicks */
+    color: #c7c7c7;
+    /* Matches dim white theme */
+    pointer-events: none;
+    /* Prevents icon from blocking clicks */
 }
-.container-auth.active .form-box.login { visibility: hidden; }
+
+.container-auth.active .form-box.login {
+    visibility: hidden;
+}
 
 .btn-auth {
     width: 100%;
@@ -589,15 +646,19 @@ body.modal-open {
     color: inherit !important;
     width: 160px;
 }
+
 /* Precise positioning inside the top-right of the card */
 .container-auth .close {
     position: absolute;
     top: 25px;
-    right: 25px; /* cite: 67 */
+    right: 25px;
+    /* cite: 67 */
     font-size: 30px;
     font-weight: bold;
-    color: #c7c7c7; /* White by default for the black background */
-    z-index: 10; /* cite: 147 */
+    color: #c7c7c7;
+    /* White by default for the black background */
+    z-index: 10;
+    /* cite: 147 */
     cursor: pointer;
     transition: color 0.3s ease, transform 0.3s ease;
     line-height: 1;
@@ -615,7 +676,8 @@ body.modal-open {
 
 /* --- Sticky Close Button Fix --- */
 .modal-large .modal-content {
-    position: relative; /* Container for the sticky X */
+    position: relative;
+    /* Container for the sticky X */
     display: flex;
     flex-direction: column;
 }
@@ -633,8 +695,10 @@ body.modal-open {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.9);
     backdrop-filter: blur(15px);
-    overflow: hidden; /* Prevent background window from scrolling */
+    overflow: hidden;
+    /* Prevent background window from scrolling */
 }
+
 /* 1. GLOBAL FIX: Stops the screen shake/jump cite: 14 */
 html {
     scrollbar-gutter: stable !important;
@@ -645,19 +709,22 @@ html {
     position: relative !important;
     width: 90%;
     max-width: 1000px;
-    height: 90vh; /* Controlled height */
+    height: 90vh;
+    /* Controlled height */
     margin: 5vh auto;
     background: #111;
     border-radius: 15px;
     display: flex;
     flex-direction: column;
-    overflow: hidden !important; /* The card shell doesn't scroll... */
+    overflow: hidden !important;
+    /* The card shell doesn't scroll... */
 }
 
 /* 3. The Details: This is where the scroll happens cite: 14 */
 #gameDetails {
     flex: 1;
-    overflow-y: auto !important; /* ...but the content inside does! */
+    overflow-y: auto !important;
+    /* ...but the content inside does! */
     padding: 0 40px 40px 40px;
     scrollbar-width: thin;
     scrollbar-color: #333 transparent;
@@ -668,11 +735,13 @@ html {
     position: absolute !important;
     top: 20px !important;
     right: 25px !important;
-    z-index: 10001 !important; /* Higher than the image */
+    z-index: 10001 !important;
+    /* Higher than the image */
     font-size: 30px;
     color: #888 !important;
     cursor: pointer;
-    background: rgba(0, 0, 0, 0.5); /* Semi-transparent circle */
+    background: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent circle */
     width: 40px;
     height: 40px;
     display: flex;
@@ -685,39 +754,48 @@ html {
 .modal-large .close:hover {
     color: #fff !important;
     background: rgba(0, 0, 0, 0.8);
-    transform: none !important; /* Removed fancy shake/scale */
+    transform: none !important;
+    /* Removed fancy shake/scale */
 }
+
 /* 5. Game Image Margin cite: 14 */
 .game-details-header img {
-    margin-top: 40px !important; /* Adds the top margin you requested */
+    margin-top: 40px !important;
+    /* Adds the top margin you requested */
     width: 100%;
     border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 /* --- REPLACE THIS BLOCK IN style.css --- */
 .modal-large .close {
-    position: fixed; /* Keep it fixed so it doesn't scroll away */
+    position: fixed;
+    /* Keep it fixed so it doesn't scroll away */
     top: 30px;
     right: 40px;
-    font-size: 40px; /* Slightly larger for visibility */
+    font-size: 40px;
+    /* Slightly larger for visibility */
     font-weight: bold;
-    color: #c7c7c7; /* Default Grey/White */
+    color: #c7c7c7;
+    /* Default Grey/White */
     z-index: 9999 !important;
     cursor: pointer;
-    
+
     /* REMOVED: background, width, height, border-radius (The "Bubble" look) */
-    background: transparent; 
+    background: transparent;
     transition: all 0.2s ease;
-    
+
     /* Added Shadow so it's visible on bright images */
-    text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
 }
 
 .modal-large .close:hover {
-    color: #ff4757; /* The "Cancel Red" from the Cart */
-    transform: scale(1.2); /* Slight zoom like the Cart X */
-    background: transparent; /* Ensure no background appears */
+    color: #ff4757;
+    /* The "Cancel Red" from the Cart */
+    transform: scale(1.2);
+    /* Slight zoom like the Cart X */
+    background: transparent;
+    /* Ensure no background appears */
 }
 
 /* =========================================
@@ -729,28 +807,37 @@ html {
 #cartModal .modal-content {
     display: flex;
     flex-direction: column;
-    max-height: 85vh; /* Limits height so scrolling activates */
-    overflow: hidden; /* Stops the outer box from scrolling */
+    max-height: 85vh;
+    /* Limits height so scrolling activates */
+    overflow: hidden;
+    /* Stops the outer box from scrolling */
     padding: 25px;
 }
 
 /* 2. The "Shopping Cart" Title (Fixed Top) */
 #cartModal h2 {
-    flex-shrink: 0; /* Prevents squashing */
-    margin-bottom: 30px; /* <--- The margin you asked for */
+    flex-shrink: 0;
+    /* Prevents squashing */
+    margin-bottom: 30px;
+    /* <--- The margin you asked for */
     padding-bottom: 15px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Adds a clean separator line */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    /* Adds a clean separator line */
     background: transparent;
     z-index: 10;
 }
 
 /* 3. The List of Items (Scrollable Middle) */
 #cartItems {
-    flex-grow: 1;        /* Takes up all remaining space */
-    overflow-y: auto;    /* Enables scrolling ONLY inside this list */
-    padding-right: 10px; /* Space for the scrollbar */
-    margin-bottom: 20px; /* Space before the Total */
-    
+    flex-grow: 1;
+    /* Takes up all remaining space */
+    overflow-y: auto;
+    /* Enables scrolling ONLY inside this list */
+    padding-right: 10px;
+    /* Space for the scrollbar */
+    margin-bottom: 20px;
+    /* Space before the Total */
+
     /* Custom Scrollbar Styling */
     scrollbar-width: thin;
     scrollbar-color: #333 transparent;
@@ -760,6 +847,7 @@ html {
 #cartItems::-webkit-scrollbar {
     width: 6px;
 }
+
 #cartItems::-webkit-scrollbar-thumb {
     background-color: #333;
     border-radius: 10px;
@@ -768,7 +856,8 @@ html {
 /* 4. The Footer (Total & Checkout) - Fixed Bottom */
 .cart-total {
     flex-shrink: 0;
-    margin-top: auto; /* Pushes it to the bottom if list is short */
+    margin-top: auto;
+    /* Pushes it to the bottom if list is short */
     padding-top: 15px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -780,9 +869,10 @@ html {
 
 /* GLOBAL SCROLL LOCK */
 body.modal-open {
-    overflow: hidden !important; 
-    height: 100vh;              
-    padding-right: 0 !important; /* Force 0 padding for Mac users */
+    overflow: hidden !important;
+    height: 100vh;
+    padding-right: 0 !important;
+    /* Force 0 padding for Mac users */
 }
 
 /* For modern browsers to handle this automatically */
@@ -872,11 +962,12 @@ html {
 
 /* 3. Make the Admin Link invisible by default (prevents flickering) */
 a[href="admin.html"] {
-    display: none ; /* cite: 144 */
+    display: none;
+    /* cite: 144 */
     color: #ff4757;
     /* Optional: Makes 'Admin' red so it stands out */
     font-weight: bold;
-     margin-left: 10px;
+    margin-left: 10px;
 }
 
 .nav-menu li:has(a[href="admin.html"]) {
@@ -887,17 +978,22 @@ a[href="admin.html"] {
 
 /* 1. Ensure the Admin link follows the exact same style as Store/Library/Profile */
 .nav-menu li a[href="admin.html"] {
-    display: none; /* Controlled by JS checkAdminAccess() */
-    color: var(--text-secondary); /* Same color as others */
-    font-weight: 400; /* Same weight as others */
-    margin-left: 0; /* REMOVE the extra margin that causes floating */
+    display: none;
+    /* Controlled by JS checkAdminAccess() */
+    color: var(--text-secondary);
+    /* Same color as others */
+    font-weight: 400;
+    /* Same weight as others */
+    margin-left: 0;
+    /* REMOVE the extra margin that causes floating */
 }
 
 /* 2. Add the dot/indicator effect to the Admin link for Desktop */
 .nav-menu li a[href="admin.html"]::before {
     content: '•';
     margin-right: 8px;
-    color: #ff4757; /* Keep the red color only for the dot */
+    color: #ff4757;
+    /* Keep the red color only for the dot */
     font-weight: bold;
 }
 
@@ -1153,21 +1249,26 @@ a[href="admin.html"] {
 .game-card:hover .game-image {
     transform: scale(1.05);
 }
+
 .game-description-full p {
-  margin-bottom: 1.25rem;   /* space between paragraphs */
-  line-height: 1.7;         /* comfortable reading */
-  color: #dcdcdc;
+    margin-bottom: 1.25rem;
+    /* space between paragraphs */
+    line-height: 1.7;
+    /* comfortable reading */
+    color: #dcdcdc;
 }
 
 .game-description-full p:last-child {
-  margin-bottom: 0;         /* no extra gap at end */
+    margin-bottom: 0;
+    /* no extra gap at end */
 }
 
 .game-image {
     width: 100%;
     height: 360px;
     object-fit: cover;
-    object-position: center center; /* Tries to keep the middle visible */
+    object-position: center center;
+    /* Tries to keep the middle visible */
     background: #0a0a0a;
     transition: transform 0.4s ease;
     position: relative;
@@ -1426,7 +1527,8 @@ a[href="admin.html"] {
 
 /* --- Ensure this is in your style.css --- */
 #gameModal {
-    overflow-y: auto !important; /* The scrollbar should be here */
+    overflow-y: auto !important;
+    /* The scrollbar should be here */
 }
 
 
@@ -1447,20 +1549,210 @@ a[href="admin.html"] {
 
 /* Locate this specific media query in your style.css */
 @media (max-width: 768px) {
+   
+
+    /* 2. Game Title in the Pop-up (Details Modal) */
+    /* Reduced to prevent it from dominating the screen */
+    .game-details h2 {
+        font-size: 1.7rem !important; /* Was typically 2rem+ */
+        margin-bottom: 5px !important;
+        text-align: center !important;
+    }
     
+    /* Optional: Reduce the price text slightly too, to match */
+    .game-details .price-current {
+        font-size: 1.2rem !important;
+    }
+
+    .game-details-header {
+        display: flex !important;
+        flex-direction: column !important;
+        /* Stacks items top-to-bottom */
+        align-items: center !important;
+        /* Centers items */
+        text-align: center !important;
+        /* Centers text */
+        gap: 20px !important;
+    }
+
+    /* Fix the specific alignment of the text info */
+    .game-info-header {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        /* Aligns Title, Price, Buy Button to center */
+    }
+
+    /* Ensure the main description text is readable and not edge-to-edge */
+    .game-description-full {
+        text-align: left !important;
+        /* Keep long text left-aligned for reading */
+        padding: 0 10px !important;
+        /* Add slight breathing room */
+        font-size: 0.95rem !important;
+        line-height: 1.6 !important;
+    }
+
+    /* Fix the "Buy" and "Cart" buttons alignment */
+    .game-actions {
+        justify-content: center !important;
+        width: 100% !important;
+        margin-top: 15px !important;
+    }
+
+    /* Ensure the modal content itself has padding */
+    #gameDetails {
+        padding: 10px !important;
+    }
+
+    /* 1. Fix the Invisible "X" Icon */
+    /* On desktop, this turns black. On mobile, we force it back to White. */
+    .container-auth.active .close {
+        color: #c7c7c7 !important;
+        z-index: 200 !important;
+        /* Ensure it sits on top of everything */
+    }
+
+    /* 2. Fix the "Registration" Title Position */
+    /* Adds space so it doesn't touch the top of the card */
+    .form-box.register h1 {
+        margin-top: 40px !important;
+        margin-bottom: 15px !important;
+    }
+
+    /* Optional: Ensure Login title matches the spacing */
+    .form-box.login h1 {
+        margin-top: 40px !important;
+    }
+
+    /* --- A. Fix the Login/Register Card Sizing --- */
+    .container-auth {
+        width: 85% !important;
+        max-width: 350px !important;
+        height: auto !important;
+        min-height: 550px !important;
+        /* Taller to fit the form */
+        margin: 10vh auto !important;
+        padding: 0 !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    /* --- B. Disable the "Slide" Animation (This was breaking the layout) --- */
+    .container-auth.active .form-box {
+        right: 0 !important;
+        /* Stop moving right */
+        position: relative !important;
+        /* Stack normally */
+        width: 100% !important;
+    }
+
+    /* --- C. Force Visibility Swapping (No Sliding) --- */
+
+    /* Default: Show Login, Hide Register */
+    .form-box.login {
+        display: flex !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    .form-box.register {
+        display: none !important;
+    }
+
+    /* Active State (Clicked Register): Hide Login, Show Register */
+    .container-auth.active .form-box.login {
+        display: none !important;
+    }
+
+    .container-auth.active .form-box.register {
+        display: flex !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    /* --- D. Hide the Sliding Panel (The white box) --- */
+    .toggle-box {
+        display: none !important;
+    }
+
+    /* --- E. Show the Text Links ONLY on Mobile --- */
+    .mobile-auth-switch {
+        display: block !important;
+        margin-top: 20px;
+        text-align: center;
+        color: #888;
+        font-size: 0.9rem;
+    }
+
+    .mobile-auth-switch b {
+        color: #0074e4;
+        cursor: pointer;
+        text-decoration: underline;
+    }
+
+
+    .container-auth {
+        width: 90% !important;
+        max-width: 400px !important;
+        height: auto !important;
+        min-height: 480px !important;
+        margin: 15vh auto !important;
+        border-radius: 20px !important;
+    }
+
+    /* Force the forms to take 100% width (Fixes the squash) */
+    .container-auth .form-box {
+        width: 100% !important;
+        padding: 20px 25px !important;
+    }
+
+    /* Hide the sliding "Welcome" panel on mobile (It takes up too much space) */
+    .toggle-box {
+        display: none !important;
+    }
+
+    /* Show the new "Switch" text links instead */
+    .mobile-auth-switch {
+        display: block !important;
+        /* Visible only on mobile */
+        margin-top: 25px;
+        font-size: 0.9rem;
+        color: #b8b8b8;
+    }
+
+    .mobile-auth-switch b {
+        color: #0074e4;
+        /* Ecliptix Blue */
+        cursor: pointer;
+        margin-left: 5px;
+    }
+
+
+    /* Hide the mobile switch text on Desktop */
+    .mobile-auth-switch {
+        display: none;
+    }
+
     /* Change the grid from 2 columns to 1 column */
     .games-grid {
-        grid-template-columns: 1fr !important; /* cite: 14 */
-        gap: 25px !important; /* Increased gap for better spacing between single cards */
-        padding: 0 10px; /* Optional: adds slight breathing room on the sides */
+        grid-template-columns: 1fr !important;
+        /* cite: 14 */
+        gap: 25px !important;
+        /* Increased gap for better spacing between single cards */
+        padding: 0 10px;
+        /* Optional: adds slight breathing room on the sides */
     }
 
     /* Adjust the game image height for a better mobile aspect ratio */
     .game-image {
-        height: 300px !important; 
+        height: 300px !important;
     }
 }
+
 @media (max-width: 768px) {
+
     /* 1. Fix the Navbar Container */
     .navbar .container {
         display: flex;
@@ -1474,8 +1766,9 @@ a[href="admin.html"] {
     .nav-menu {
         position: fixed;
         top: 0;
-        left: -100%; 
-        width: 280px; /* Slightly narrower for a sleek look */
+        left: -100%;
+        width: 280px;
+        /* Slightly narrower for a sleek look */
         height: 100vh;
         background: rgba(10, 10, 10, 0.98);
         display: flex !important;
@@ -1484,7 +1777,8 @@ a[href="admin.html"] {
         justify-content: flex-start;
         padding: 80px 40px !important;
         margin: 0 !important;
-        gap: 30px !important; /* Large gaps to prevent squashing */
+        gap: 30px !important;
+        /* Large gaps to prevent squashing */
         transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 2000;
         border-right: 1px solid #333;
@@ -1499,12 +1793,13 @@ a[href="admin.html"] {
         width: 100%;
     }
 
-    
+
 
     /* 4. Ensure the Menu Toggle is visible and clean */
     .menu-toggle {
         display: block !important;
-        order: -1; /* Keeps it on the far left */
+        order: -1;
+        /* Keeps it on the far left */
         margin-right: 15px;
     }
 
@@ -1512,43 +1807,58 @@ a[href="admin.html"] {
     .search-box {
         display: none !important;
     }
+
     .nav-menu a {
-        padding: 12px 20px !important; /* Internal spacing for touch comfort */
+        padding: 12px 20px !important;
+        /* Internal spacing for touch comfort */
         margin: 5px 0;
         display: block;
-        border-radius: 8px; /* Softens the look of the tap area */
+        border-radius: 8px;
+        /* Softens the look of the tap area */
     }
+
     .nav-menu a::after {
-        bottom: 8px !important; /* Moves the line away from the bottom of the link */
-        height: 3px !important; /* Slightly thicker for better mobile visibility */
+        bottom: 8px !important;
+        /* Moves the line away from the bottom of the link */
+        height: 3px !important;
+        /* Slightly thicker for better mobile visibility */
         width: 0;
         background: var(--text-primary);
         transition: width 0.3s ease;
     }
+
     .nav-menu a.active {
-        background: rgba(255, 255, 255, 0.1); /* Subtle highlight behind text */
+        background: rgba(255, 255, 255, 0.1);
+        /* Subtle highlight behind text */
     }
+
     .nav-menu a.active::after {
-        width: 40px !important; /* Smaller, cleaner indicator line */
-        left: 20px !important; /* Aligns with the text's new padding */
-        transform: none !important; /* Removes the centering for a sleek side-aligned look */
+        width: 40px !important;
+        /* Smaller, cleaner indicator line */
+        left: 20px !important;
+        /* Aligns with the text's new padding */
+        transform: none !important;
+        /* Removes the centering for a sleek side-aligned look */
     }
 
     /* Target the Admin link specifically to look like a dot/indicator if desired */
     /* Or simply keep it hidden by default */
     .nav-menu li:has(a[href="admin.html"]) {
-        display: none; /* Hidden until JS confirms Admin status */
+        display: none;
+        /* Hidden until JS confirms Admin status */
     }
 }
 
 @media (max-width: 768px) {
-    body.modal-open main, 
-    body.modal-open .hero, 
+
+    body.modal-open main,
+    body.modal-open .hero,
     body.modal-open .navbar .container {
-        filter: blur(25px) grayscale(100%) brightness(0.2) !important; /* Deep Monochrome Blur cite: 14 */
+        filter: blur(25px) grayscale(100%) brightness(0.2) !important;
+        /* Deep Monochrome Blur cite: 14 */
         opacity: 0.1;
     }
-    
+
     .container-auth {
         width: 95% !important;
         height: auto !important;
@@ -1602,12 +1912,14 @@ a[href="admin.html"] {
    ============================================================ */
 
 @media (max-width: 768px) {
+
     /* 1. Ensure Navbar Toggle is ALWAYS visible on all pages */
     .menu-toggle {
         display: block !important;
         font-size: 28px;
         position: relative;
-        z-index: 2100; /* Stays above everything */
+        z-index: 2100;
+        /* Stays above everything */
         padding: 10px;
     }
 
@@ -1615,7 +1927,8 @@ a[href="admin.html"] {
     .nav-menu {
         position: fixed;
         top: 0;
-        left: -100%; /* Hidden by default */
+        left: -100%;
+        /* Hidden by default */
         width: 80%;
         height: 100vh;
         background: #0b0b0b;
@@ -1623,14 +1936,16 @@ a[href="admin.html"] {
         padding: 100px 30px !important;
         transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 2000;
-        box-shadow: 10px 0 30px rgba(0,0,0,0.9);
-        list-style: none !important; /* Removes default dots/bullets */
-    padding: 0;
-    margin: 0;
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.9);
+        list-style: none !important;
+        /* Removes default dots/bullets */
+        padding: 0;
+        margin: 0;
     }
 
     .nav-menu.open {
-        left: 0; /* Slides into view */
+        left: 0;
+        /* Slides into view */
     }
 
     /* 3. Modal & Grid Fixes (Prevents spilling out of the box) */
@@ -1643,13 +1958,13 @@ a[href="admin.html"] {
 
     /* Forces the 3-column requirements into 1 column on mobile */
     .system-requirements div[style*="grid-template-columns"] {
-        grid-template-columns: 1fr !important; 
+        grid-template-columns: 1fr !important;
         gap: 1.5rem !important;
     }
 
     /* 4. Hide secondary actions to prevent mobile header clutter */
     .nav-actions {
-        display: none; 
+        display: none;
     }
 
     /* 5. LOCK BACKGROUND SCROLLING (Applied via JS below) */
@@ -1661,25 +1976,31 @@ a[href="admin.html"] {
 
 /* Media query for mobile screens */
 @media (max-width: 768px) {
+
     /* This class will be added to the <body> via JavaScript */
     body.modal-open {
-        overflow: hidden !important; /* Prevents background scrolling */
+        overflow: hidden !important;
+        /* Prevents background scrolling */
     }
 
     /* Dim and hide background content when the modal is active */
-    body.modal-open main, 
-    body.modal-open .hero, 
+    body.modal-open main,
+    body.modal-open .hero,
     body.modal-open .navbar {
-        filter: blur(5px); /* Blurs the background things */
-        opacity: 0.3;      /* Dims the background things */
-        pointer-events: none; /* Prevents clicking things behind the pop-up */
+        filter: blur(5px);
+        /* Blurs the background things */
+        opacity: 0.3;
+        /* Dims the background things */
+        pointer-events: none;
+        /* Prevents clicking things behind the pop-up */
     }
 
     /* Ensure the modal stays on top and is fully visible */
     #gameModal {
         z-index: 9999 !important;
-        background-color: rgba(0, 0, 0, 0.9); /* Solid dark background for the modal area */
-        
+        background-color: rgba(0, 0, 0, 0.9);
+        /* Solid dark background for the modal area */
+
     }
 }
 
@@ -1688,9 +2009,11 @@ a[href="admin.html"] {
    ============================================================ */
 
 @media (max-width: 768px) {
+
     /* 1. Show Login Button in Mobile Navbar */
     .user-menu {
-        display: flex !important; /* Forces visibility */
+        display: flex !important;
+        /* Forces visibility */
         margin-left: auto;
         margin-right: 15px;
     }
@@ -1703,12 +2026,15 @@ a[href="admin.html"] {
 
     /* 2. Hide "Behind Things" when Pop-up is open */
     /* This class is added to the <body> via JavaScript */
-    body.modal-open main, 
-    body.modal-open .hero, 
+    body.modal-open main,
+    body.modal-open .hero,
     body.modal-open .navbar {
-        filter: blur(8px); /* Blurs the background */
-        opacity: 0.2;      /* Dims the content significantly */
-        pointer-events: none; /* Prevents clicking behind the pop-up */
+        filter: blur(8px);
+        /* Blurs the background */
+        opacity: 0.2;
+        /* Dims the content significantly */
+        pointer-events: none;
+        /* Prevents clicking behind the pop-up */
         transition: filter 0.3s ease;
     }
 
@@ -1717,13 +2043,14 @@ a[href="admin.html"] {
         width: 96% !important;
         margin: 2% auto !important;
         padding: 1.2rem !important;
-        background: rgba(26, 26, 26, 0.98); /* Solid dark background */
+        background: rgba(26, 26, 26, 0.98);
+        /* Solid dark background */
         border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     /* 4. Fix System Requirements "Outside the Box" issue */
     .system-requirements div[style*="grid-template-columns"] {
-        grid-template-columns: 1fr !important; 
+        grid-template-columns: 1fr !important;
         gap: 1.5rem !important;
     }
 }
@@ -1733,6 +2060,7 @@ a[href="admin.html"] {
    ============================================================ */
 
 @media (max-width: 768px) {
+
     /* 1. Hide the Search Bar on mobile */
     .search-box {
         display: none !important;
@@ -1742,7 +2070,8 @@ a[href="admin.html"] {
     .nav-actions {
         display: flex !important;
         gap: 12px;
-        margin-left: auto; /* Pushes buttons to the right */
+        margin-left: auto;
+        /* Pushes buttons to the right */
         align-items: center;
     }
 
@@ -1752,7 +2081,8 @@ a[href="admin.html"] {
     }
 
     /* Make buttons smaller for mobile header space */
-    #loginBtn, #logoutBtn {
+    #loginBtn,
+    #logoutBtn {
         padding: 5px 12px !important;
         font-size: 0.8rem !important;
         min-height: 32px !important;
@@ -1760,12 +2090,12 @@ a[href="admin.html"] {
 
     /* 3. Fix 'Behind Things showing' issue */
     /* Blurs and dims main content when any modal is open */
-    body.modal-open main, 
-    body.modal-open .hero, 
+    body.modal-open main,
+    body.modal-open .hero,
     body.modal-open .navbar .container {
-        filter: blur(10px); 
-        opacity: 0.15;      
-        pointer-events: none; 
+        filter: blur(10px);
+        opacity: 0.15;
+        pointer-events: none;
         transition: all 0.3s ease;
     }
 
@@ -1773,35 +2103,40 @@ a[href="admin.html"] {
     .modal-large .modal-content {
         width: 96% !important;
         margin: 4% auto !important;
-        background: white !important; /* Prevents background leaking through */
-        border: 1px solid ;
+        background: white !important;
+        /* Prevents background leaking through */
+        border: 1px solid;
         padding: 1.2rem !important;
     }
 
     /* 5. Force System Requirements into 1 column */
     .system-requirements div[style*="grid-template-columns"] {
-        grid-template-columns: 1fr !important; 
+        grid-template-columns: 1fr !important;
         gap: 1.5rem !important;
     }
 }
 
 @media (max-width: 768px) {
+
     /* 1. Deep Monochrome Background Focus */
-    body.modal-open main, 
+    body.modal-open main,
     body.modal-open .hero,
     body.modal-open .navbar .container {
-        filter: blur(20px) grayscale(100%) brightness(0.1) !important; /*cite: 14*/
+        filter: blur(20px) grayscale(100%) brightness(0.1) !important;
+        /*cite: 14*/
         pointer-events: none;
         transition: all 0.4s ease;
     }
 
     /* 2. Unified Black & White Pop-up Card (Login, Cart, Details) */
-    .modal-large .modal-content, 
+    .modal-large .modal-content,
     .modal-content {
         width: 95% !important;
         margin: 5% auto !important;
-        background: #000000 !important; /* CHANGED FROM WHITE TO BLACK */
-        color: #ffffff !important;      /* Ensures all text is white */
+        background: #000000 !important;
+        /* CHANGED FROM WHITE TO BLACK */
+        color: #ffffff !important;
+        /* Ensures all text is white */
         border: 1px solid #333 !important;
         padding: 1.5rem !important;
         box-shadow: 0 0 50px rgba(0, 0, 0, 1);
@@ -1818,19 +2153,25 @@ a[href="admin.html"] {
 
     /* Force the 3-column grid into 1 column for mobile */
     .system-requirements div[style*="grid-template-columns"] {
-        grid-template-columns: 1fr !important; /*cite: 14*/
+        grid-template-columns: 1fr !important;
+        /*cite: 14*/
         gap: 2rem !important;
     }
 
     /* 4. Game Details Typography (Replacing white with Black/Gray) */
-    .game-details h2, .game-details h3, .game-details h4, .game-details h5 {
+    .game-details h2,
+    .game-details h3,
+    .game-details h4,
+    .game-details h5 {
         color: #ffffff !important;
         text-transform: uppercase;
         letter-spacing: 1px;
     }
 
-    .game-details p, .game-details-meta p {
-        color: #aaaaaa !important; /*cite: 14*/
+    .game-details p,
+    .game-details-meta p {
+        color: #aaaaaa !important;
+        /*cite: 14*/
     }
 
     /* 5. Shopping Cart Alignment Fix */
@@ -1845,7 +2186,8 @@ a[href="admin.html"] {
         background: #111111 !important;
         border: 1px solid #222 !important;
         padding: 12px !important;
-        display: flex !important; /* Fixes alignment */
+        display: flex !important;
+        /* Fixes alignment */
         align-items: center !important;
         gap: 15px !important;
         border-radius: 8px;
@@ -1867,13 +2209,13 @@ a[href="admin.html"] {
     }
 
     .system-requirements div[style*="grid-template-columns"] {
-        grid-template-columns: 1fr !important; 
+        grid-template-columns: 1fr !important;
         gap: 1.5rem !important;
     }
 
     /* Fix the 'Behind Things' visibility for Game Details specifically */
-    body.modal-open main, 
-    body.modal-open .hero, 
+    body.modal-open main,
+    body.modal-open .hero,
     body.modal-open .navbar .container {
         filter: blur(20px) grayscale(100%) brightness(0.1) !important;
         opacity: 0.1;
@@ -1882,6 +2224,7 @@ a[href="admin.html"] {
 
 /* --- Optimized Mobile Navigation Fix in style.css --- */
 @media (max-width: 768px) {
+
     /* 1. Prevent the Brand and Wallet from touching */
     .navbar .container {
         display: flex !important;
@@ -1894,7 +2237,7 @@ a[href="admin.html"] {
 
     /* 2. Scale down the brand name so it doesn't take up 50% of the screen */
     .nav-brand h1 {
-        font-size: 2rem !important; 
+        font-size: 2rem !important;
         letter-spacing: 0.5px !important;
     }
 
@@ -1902,7 +2245,8 @@ a[href="admin.html"] {
     .nav-actions {
         display: flex !important;
         align-items: center !important;
-        gap: 8px !important; /* Tight gap prevents spill-over */
+        gap: 8px !important;
+        /* Tight gap prevents spill-over */
         margin-left: auto !important;
     }
 
@@ -1912,7 +2256,8 @@ a[href="admin.html"] {
         padding: 4px 8px !important;
         background: rgba(255, 255, 255, 0.1) !important;
         border-radius: 4px !important;
-        white-space: nowrap !important; /* Prevents the currency symbol from dropping */
+        white-space: nowrap !important;
+        /* Prevents the currency symbol from dropping */
     }
 
     /* 5. Shrink the Cart icon so it fits beside the name */
@@ -1930,29 +2275,36 @@ a[href="admin.html"] {
     }
 
     /* 6. Make Login/Logout buttons compact */
-    #loginBtn, #logoutBtn {
+    #loginBtn,
+    #logoutBtn {
         padding: 4px 10px !important;
         font-size: 0.75rem !important;
         min-height: 30px !important;
         border-radius: 4px !important;
     }
+
     .hero {
-        height: 250px !important; /* Reduced height for mobile balance */
+        height: 250px !important;
+        /* Reduced height for mobile balance */
         margin-bottom: 2rem !important;
     }
 
     .hero-content h2 {
-        font-size: 1.7rem !important; /* Shrunk from 3.5rem for a sleek look */
+        font-size: 1.7rem !important;
+        /* Shrunk from 3.5rem for a sleek look */
         line-height: 1.2 !important;
         margin-bottom: 0.8rem !important;
-        padding: 0 15px !important; /* Prevents text from hitting screen edges */
+        padding: 0 15px !important;
+        /* Prevents text from hitting screen edges */
     }
 
     .hero-content p {
-        font-size: 0.95rem !important; /* Smaller subtext to match the headline */
+        font-size: 0.95rem !important;
+        /* Smaller subtext to match the headline */
         padding: 0 20px !important;
         opacity: 0.8;
     }
+
     .menu-close {
         display: block !important;
         position: absolute;
@@ -1966,15 +2318,17 @@ a[href="admin.html"] {
     }
 
     .menu-close:hover {
-        color: #e94560; /* Optional: Changes to red on hover/tap */
+        color: #e94560;
+        /* Optional: Changes to red on hover/tap */
     }
 
     /* Ensure the menu list items don't overlap with the X */
     .nav-menu {
         padding-top: 80px !important;
     }
+
     /* ===== MENU ICON ANIMATION ===== */
-.menu-toggle {
+    .menu-toggle {
         display: flex !important;
         align-items: center;
         justify-content: center;
@@ -1983,14 +2337,16 @@ a[href="admin.html"] {
         background: none;
         border: none;
         cursor: pointer;
-        position: relative; /* Keep relative for stacking context */
+        position: relative;
+        /* Keep relative for stacking context */
         padding: 0;
         z-index: 2100;
     }
 
     /* 2. Unified icon styling */
     .menu-toggle .icon {
-        position: absolute; /* Stack them on top of each other */
+        position: absolute;
+        /* Stack them on top of each other */
         display: flex;
         align-items: center;
         justify-content: center;

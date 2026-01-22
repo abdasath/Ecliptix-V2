@@ -256,17 +256,29 @@ function closeModalUniversal(modal) {
     }, 400);
 }
 
-// Toggle Auth View (Login <-> Register)
+/* --- Updated Auth Toggle Logic (Supports Mobile Links) --- */
 const authContainer = document.getElementById('authContainer');
 const toRegister = document.getElementById('toRegister');
 const toLogin = document.getElementById('toLogin');
+const mobileToRegister = document.getElementById('mobileToRegister'); // New
+const mobileToLogin = document.getElementById('mobileToLogin');       // New
 
-if (toRegister && toLogin) {
-    toRegister.addEventListener('click', () => {
-        authContainer.classList.add('active');
-    });
+// Helper function to switch to Register View
+function showRegister() {
+    authContainer.classList.add('active');
+}
 
-    toLogin.addEventListener('click', () => {
-        authContainer.classList.remove('active');
-    });
+// Helper function to switch to Login View
+function showLogin() {
+    authContainer.classList.remove('active');
+}
+
+// Event Listeners (Desktop & Mobile)
+if (authContainer) {
+    if (toRegister) toRegister.addEventListener('click', showRegister);
+    if (toLogin) toLogin.addEventListener('click', showLogin);
+    
+    // Mobile text link listeners
+    if (mobileToRegister) mobileToRegister.addEventListener('click', showRegister);
+    if (mobileToLogin) mobileToLogin.addEventListener('click', showLogin);
 }
