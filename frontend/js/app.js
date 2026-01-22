@@ -202,27 +202,33 @@ const checkAdminStatus = () => {
     }
 };
 
-// Toggle menu (Mobile)
+/* --- UPDATED MOBILE MENU LOGIC --- */
 if (menuBtn) {
     menuBtn.addEventListener('click', () => {
+        // 1. Toggle the Menu
         navMenu.classList.toggle('open');
         menuBtn.classList.toggle('active');
+        
+        // 2. Lock the Scroll & Blur Background
+        document.body.classList.toggle('menu-open');
     });
 }
 
-// Close from X inside menu
+// Close Menu when clicking the 'X' inside
 if (menuClose) {
     menuClose.addEventListener('click', () => {
         navMenu.classList.remove('open');
         menuBtn.classList.remove('active');
+        document.body.classList.remove('menu-open'); // Unlock scroll
     });
 }
 
-// Close on link click
+// Close Menu when clicking a link
 document.querySelectorAll('.nav-menu a').forEach(link => {
     link.addEventListener('click', () => {
         navMenu.classList.remove('open');
         menuBtn.classList.remove('active');
+        document.body.classList.remove('menu-open'); // Unlock scroll
     });
 });
 
