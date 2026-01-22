@@ -71,7 +71,6 @@ html {
 /* Force the body to stay still when modal is open cite: 14 */
 body.modal-open {
     overflow: hidden;
-    height: 100vh;
 }
 
 button,
@@ -79,14 +78,15 @@ a {
     min-height: 44px;
 }
 
-/* GLOBAL SCROLL LOCK (Applies to Desktop & Mobile) */
+/* GLOBAL SCROLL LOCK (Fixed) */
 body.modal-open {
     overflow: hidden !important;
-    /* Stops the background from scrolling */
-    height: 100vh;
-    /* Locks the height to the screen size */
-    padding-right: 15px;
-    /* Optional: Prevents layout shift when scrollbar disappears */
+    position: relative;
+    /* Keeps the body steady */
+    touch-action: none;
+    /* Disables touch scrolling on background (Mobile) */
+    padding-right: 0 !important;
+    /* Prevents layout shift */
 }
 
 .container {
@@ -870,7 +870,6 @@ html {
 /* GLOBAL SCROLL LOCK */
 body.modal-open {
     overflow: hidden !important;
-    height: 100vh;
     padding-right: 0 !important;
     /* Force 0 padding for Mac users */
 }
@@ -1549,41 +1548,48 @@ a[href="admin.html"] {
 
 /* Locate this specific media query in your style.css */
 @media (max-width: 768px) {
+
     /* Add extra breathing room for pages without a Hero banner */
-    .library-section, 
+    .library-section,
     .profile-section,
     .admin-section {
-        padding-top: 60px !important; /* Pushes the title down so Nav doesn't hide it */
+        padding-top: 60px !important;
+        /* Pushes the title down so Nav doesn't hide it */
     }
 
     /* Optional: If the title itself needs more gap from the new padding */
     .section-title {
         margin-bottom: 1.5rem !important;
     }
+
     /* =======================================================
    FINAL POLISH (Menu Lock & Hero Spacing)
    ======================================================= */
 
-/* 1. Add Margin to "Discover Your Next Adventure" */
-.hero-content h2 {
-    margin-top: 50px !important; /* Adds the space you asked for */
-}
+    /* 1. Add Margin to "Discover Your Next Adventure" */
+    .hero-content h2 {
+        margin-top: 50px !important;
+        /* Adds the space you asked for */
+    }
 
-/* 2. PROFESSIONAL MENU: Lock Scroll & Blur Background */
-/* This class is added by JS when the menu opens */
-body.menu-open {
-    overflow: hidden !important; /* 🛑 STOPS SCROLLING */
-    height: 100vh;
-}
+    /* 2. PROFESSIONAL MENU: Lock Scroll & Blur Background */
+    /* This class is added by JS when the menu opens */
+    body.menu-open {
+        overflow: hidden !important;
+        /* 🛑 STOPS SCROLLING */
+        height: 100vh;
+    }
 
-/* 3. Blur the background content when menu is open */
-body.menu-open main,
-body.menu-open .hero,
-body.menu-open .search-box {
-    filter: blur(8px) brightness(0.4); /* Professional Blur & Dim */
-    pointer-events: none; /* 🛑 STOPS CLICKING BEHIND */
-    transition: all 0.3s ease;
-}
+    /* 3. Blur the background content when menu is open */
+    body.menu-open main,
+    body.menu-open .hero,
+    body.menu-open .search-box {
+        filter: blur(8px) brightness(0.4);
+        /* Professional Blur & Dim */
+        pointer-events: none;
+        /* 🛑 STOPS CLICKING BEHIND */
+        transition: all 0.3s ease;
+    }
 
     /* 1. Stack the Title ("All Games") and the Filter Box */
     .section-header {
@@ -2038,21 +2044,16 @@ body.menu-open .search-box {
         display: none;
     }
 
-    /* 5. LOCK BACKGROUND SCROLLING (Applied via JS below) */
     body.modal-open {
         overflow: hidden !important;
-        height: 100vh;
+        width: 100%;
     }
 }
 
 /* Media query for mobile screens */
 @media (max-width: 768px) {
 
-    /* This class will be added to the <body> via JavaScript */
-    body.modal-open {
-        overflow: hidden !important;
-        /* Prevents background scrolling */
-    }
+
 
     /* Dim and hide background content when the modal is active */
     body.modal-open main,

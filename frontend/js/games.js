@@ -180,10 +180,6 @@ function displayGames(games) {
   // 3. Render
   container.innerHTML = games.map(game => createGameCard(game)).join('');
 
-  // Re-attach event listeners for "Add to Cart" buttons
-  if (typeof attachGameCardListeners === 'function') {
-    attachGameCardListeners();
-  }
 }
 
 // Create game card HTML
@@ -237,55 +233,40 @@ function createGameCard(game, isFeatured = false) {
   `;
 }
 
-// 2. Updated attachGameCardListeners: Now safely calls the gatekeeper
-function attachGameCardListeners() {
-  document.querySelectorAll('.game-card').forEach(card => {
-    card.addEventListener('click', (e) => {
-      // Don't trigger if clicking on buttons
-      if (e.target.tagName === 'BUTTON') return;
 
-      const gameId = card.dataset.gameId;
-      if (gameId) {
-        // This now triggers the scroll reset correctly!
-        viewGameDetails(gameId);
-      }
-    });
-  });
-}
 
-/* --- Replace the old viewGameDetails in games.js with this synced version --- */
 async function viewGameDetails(gameId) {
-  const modal = document.getElementById('gameModal');
-  const container = document.getElementById('gameDetails');
+    const modal = document.getElementById('gameModal');
+    const contentContainer = document.getElementById('gameDetails');
 
-  if (!modal || !container) return;
+    if (!modal || !contentContainer) return;
 
-  try {
-    // 1. Fetch data from API
-    const game = await gamesAPI.getById(gameId); 
-    
-    // 2. Render content into the modal
-    displayGameDetails(game); 
+    // 1. CLEAR OLD DATA (Fixes the "Ghost Content" issue)
+    contentContainer.innerHTML = `
+        <div style="display:flex; justify-content:center; align-items:center; height:300px;">
+            <div class="loading"></div>
+        </div>
+    `;
 
-    // 3. PREPARE MODAL
+    // 2. LOCK SCROLL (Fixes the "Jump to Top" issue)
+    if (typeof window.lockScroll === 'function') {
+        window.lockScroll();
+    }
+
+    // 3. OPEN MODAL
     modal.style.display = 'block';
-    
-    // Reset scroll of the INTERNAL container so the 'X' stays put
-    container.scrollTop = 0;
-
-    // 4. TRIGGER SMOOTH TRANSITION
     requestAnimationFrame(() => {
         modal.classList.add('show');
-        document.body.classList.add('modal-open'); 
     });
 
-  } catch (error) {
-    console.error('Failed to load game details:', error);
-    if (typeof showNotification === 'function') {
-        showNotification('Error loading game information', 'error');
+    try {
+        // 4. FETCH & SHOW NEW DATA
+        const game = await gamesAPI.getById(gameId);
+        displayGameDetails(game);
+    } catch (error) {
+        contentContainer.innerHTML = `<p class="empty-state">Failed to load game.</p>`;
     }
-  }
-} // Removed the trailing comma here
+}
 
 // Display game details in modal
 function displayGameDetails(game) {
