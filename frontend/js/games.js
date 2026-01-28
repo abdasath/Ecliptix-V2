@@ -374,10 +374,7 @@ document.addEventListener('click', (e) => {
         }
     }
 
-    // 2. Check if the user clicked outside the card (on the darkened background)
-    if (e.target === gameModal || e.target === loginModal) {
-        closeSpecificModal(e.target);
-    }
+    
 });
 
 // Helper function to handle the 400ms smooth fade-out
@@ -390,16 +387,7 @@ function closeSpecificModal(modal) {
 }
 }
 
-// Restoration logic in games.js
-window.addEventListener('click', (e) => {
-    const gameModal = document.getElementById('gameModal');
-    const loginModal = document.getElementById('loginModal');
-    
-    // If the user clicks exactly on the darkened background area
-    if (e.target === gameModal || e.target === loginModal) {
-        closeLoginModal(); // Triggers the smooth fade-out and removes 'modal-open'
-    }
-}); 
+
 
 
 // Setup filters

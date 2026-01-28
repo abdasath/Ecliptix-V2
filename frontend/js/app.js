@@ -242,12 +242,6 @@ document.querySelectorAll('.close').forEach(btn => {
     });
 });
 
-// Restore scroll when clicking outside ANY modal
-window.addEventListener('click', (e) => {
-    if (e.target.classList.contains('modal')) {
-        closeModalUniversal(e.target);
-    }
-});
 
 function closeModalUniversal(modal) {
     modal.classList.remove('show');

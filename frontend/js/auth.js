@@ -200,13 +200,6 @@ function setupAuthModals() {
   });
 }
 
-  if (loginModal) {
-    window.addEventListener('click', (e) => {
-      if (e.target === loginModal) {
-        loginModal.style.display = 'none';
-      }
-    });
-  }
 
   if (loginSubmitBtn) {
     loginSubmitBtn.addEventListener('click', handleLogin);
@@ -438,10 +431,10 @@ function closeLoginModal() {
   }
 }
 
-// Ensure the "X" button and outside-clicks also remove the class
+// Ensure only the "X" button removes the class
 document.addEventListener('click', (e) => {
-  const loginModal = document.getElementById('loginModal');
-  if (e.target.classList.contains('close') || e.target === loginModal) {
+  // We removed "|| e.target === loginModal" so background clicks do nothing
+  if (e.target.classList.contains('close')) { 
     closeLoginModal();
   }
 });
