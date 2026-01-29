@@ -85,10 +85,16 @@ body.modal-open {
     /* Keeps the body steady */
     touch-action: none;
     /* Disables touch scrolling on background (Mobile) */
-    padding-right: 0 !important;
+    /* padding-right: 0 !important; */
     /* Prevents layout shift */
 }
-
+/* Add this to your cart's scrollable area */
+#cartItems, .modal-content {
+    overscroll-behavior: contain;
+}
+#cartItems::-webkit-scrollbar {
+    background: transparent;
+}
 .container {
     max-width: 1400px;
     margin: 0 auto;
@@ -798,82 +804,81 @@ html {
     /* Ensure no background appears */
 }
 
+
+
+
+
+
+
 /* =========================================
-   FIXED HEADER CART MODAL (New)
+   FIXED HEADER & SCROLLABLE CART FIX
    ========================================= */
 
-/* 1. Make the Cart Modal a "Flex Column" */
-/* This forces the header and footer to stay put, while the middle scrolls */
+/* 1. Force the Cart Modal to be a Flex Column */
 #cartModal .modal-content {
     display: flex;
     flex-direction: column;
-    max-height: 85vh;
-    /* Limits height so scrolling activates */
-    overflow: hidden;
-    /* Stops the outer box from scrolling */
+    height: 85vh; /* Sets a fixed height so the middle is forced to scroll */
+    max-height: 665px; /* Adjust based on your preference */
+    overflow: hidden; /* Stops the whole card from expanding */
     padding: 25px;
 }
 
-/* 2. The "Shopping Cart" Title (Fixed Top) */
+/* 2. The Header (Fixed Top) */
 #cartModal h2 {
-    flex-shrink: 0;
-    /* Prevents squashing */
-    margin-bottom: 30px;
-    /* <--- The margin you asked for */
+    flex-shrink: 0; /* Prevents title from being squashed */
     padding-bottom: 15px;
+    margin-bottom: 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    /* Adds a clean separator line */
-    background: transparent;
-    z-index: 10;
 }
 
-/* 3. The List of Items (Scrollable Middle) */
+/* 3. The List of Items (The only part that scrolls) */
 #cartItems {
-    flex-grow: 1;
-    /* Takes up all remaining space */
-    overflow-y: auto;
-    /* Enables scrolling ONLY inside this list */
-    padding-right: 10px;
-    /* Space for the scrollbar */
-    margin-bottom: 20px;
-    /* Space before the Total */
-
-    /* Custom Scrollbar Styling */
+    flex-grow: 1; /* Takes up all available space in the middle */
+    overflow-y: auto; /* Enables the scrollbar ONLY here */
+    padding-right: 10px; /* Space for scrollbar */
+    overscroll-behavior: contain; /* Stops the background page from moving */
+    
+    /* Custom Scrollbar for a cleaner look */
     scrollbar-width: thin;
     scrollbar-color: #333 transparent;
 }
 
-/* Webkit Scrollbar (Chrome/Safari) */
+/* 4. The Footer (Fixed Bottom) */
+.cart-total, 
+#checkoutBtn {
+    flex-shrink: 0; /* Keeps total and button at the bottom */
+    margin-top: auto; 
+    padding-top: 15px;
+}
+
+/* Webkit Scrollbar Styling (Chrome/Safari) */
 #cartItems::-webkit-scrollbar {
     width: 6px;
 }
-
 #cartItems::-webkit-scrollbar-thumb {
-    background-color: #333;
+    background: #333;
     border-radius: 10px;
-}
-
-/* 4. The Footer (Total & Checkout) - Fixed Bottom */
-.cart-total {
-    flex-shrink: 0;
-    margin-top: auto;
-    /* Pushes it to the bottom if list is short */
-    padding-top: 15px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-#checkoutBtn {
-    flex-shrink: 0;
-    margin-top: 15px;
 }
 
 /* GLOBAL SCROLL LOCK */
 body.modal-open {
     overflow: hidden !important;
-    padding-right: 0 !important;
+    /* padding-right: 0 !important; */
     /* Force 0 padding for Mac users */
 }
-
+/* Update your cart container */
+#cartItems {
+    flex-grow: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain; /* Prevents the background from shaking when reaching the top/bottom */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling for mobile */
+}
+/* Update this block in style.css */
+html {
+    scrollbar-gutter: stable !important;
+    overflow-y: scroll; /* Forces the scrollbar 'track' to always exist */
+}
 /* For modern browsers to handle this automatically */
 html {
     scrollbar-gutter: stable;
