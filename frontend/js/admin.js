@@ -1,14 +1,22 @@
 // Admin Panel Management
 let allAdminGames = [];
 
-// Initialize admin panel on page load
 document.addEventListener('DOMContentLoaded', () => {
+  const adminContainer = document.getElementById('adminPanelContainer'); // Ensure your HTML has this ID
+
   if (!isAuthenticated()) {
-    alert('Please login to access admin panel');
+    // 1. Immediately hide everything if somehow CSS failed
+    if (adminContainer) adminContainer.style.display = 'none';
+    document.body.innerHTML = ''; // Blank the entire page
+    
+    // 2. Alert and Redirect
+    alert('Unauthorized Access! Redirecting to home...');
     window.location.href = 'index.html';
     return;
   }
 
+  // If they ARE authenticated, show the content and load data
+  if (adminContainer) adminContainer.style.display = 'block';
   loadAdminGames();
   setupGameForm();
   setupLogout();
@@ -42,8 +50,8 @@ function displayAdminGames(games) {
 // Create admin game card
 function createAdminGameCard(game) {
   const finalPrice = game.discount > 0
-    ? game.price * (1 - game.discount / 100)
-    : game.price;
+  ? Math.round(game.price * (1 - game.discount / 100)) // Added Math.round here
+  : game.price;
 
   return `
     <div class="game-card">

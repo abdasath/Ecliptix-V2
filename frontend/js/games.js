@@ -185,8 +185,8 @@ function displayGames(games) {
 // Create game card HTML
 function createGameCard(game, isFeatured = false) {
   const finalPrice = game.discount > 0
-    ? game.price * (1 - game.discount / 100)
-    : game.price;
+  ? Math.round(game.price * (1 - game.discount / 100)) // Added Math.round here
+  : game.price;
 
   const discountBadge = game.discount > 0
     ? `<span class="discount-badge">-${game.discount}%</span>`
@@ -276,8 +276,8 @@ function displayGameDetails(game) {
 
   // Pricing Logic
   const finalPrice = game.discount > 0
-    ? game.price * (1 - game.discount / 100)
-    : game.price;
+  ? Math.round(game.price * (1 - game.discount / 100)) // Added Math.round here
+  : game.price;
 
   const discountBadge = game.discount > 0
     ? `<span class="discount-badge">-${game.discount}% OFF</span>`

@@ -54,14 +54,14 @@ async function addToCart(gameId) {
   if (!isAuthenticated()) {
     // REPLACED ALERT
     showNotification('Please login to add games to cart', 'error');
-    
+
     const loginModal = document.getElementById('loginModal');
     if (loginModal) {
-        loginModal.style.display = 'block';
-        requestAnimationFrame(() => {
-            loginModal.classList.add('show');
-            document.body.classList.add('modal-open');
-        });
+      loginModal.style.display = 'block';
+      requestAnimationFrame(() => {
+        loginModal.classList.add('show');
+        document.body.classList.add('modal-open');
+      });
     }
     return;
   }
@@ -122,9 +122,9 @@ function updateCartUI() {
       cartItemsContainer.innerHTML = cartItems.map(item => {
         const game = item.game;
         if (!game) return '';
-        
-        const finalPrice = game.discount > 0 
-          ? game.price * (1 - game.discount / 100) 
+
+        const finalPrice = game.discount > 0
+          ? Math.round(game.price * (1 - game.discount / 100)) // Added Math.round here
           : game.price;
         total += finalPrice;
 
@@ -164,25 +164,25 @@ function setupCartModal() {
         }
         // REPLACED ALERT
         showNotification('Please login to view your cart', 'error');
-        
+
         const loginModal = document.getElementById('loginModal');
         if (loginModal) {
-            loginModal.style.display = 'block';
-            setTimeout(() => {
-                loginModal.classList.add('show');
-                document.body.classList.add('modal-open'); 
-            }, 10);
+          loginModal.style.display = 'block';
+          setTimeout(() => {
+            loginModal.classList.add('show');
+            document.body.classList.add('modal-open');
+          }, 10);
         }
         return;
       }
-      
+
       if (cartModal) {
-          cartModal.style.display = 'block';
-          requestAnimationFrame(() => {
-              cartModal.classList.add('show');
-              document.body.classList.add('modal-open');
-          });
-          loadCart(); 
+        cartModal.style.display = 'block';
+        requestAnimationFrame(() => {
+          cartModal.classList.add('show');
+          document.body.classList.add('modal-open');
+        });
+        loadCart();
       }
     });
   }
@@ -194,32 +194,32 @@ function setupCartModal() {
 
 /* --- Updated handleCheckout in cart.js --- */
 async function handleCheckout() {
-    try {
-        const response = await ordersAPI.checkout();
-        
-        if (response._id) {
-            showNotification('Purchase successful!', 'success');
-            
-            cartItems = []; 
-            updateCartUI(); 
-            
-            if (typeof checkAuthStatus === 'function') {
-                await checkAuthStatus(); 
-            }
-            
-            document.getElementById('cartModal').style.display = 'none';
-            document.body.classList.remove('modal-open');
-            document.querySelector('.modal.show')?.classList.remove('show');
+  try {
+    const response = await ordersAPI.checkout();
 
-            if (typeof loadLibrary === 'function') loadLibrary();
-            if (typeof loadProfile === 'function') loadProfile();
-            
-        } else {
-            // REPLACED ALERT
-            showNotification(response.message || 'Checkout failed', 'error');
-        }
-    } catch (error) {
-        // REPLACED ALERT
-        showNotification(error.message || 'Checkout failed', 'error');
+    if (response._id) {
+      showNotification('Purchase successful!', 'success');
+
+      cartItems = [];
+      updateCartUI();
+
+      if (typeof checkAuthStatus === 'function') {
+        await checkAuthStatus();
+      }
+
+      document.getElementById('cartModal').style.display = 'none';
+      document.body.classList.remove('modal-open');
+      document.querySelector('.modal.show')?.classList.remove('show');
+
+      if (typeof loadLibrary === 'function') loadLibrary();
+      if (typeof loadProfile === 'function') loadProfile();
+
+    } else {
+      // REPLACED ALERT
+      showNotification(response.message || 'Checkout failed', 'error');
     }
+  } catch (error) {
+    // REPLACED ALERT
+    showNotification(error.message || 'Checkout failed', 'error');
+  }
 }

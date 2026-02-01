@@ -7,6 +7,38 @@ document.addEventListener('DOMContentLoaded', () => {
   setupAuthModals();
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    const icons = document.querySelectorAll('.input-box i');
+
+    icons.forEach(icon => {
+        icon.addEventListener('click', () => {
+            const input = icon.previousElementSibling;
+
+            // Password Toggle Logic
+            if (icon.classList.contains('bxs-lock-alt') || icon.classList.contains('bxs-lock-open-alt')) {
+                if (input.type === "password") {
+                    input.type = "text";
+                    icon.classList.replace('bxs-lock-alt', 'bxs-lock-open-alt');
+                    
+                    // CHANGE: Set to White instead of Blue
+                    icon.style.color = "#ffffff"; 
+                    icon.style.textShadow = "0 0 8px rgba(255,255,255,0.5)"; // Optional: Keep it glowing
+                } else {
+                    input.type = "password";
+                    icon.classList.replace('bxs-lock-open-alt', 'bxs-lock-alt');
+                    
+                    // Reset to original gray
+                    icon.style.color = ""; 
+                    icon.style.textShadow = "";
+                }
+            } 
+            else {
+                input.focus();
+            }
+        });
+    });
+});
+
 // Check if user is logged in
 /* --- Update in auth.js --- */
 async function checkAuthStatus() {
