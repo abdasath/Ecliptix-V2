@@ -632,7 +632,7 @@ input:-webkit-autofill:active {
    ========================================= */
 #adminNavLink a {
     color: #e94560 !important; /* Deep Red */
-    font-weight: 600 !important;
+    font-weight: 800 !important;
     text-transform: uppercase;
     letter-spacing: 1px;
     text-shadow: 0 0 10px rgba(233, 69, 96, 0.6); /* Neon Glow */
