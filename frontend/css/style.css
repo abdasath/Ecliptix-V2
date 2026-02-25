@@ -641,9 +641,9 @@ input:-webkit-autofill:active {
 
 /* Update this specific block in your style.css */
 #adminNavLink a:hover {
-    background: rgba(233, 69, 96, 0.25) !important; /* Increased opacity for a clearer lite-red background */
+    background: rgba(233, 69, 96, 0.05) !important; /* Dropped to 5% opacity for that barely-there look */
     text-shadow: 0 0 15px rgba(233, 69, 96, 1);
-    border-radius: 6px !important; /* Gives the background smooth, pill-like corners */
+    border-radius: 4px !important; /* Matches the standard links perfectly */
 }
 
 /* Changes the sliding underline to match the red neon */
