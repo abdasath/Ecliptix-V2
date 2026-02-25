@@ -167,24 +167,23 @@ async function handleRegister() {
 /* --- Update in auth.js --- */
 function checkAdminAccess() {
   const userString = localStorage.getItem('userInfo');
-  const adminLink = document.querySelector('a[href="admin.html"]');
+  const adminNavItem = document.getElementById('adminNavLink');
 
-  if (!adminLink) return;
-
-  // Target the parent <li> to maintain flexbox spacing
-  const adminNavItem = adminLink.parentElement;
+  // If the link doesn't exist on this specific page, do nothing
+  if (!adminNavItem) return;
 
   if (userString) {
     const user = JSON.parse(userString);
 
     if (user.role === 'admin') {
-      // Show the whole list item so it flows perfectly in the menu
+      // Show the list item if they are an admin
       adminNavItem.style.setProperty('display', 'block', 'important');
-      adminLink.style.setProperty('display', 'inline-block', 'important');
     } else {
+      // Hide it for regular users
       adminNavItem.style.setProperty('display', 'none', 'important');
     }
   } else {
+    // Hide it for logged-out users
     adminNavItem.style.setProperty('display', 'none', 'important');
   }
 }
