@@ -607,7 +607,10 @@ input:-webkit-autofill:active {
     /* Uniform width for symmetry */
     margin: 15px 0;
 }
-
+/* Hides sensitive layout structures until JS confirms auth */
+.auth-protected {
+    display: none !important;
+}
 /* --- Input Field Styling --- */
 .input-box input {
     width: 100%;

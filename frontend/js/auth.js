@@ -348,6 +348,11 @@ function updateUIForLoggedIn(user) {
       userWallet.textContent = `₹${balance.toLocaleString('en-IN')}`;
     }
   }
+
+  // NEW: Reveal protected content once user is verified!
+  document.querySelectorAll('.auth-protected').forEach(element => {
+      element.classList.remove('auth-protected');
+  });
 }
 
 // Update UI for logged out user
