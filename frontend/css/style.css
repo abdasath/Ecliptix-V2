@@ -627,7 +627,29 @@ input:-webkit-autofill:active {
     outline: none;
     transition: border-color 0.3s;
 }
+/* =========================================
+   UNIQUE ADMIN NAVIGATION LINK
+   ========================================= */
+#adminNavLink a {
+    color: #e94560 !important; /* Deep Red */
+    font-weight: 800 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(233, 69, 96, 0.6); /* Neon Glow */
+    transition: all 0.3s ease;
+}
 
+/* Red glow background on hover */
+#adminNavLink a:hover {
+    background: rgba(233, 69, 96, 0.1) !important;
+    text-shadow: 0 0 15px rgba(233, 69, 96, 1);
+}
+
+/* Changes the sliding underline to match the red neon */
+#adminNavLink a::after {
+    background: #e94560 !important;
+    box-shadow: 0 0 8px #e94560;
+}
 .input-box input:focus {
     border-color: #e6e6e6;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
