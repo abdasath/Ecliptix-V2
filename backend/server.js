@@ -8,6 +8,9 @@ const PORT = process.env.PORT || 5000;
 const connectDB = require("./config/database");
 connectDB();
 
+// Initialize Redis (runs in background, app works without it)
+const redis = require('./config/redis');
+
 
 const app = express();
 
@@ -23,10 +26,20 @@ app.use('/api/cart', require('./routes/cart'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/wallet', require('./routes/wallet'));
+app.use('/api/payment', require('./routes/payment')); // Razorpay
 
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Gaming Platform API is running' });
+
+// Health check — shows status of all services
+app.get('/api/health', async (req, res) => {
+  const redisStatus = redis.status === 'ready' ? 'connected' : 'disconnected';
+  res.json({ 
+    status: 'OK', 
+    message: 'Ecliptix API is running',
+    services: {
+      mongodb: 'connected',
+      redis: redisStatus
+    }
+  });
 });
 
 // Seed route (for development - add sample games)

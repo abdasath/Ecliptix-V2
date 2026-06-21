@@ -294,8 +294,17 @@ async function handleLogin() {
 }
 
 
-/* --- Update handleLogout in js/auth.js --- */
-function handleLogout() {
+/* --- Updated handleLogout — now blacklists JWT in Redis server-side --- */
+async function handleLogout() {
+  // 1. Tell backend to blacklist this token in Redis (real server-side logout)
+  try {
+    await authAPI.logout();
+  } catch (e) {
+    // If backend call fails (e.g. server offline), still clear client-side
+    console.warn('Server logout failed, clearing locally:', e.message);
+  }
+
+  // 2. Clear client-side storage
   localStorage.removeItem('token');
   localStorage.removeItem('userInfo');
   currentUser = null;
@@ -304,12 +313,12 @@ function handleLogout() {
   checkAdminAccess();
   clearAuthFields();
 
-  // 1. Clear the global items array
+  // 3. Clear the global cart items array
   if (typeof cartItems !== 'undefined') {
     cartItems = [];
   }
 
-  // 2. Clear the Cart Modal list so the next person doesn't see your games
+  // 4. Clear the Cart Modal list so the next person doesn't see your games
   const cartItemsContainer = document.getElementById('cartItems');
   const cartTotal = document.getElementById('cartTotal');
   if (cartItemsContainer) {
@@ -319,7 +328,7 @@ function handleLogout() {
     cartTotal.textContent = '0';
   }
 
-  // 3. Reset the count badge
+  // 5. Reset the cart count badge
   const cartCount = document.getElementById('cartCount');
   if (cartCount) {
     cartCount.textContent = '0';

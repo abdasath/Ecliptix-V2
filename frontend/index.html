@@ -22,17 +22,17 @@
 
         <div class="container">
             <div class="nav-brand">
-                <a href="/">
+                <a href="index.html">
                     <h1>Ecliptix</h1>
                 </a>
             </div>
             <ul class="nav-menu">
 
                 <li class="menu-close">✕</li>
-                <li><a href="/" class="active">Store</a></li>
-                <li><a href="/library">Library</a></li>
-                <li><a href="/profile">Profile</a></li>
-                <li id="adminNavLink" style="display: none;"><a href="/admin">Admin</a></li>
+                <li><a href="index.html" class="active">Store</a></li>
+                <li><a href="library.html">Library</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li id="adminNavLink" style="display: none;"><a href="admin.html">Admin</a></li>
             </ul>
             <div class="nav-actions">
                 <div class="search-box">
@@ -55,12 +55,18 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h2>Discover Your Next Adventure</h2>
-            <p>Browse thousands of games and find your perfect match</p>
+    <!-- Hero Carousel Section -->
+    <section class="hero-carousel" id="heroCarousel">
+        <div class="carousel-inner" id="carouselInner">
+            <!-- Carousel slides will be injected here by JS -->
         </div>
+        
+        <!-- Carousel Controls -->
+        <button class="carousel-control prev" id="carouselPrev"><i class='bx bx-chevron-left'></i></button>
+        <button class="carousel-control next" id="carouselNext"><i class='bx bx-chevron-right'></i></button>
+        
+        <!-- Carousel Indicators -->
+        <div class="carousel-indicators" id="carouselIndicators"></div>
     </section>
 
     <!-- Main Content -->

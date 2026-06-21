@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/components.css">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+    <!-- Razorpay Checkout SDK -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 
 <body>
@@ -21,16 +23,16 @@
         <div class="container">
 
             <div class="nav-brand">
-                <a href="/">
+                <a href="index.html">
                     <h1>Ecliptix</h1>
                 </a>
             </div>
 
             <ul class="nav-menu">
-                <li><a href="/">Store</a></li>
-                <li><a href="/library">Library</a></li>
-                <li><a href="/profile" class="active">Profile</a></li>
-                <li id="adminNavLink" style="display: none;"><a href="/admin">Admin</a></li>
+                <li><a href="index.html">Store</a></li>
+                <li><a href="library.html">Library</a></li>
+                <li><a href="profile.html" class="active">Profile</a></li>
+                <li id="adminNavLink" style="display: none;"><a href="admin.html">Admin</a></li>
             </ul>
 
            
@@ -53,13 +55,38 @@
                     </div>
                 </div>
 
-                <div class="profile-card">
-                    <h3>Wallet</h3>
+                <div class="profile-card" id="walletCard">
+                    <h3>💰 Wallet</h3>
                     <div class="wallet-section">
                         <p class="wallet-balance">Balance: ₹<span id="profileWallet">0</span></p>
-                        <div class="add-funds">
-                            <input type="number" id="fundAmount" placeholder="Amount" min="1" step="0.01">
-                            <button id="addFundsBtn" class="btn-primary">Add Funds</button>
+
+                        <!-- Quick amount chips -->
+                        <div class="wallet-chips" style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+                            <button class="chip-btn" onclick="setAmount(100)">₹100</button>
+                            <button class="chip-btn" onclick="setAmount(500)">₹500</button>
+                            <button class="chip-btn" onclick="setAmount(1000)">₹1,000</button>
+                            <button class="chip-btn" onclick="setAmount(2000)">₹2,000</button>
+                            <button class="chip-btn" onclick="setAmount(5000)">₹5,000</button>
+                        </div>
+
+                        <div class="add-funds" style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;">
+                            <input type="number" id="fundAmount" placeholder="Enter amount (₹1 – ₹5,000)" min="1" max="5000" step="1" style="flex:1;min-width:140px;">
+                            <button id="razorpayBtn" class="btn-primary" onclick="handleRazorpayPayment()" style="display:flex;align-items:center;gap:0.5rem;white-space:nowrap;">
+                                <i class='bx bx-credit-card'></i> Pay with Razorpay
+                            </button>
+                        </div>
+
+                        <!-- Razorpay branding + test mode notice -->
+                        <div style="margin-top:0.75rem;display:flex;align-items:center;gap:0.5rem;opacity:0.6;font-size:0.78rem;">
+                            <span>🔒 Secured by Razorpay</span>
+                            <span style="background:#6c757d;color:#fff;padding:2px 6px;border-radius:4px;font-size:0.7rem;">TEST MODE</span>
+                        </div>
+
+                        <!-- Test credentials hint -->
+                        <div id="testCardHint" style="margin-top:0.75rem;background:rgba(0,116,228,0.08);border:1px solid rgba(0,116,228,0.25);border-radius:8px;padding:0.75rem;font-size:0.8rem;line-height:1.6;">
+                            <strong>🧪 Test Credentials:</strong><br>
+                            💳 <strong>Card:</strong> 4718 6098 4027 5397 &nbsp;|&nbsp; Expiry: 10/25 &nbsp;|&nbsp; CVV: 123 &nbsp;|&nbsp; OTP: 1234<br>
+                            📱 <strong>UPI (easiest):</strong> <code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:3px;">success@razorpay</code>
                         </div>
                     </div>
                 </div>

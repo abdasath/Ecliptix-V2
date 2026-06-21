@@ -1,5 +1,9 @@
-// API Configuration
-const API_BASE_URL = "https://ecliptix-v2.onrender.com";
+// API Configuration — auto-detects local dev vs production
+const API_BASE_URL = (
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+) ? 'http://localhost:5000' : 'https://ecliptix-v2.onrender.com';
+
 
 // Helper function to get auth token
 function getAuthToken() {
@@ -84,7 +88,13 @@ window.authAPI = {
     }),
 
   getCurrentUser: () =>
-    apiRequest('/api/auth/me')
+    apiRequest('/api/auth/me'),
+
+  // Blacklists the JWT in Redis server-side (real logout)
+  logout: () =>
+    apiRequest('/api/auth/logout', {
+      method: 'POST'
+    })
 };
 
 
@@ -102,13 +112,30 @@ window.gamesAPI = {
 };
 
 
-/* --- Update this section in js/api.js --- */
+/* --- Wallet API (direct add — admin or fallback only) --- */
 window.walletAPI = {
   addFunds: (amount) =>
-    // FIX: Added /orders to the path to match your backend
-    apiRequest('/api/orders/wallet/add', { 
+    apiRequest('/api/orders/wallet/add', {
       method: 'POST',
       body: { amount: parseFloat(amount) }
     })
 };
+
+/* --- Razorpay Payment API --- */
+window.paymentAPI = {
+  // Step 1: Create a Razorpay order on backend
+  createOrder: (amount) =>
+    apiRequest('/api/payment/create-order', {
+      method: 'POST',
+      body: { amount: parseFloat(amount) }
+    }),
+
+  // Step 2: Verify payment signature on backend after user pays
+  verifyPayment: (paymentData) =>
+    apiRequest('/api/payment/verify', {
+      method: 'POST',
+      body: paymentData
+    }),
+};
+
 

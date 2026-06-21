@@ -103,15 +103,38 @@ function displayOrderHistory(orders) {
 
 // Setup wallet actions
 function setupWalletActions() {
+  // Legacy addFundsBtn support (not used now — Razorpay button handles it inline)
   const addFundsBtn = document.getElementById('addFundsBtn');
-  
   if (addFundsBtn) {
     addFundsBtn.addEventListener('click', handleAddFunds);
   }
+
+  // Check for payment result query params (Razorpay redirects back here)
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('payment') === 'success') {
+    showNotification('Payment successful! Wallet updated.', 'success');
+    window.history.replaceState({}, '', window.location.pathname);
+  } else if (params.get('payment') === 'cancel') {
+    showNotification('Payment cancelled.', 'info');
+    window.history.replaceState({}, '', window.location.pathname);
+  }
 }
 
-/* --- Updated handleAddFunds in js/profile.js --- */
-async function handleAddFunds() {
+// Quick amount chip helper
+function setAmount(value) {
+  const input = document.getElementById('fundAmount');
+  if (input) {
+    input.value = value;
+    // Highlight active chip
+    document.querySelectorAll('.chip-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+}
+
+// ─────────────────────────────────────────────
+// RAZORPAY PAYMENT FLOW
+// ─────────────────────────────────────────────
+async function handleRazorpayPayment() {
   const amountInput = document.getElementById('fundAmount');
   const amount = parseFloat(amountInput?.value);
 
@@ -120,37 +143,124 @@ async function handleAddFunds() {
     return;
   }
 
-  // 1. Get Current User Data
-  const user = getCurrentUser(); 
-  
-  // 2. Define Limits
-  const DAILY_LIMIT = 50000; // 50k Limit for users
+  if (amount > 5000) {
+    showNotification('Maximum ₹5,000 per transaction', 'error');
+    return;
+  }
 
-  // 3. Admin Bypass Check
-  if (user.role === 'admin') {
-      // Admins can add ANY amount (No limit logic applied)
-      console.log("Admin override: Adding funds without limit.");
-  } else {
-      // Regular Users: Check if THIS transaction exceeds 50k
-      if (amount > DAILY_LIMIT) {
-          showNotification(`You can only add up to ₹${DAILY_LIMIT.toLocaleString()} per transaction.`, 'error');
-          return;
-      }
+  const btn = document.getElementById('razorpayBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Creating order...';
   }
 
   try {
-    const response = await walletAPI.addFunds(amount);
-    showNotification(`₹${amount.toLocaleString()} added successfully!`, 'success');
-    
-    // Refresh to show new balance
-    checkAuthStatus(); 
-    
-    // Clear input
-    if(amountInput) amountInput.value = '';
+    // ── Step 1: Create order on backend ──
+    const orderData = await paymentAPI.createOrder(amount);
+
+    // ── Step 2: Open Razorpay Checkout Popup ──
+    const options = {
+      key: orderData.keyId,
+      amount: orderData.amount,         // in paise
+      currency: orderData.currency,
+      name: 'Ecliptix',
+      description: `Add ₹${amount.toLocaleString('en-IN')} to Wallet`,
+      image: 'https://i.pinimg.com/736x/07/3e/90/073e9014436b6ce0c67ebded83e854ff.jpg',
+      order_id: orderData.orderId,
+
+      // ── Step 3: Called by Razorpay when payment succeeds ──
+      handler: async function (response) {
+        showNotification('Verifying payment...', 'info');
+
+        try {
+          // ── Step 4: Verify signature on backend ──
+          const result = await paymentAPI.verifyPayment({
+            razorpay_order_id:   response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature:  response.razorpay_signature,
+            amount: orderData.amount,   // in paise — backend converts back
+          });
+
+          // ── Step 5: Update UI with new balance ──
+          showNotification(result.message, 'success');
+
+          // Refresh wallet display
+          const walletEl = document.getElementById('profileWallet');
+          const navWallet = document.getElementById('userWallet');
+          if (walletEl) walletEl.textContent = result.wallet.toLocaleString('en-IN');
+          if (navWallet) navWallet.textContent = `₹${result.wallet.toLocaleString('en-IN')}`;
+
+          // Update localStorage user info
+          const savedUser = JSON.parse(localStorage.getItem('userInfo') || '{}');
+          savedUser.wallet = result.wallet;
+          localStorage.setItem('userInfo', JSON.stringify(savedUser));
+
+          // Clear input + chip highlight
+          if (amountInput) amountInput.value = '';
+          document.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
+
+        } catch (verifyError) {
+          showNotification(verifyError.message || 'Verification failed. Contact support.', 'error');
+        }
+      },
+
+      prefill: {
+        name:  orderData.userName  || '',
+        email: orderData.userEmail || '',
+      },
+
+      theme: {
+        color: '#0074e4',   // Ecliptix blue
+        hide_topbar: false,
+      },
+
+      // Enable all payment methods explicitly
+      config: {
+        display: {
+          blocks: {
+            upi: {
+              name: 'Pay via UPI',
+              instruments: [{ method: 'upi' }],
+            },
+            card: {
+              name: 'Pay via Card',
+              instruments: [{ method: 'card' }],
+            },
+          },
+          sequence: ['block.upi', 'block.card'],
+          preferences: { show_default_blocks: true },
+        },
+      },
+
+      modal: {
+        ondismiss: function () {
+          showNotification('Payment cancelled.', 'info');
+        }
+      }
+    };
+
+    const rzp = new Razorpay(options);
+
+    rzp.on('payment.failed', function (response) {
+      showNotification(`Payment failed: ${response.error.description}`, 'error');
+      console.error('Razorpay payment failed:', response.error);
+    });
+
+    rzp.open();
 
   } catch (error) {
-    showNotification(error.message || 'Failed to add funds', 'error');
+    showNotification(error.message || 'Failed to initiate payment. Try again.', 'error');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bx bx-credit-card"></i> Pay with Razorpay';
+    }
   }
+}
+
+/* --- Legacy handleAddFunds (kept for backward compat) --- */
+async function handleAddFunds() {
+  handleRazorpayPayment();
 }
 
 // Show login prompt

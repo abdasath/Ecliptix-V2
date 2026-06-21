@@ -89,6 +89,11 @@ async function loadGames(page = 1) {
     totalPages = data.totalPages || 1;
     currentPage = data.page || 1; // Note: backend returns 'page', not 'currentPage'
 
+    // Shuffle games if no specific sort filter is selected (Dynamic feel)
+    if (!sortFilter) {
+      allGames = allGames.sort(() => Math.random() - 0.5);
+    }
+
     displayGames(allGames);
     displayPagination();
 
@@ -147,6 +152,13 @@ const handleGridClick = (e) => {
 
 // Display featured games
 function displayFeaturedGames(games) {
+  // 1. Setup Hero Carousel with top 5 games
+  const topGames = games.slice(0, 5);
+  if (document.getElementById('heroCarousel')) {
+    setupHeroCarousel(topGames);
+  }
+
+  // 2. Setup Featured Games Grid
   const container = document.getElementById('featuredGames');
   if (!container) return;
 
@@ -159,27 +171,129 @@ function displayFeaturedGames(games) {
   attachGameCardListeners();
 }
 
+// --- HERO CAROUSEL LOGIC ---
+let currentSlideIndex = 0;
+let carouselInterval;
+let carouselGames = [];
+
+function setupHeroCarousel(games) {
+  if (!games || games.length === 0) return;
+  carouselGames = games;
+  
+  const inner = document.getElementById('carouselInner');
+  const indicators = document.getElementById('carouselIndicators');
+  
+  if (!inner || !indicators) return;
+
+  // Build Slides
+  inner.innerHTML = games.map((game, index) => {
+    const finalPrice = game.discount > 0 
+      ? Math.round(game.price * (1 - game.discount / 100)) 
+      : game.price;
+      
+    // Use high-res screenshot for banner if available, otherwise fallback to cover
+    const bannerImage = (game.images && game.images.length > 0) ? game.images[0] : game.coverImage;
+      
+    return `
+      <div class="carousel-slide ${index === 0 ? 'active' : ''}" style="background-image: url('${bannerImage}');">
+        <div class="carousel-content">
+          ${game.discount > 0 ? `<div class="carousel-badge" style="margin-bottom: 1rem; display: inline-block;">-${game.discount}% OFF</div>` : ''}
+          <h2>${game.title}</h2>
+          <p>${game.shortDescription}</p>
+          <div class="carousel-meta">
+            <span class="carousel-badge">${game.genres?.[0] || 'Action'}</span>
+            <span class="carousel-badge">⭐ ${game.rating || '4.5'}</span>
+          </div>
+          <div class="carousel-actions">
+            <button class="btn-primary" onclick="viewGameDetails('${game._id}')">View Details</button>
+            <div class="carousel-price" style="display:flex; align-items:center;">
+              ${finalPrice === 0 ? 'FREE' : '₹' + finalPrice.toLocaleString('en-IN')}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Build Indicators
+  indicators.innerHTML = games.map((_, index) => 
+    `<div class="carousel-indicator ${index === 0 ? 'active' : ''}" onclick="goToSlide(${index})"></div>`
+  ).join('');
+
+  // Setup Event Listeners for Controls
+  document.getElementById('carouselPrev')?.addEventListener('click', () => moveCarousel(-1));
+  document.getElementById('carouselNext')?.addEventListener('click', () => moveCarousel(1));
+
+  // Start Auto Play
+  startCarouselAutoPlay();
+}
+
+function updateCarouselUI() {
+  const slides = document.querySelectorAll('.carousel-slide');
+  const indicators = document.querySelectorAll('.carousel-indicator');
+  
+  if (slides.length === 0) return;
+  
+  slides.forEach((slide, i) => {
+    slide.classList.toggle('active', i === currentSlideIndex);
+  });
+  
+  indicators.forEach((ind, i) => {
+    ind.classList.toggle('active', i === currentSlideIndex);
+  });
+}
+
+function moveCarousel(direction) {
+  if (carouselGames.length === 0) return;
+  currentSlideIndex = (currentSlideIndex + direction + carouselGames.length) % carouselGames.length;
+  updateCarouselUI();
+  resetCarouselAutoPlay();
+}
+
+function goToSlide(index) {
+  currentSlideIndex = index;
+  updateCarouselUI();
+  resetCarouselAutoPlay();
+}
+
+function startCarouselAutoPlay() {
+  carouselInterval = setInterval(() => moveCarousel(1), 5000); // Change slide every 5s
+}
+
+function resetCarouselAutoPlay() {
+  clearInterval(carouselInterval);
+  startCarouselAutoPlay();
+}
+
 // Safer version of displayGames
 function displayGames(games) {
-  const container = document.getElementById('gamesGrid'); // Make sure this matches your HTML ID (games-grid or gamesGrid)
+  const container = document.getElementById('gamesGrid');
   if (!container) return;
 
-  // 1. Safety Check: If games is undefined/null, treat it as an empty list
-  if (!games || !Array.isArray(games)) {
-    console.error("displayGames Error: Data received is not an array:", games);
-    container.innerHTML = '<p class="empty-state">Error loading games. Please try again.</p>';
-    return;
+  const renderContent = () => {
+    if (!games || !Array.isArray(games)) {
+      console.error("displayGames Error: Data received is not an array:", games);
+      container.innerHTML = '<p class="empty-state">Error loading games. Please try again.</p>';
+      return;
+    }
+
+    if (games.length === 0) {
+      container.innerHTML = '<p class="empty-state">No games found</p>';
+      return;
+    }
+
+    container.innerHTML = games.map(game => createGameCard(game)).join('');
+    setupHoverCarousels();
+  };
+
+  // Modern "Isotope" shuffle effect using View Transitions API
+  if (document.startViewTransition) {
+    document.startViewTransition(() => {
+      renderContent();
+    });
+  } else {
+    renderContent();
   }
-
-  // 2. Empty Check
-  if (games.length === 0) {
-    container.innerHTML = '<p class="empty-state">No games found</p>';
-    return;
-  }
-
-  // 3. Render
-  container.innerHTML = games.map(game => createGameCard(game)).join('');
-
 }
 
 // Create game card HTML
@@ -206,8 +320,8 @@ function createGameCard(game, isFeatured = false) {
   ).join('') || '';
 
   return `
-    <div class="game-card" data-game-id="${game._id}">
-      <img src="${game.coverImage}" alt="${game.title}" class="game-image">
+    <div class="game-card" data-game-id="${game._id}" style="view-transition-name: game-${game._id};">
+      <img src="${game.coverImage}" alt="${game.title}" class="game-image" data-cover="${game.coverImage}" data-images='${JSON.stringify(game.images || [])}'>
       <div class="game-info">
         <h3 class="game-title">${game.title}</h3>
         <p class="game-description">${game.shortDescription || game.description.substring(0, 100)}...</p>
@@ -222,18 +336,56 @@ function createGameCard(game, isFeatured = false) {
           </div>
         </div>
         
-<div class="game-actions">
-  <button class="btn-primary btn-view-details" data-id="${game._id}">View Details</button>
-  <button type="button" class="btn-secondary btn-add-cart" data-id="${game._id}">
-    Add to Cart
-  </button>
-</div>
+        <div class="game-actions">
+          <button class="btn-primary btn-view-details" data-id="${game._id}">View Details</button>
+          <button type="button" class="btn-secondary btn-add-cart" data-id="${game._id}">
+            Add to Cart
+          </button>
+        </div>
       </div>
     </div>
   `;
 }
 
+// Hover Mini-Carousel Logic
+function setupHoverCarousels() {
+  const cards = document.querySelectorAll('.game-card');
+  
+  cards.forEach(card => {
+    let intervalId;
+    let currentIndex = 0;
+    const imgElement = card.querySelector('.game-image');
+    
+    if (!imgElement) return;
+    
+    // Safely parse images
+    let images = [];
+    try {
+      images = JSON.parse(imgElement.getAttribute('data-images') || '[]');
+    } catch (e) {
+      images = [];
+    }
+    
+    const coverImage = imgElement.getAttribute('data-cover');
 
+    card.addEventListener('mouseenter', () => {
+      if (images && images.length > 0) {
+        // Start cycling through high-res images
+        intervalId = setInterval(() => {
+          currentIndex = (currentIndex + 1) % images.length;
+          imgElement.src = images[currentIndex];
+        }, 1200); // Change image every 1.2s
+      }
+    });
+
+    card.addEventListener('mouseleave', () => {
+      // Stop cycling and reset to cover image
+      clearInterval(intervalId);
+      currentIndex = 0;
+      imgElement.src = coverImage;
+    });
+  });
+}
 
 async function viewGameDetails(gameId) {
     const modal = document.getElementById('gameModal');

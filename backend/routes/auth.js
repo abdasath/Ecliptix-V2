@@ -2,10 +2,15 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
+const redis = require('../config/redis');
+const { loginLimiter, registerLimiter } = require('../middleware/rateLimiter');
 const router = express.Router();
 
+// ─────────────────────────────────────────────
 // Register
-router.post('/register', async (req, res) => {
+// Rate limited: 5 registrations per IP per hour
+// ─────────────────────────────────────────────
+router.post('/register', registerLimiter, async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
@@ -41,8 +46,11 @@ router.post('/register', async (req, res) => {
   }
 });
 
+// ─────────────────────────────────────────────
 // Login
-router.post('/login', async (req, res) => {
+// Rate limited: 10 attempts per IP per 15 min
+// ─────────────────────────────────────────────
+router.post('/login', loginLimiter, async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -60,9 +68,8 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-
     const token = jwt.sign(
-      { userId: user._id, role: user.role }, // (Optional) Add role to token too
+      { userId: user._id, role: user.role },
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '7d' }
     );
@@ -74,7 +81,7 @@ router.post('/login', async (req, res) => {
         username: user.username,
         email: user.email,
         wallet: user.wallet,
-        role: user.role // <--- THIS IS THE KEY CHANGE
+        role: user.role
       }
     });
   } catch (error) {
@@ -82,7 +89,33 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// ─────────────────────────────────────────────
+// Logout
+// Blacklists the JWT in Redis until it expires
+// ─────────────────────────────────────────────
+router.post('/logout', auth, async (req, res) => {
+  try {
+    const token = req.token;
+
+    // Calculate remaining TTL of the JWT so Redis auto-expires it
+    const decoded = jwt.decode(token);
+    const now = Math.floor(Date.now() / 1000);
+    const ttl = decoded.exp - now; // seconds remaining
+
+    if (ttl > 0 && redis.status === 'ready') {
+      await redis.setex(`blacklist:${token}`, ttl, '1');
+      console.log(`🚫 Token blacklisted for ${ttl}s`);
+    }
+
+    res.json({ message: 'Logged out successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// ─────────────────────────────────────────────
 // Get current user
+// ─────────────────────────────────────────────
 router.get('/me', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user._id)
@@ -96,4 +129,3 @@ router.get('/me', auth, async (req, res) => {
 });
 
 module.exports = router;
-
