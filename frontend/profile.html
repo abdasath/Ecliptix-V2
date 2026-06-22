@@ -88,6 +88,23 @@
                             💳 <strong>Card:</strong> 4718 6098 4027 5397 &nbsp;|&nbsp; Expiry: 10/25 &nbsp;|&nbsp; CVV: 123 &nbsp;|&nbsp; OTP: 1234<br>
                             📱 <strong>UPI (easiest):</strong> <code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:3px;">success@razorpay</code>
                         </div>
+
+                        <!-- ADMIN ONLY: Wallet Manipulation -->
+                        <div id="adminWalletControls" style="display: none; margin-top: 1.5rem; padding: 1rem; background: rgba(255, 0, 85, 0.1); border: 1px solid rgba(255, 0, 85, 0.3); border-radius: 8px;">
+                            <h4 style="color: #ff0055; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class='bx bxs-shield-alt-2'></i> Admin Overrides
+                            </h4>
+                            <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 1rem;">Directly manipulate your wallet balance bypassing payment gateways.</p>
+                            
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                <input type="number" id="adminWalletAmount" placeholder="Amount" min="0" style="flex: 1; min-width: 100px; padding: 0.5rem; border-radius: 4px; background: rgba(255,255,255,0.05); border: 1px solid #333; color: white;">
+                                
+                                <button onclick="manipulateWallet('add')" style="background: #28a745; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-weight: 600;">+ Add</button>
+                                <button onclick="manipulateWallet('subtract')" style="background: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-weight: 600;">- Deduct</button>
+                                <button onclick="manipulateWallet('set')" style="background: #ffc107; color: black; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-weight: 600;">= Set Exact</button>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 

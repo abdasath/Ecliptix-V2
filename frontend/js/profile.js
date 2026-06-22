@@ -52,6 +52,48 @@ function displayProfile(user) {
   if (userWallet) {
     userWallet.textContent = `₹${(user.wallet || 0).toLocaleString('en-IN')}`;
   }
+
+  // Show Admin Controls if applicable
+  const adminWalletControls = document.getElementById('adminWalletControls');
+  if (adminWalletControls && user.role === 'admin') {
+    adminWalletControls.style.display = 'block';
+  }
+}
+
+// Admin Wallet Manipulation API Call
+async function manipulateWallet(action) {
+  const amountInput = document.getElementById('adminWalletAmount');
+  const amount = Number(amountInput.value);
+
+  if (!amountInput.value || isNaN(amount) || amount < 0) {
+    alert('Please enter a valid amount.');
+    return;
+  }
+
+  try {
+    const res = await apiRequest('/api/admin/wallet/manipulate', {
+      method: 'POST',
+      body: { action, amount }
+    });
+
+    if (res && res.wallet !== undefined) {
+      // Update UI immediately without needing a full reload
+      const walletEl = document.getElementById('profileWallet');
+      const navWalletEl = document.getElementById('userWallet');
+      
+      if (walletEl) walletEl.textContent = res.wallet.toLocaleString('en-IN');
+      if (navWalletEl) navWalletEl.textContent = `₹${res.wallet.toLocaleString('en-IN')}`;
+      
+      amountInput.value = ''; // clear input
+      
+      // Optional: Add a small visual success indicator
+      amountInput.style.borderColor = '#28a745';
+      setTimeout(() => amountInput.style.borderColor = '#333', 2000);
+    }
+  } catch (error) {
+    console.error('Wallet manipulation failed:', error);
+    alert('Failed to update wallet: ' + error.message);
+  }
 }
 
 // Load order history
