@@ -393,13 +393,7 @@ async function handleLogin() {
     }
   } catch (error) {
     console.error('Login Error:', error);
-    if (error.status === 401) {
-      // REPLACED ALERT
-      showNotification('Account not found. Please register first!', 'error');
-    } else {
-      // REPLACED ALERT
-      showNotification(error.message || 'Login failed', 'error');
-    }
+    showNotification(error.message || 'Login failed', 'error');
   }
 }
 
