@@ -158,16 +158,17 @@ function displayFeaturedGames(games) {
     setupHeroCarousel(topGames);
   }
 
-  // 2. Setup Featured Games Grid
+  // 2. Setup Featured Games Grid (exclude the top 5 games shown in banner, show next 11)
+  const remainingFeaturedGames = games.slice(5, 16);
   const container = document.getElementById('featuredGames');
   if (!container) return;
 
-  if (games.length === 0) {
+  if (remainingFeaturedGames.length === 0) {
     container.innerHTML = '<p class="empty-state">No featured games available</p>';
     return;
   }
 
-  container.innerHTML = games.map(game => createGameCard(game, true)).join('');
+  container.innerHTML = remainingFeaturedGames.map(game => createGameCard(game, true)).join('');
   attachGameCardListeners();
 }
 

@@ -144,7 +144,7 @@ router.get('/featured/random', async (req, res) => {
   try {
     const games = await Game.aggregate([
       { $match: { featured: true } },
-      { $sample: { size: 11 } }
+      { $sample: { size: 16 } }
     ]);
     res.json(games);
   } catch (err) {
