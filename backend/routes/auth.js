@@ -178,7 +178,11 @@ router.post('/google', async (req, res) => {
     }
 
     // 3. Log them in (create session JWT)
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign(
+      { userId: user._id, role: user.role },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '7d' }
+    );
 
     res.json({
       token,
