@@ -1,4 +1,5 @@
 const express = require('express');
+const dns = require('dns').promises;
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
@@ -22,6 +23,23 @@ router.post('/register', registerLimiter, async (req, res) => {
     if (!username || !email || !password) {
       return res.status(400).json({ message: 'Please provide all fields' });
     }
+
+    // ─── Simple Email Domain Validation (Block Fake Domains) ───
+    try {
+      const domain = email.split('@')[1];
+      if (!domain) {
+        return res.status(400).json({ message: 'Invalid email format' });
+      }
+      // Look up MX (Mail Exchange) records for the domain
+      const mxRecords = await dns.resolveMx(domain);
+      if (!mxRecords || mxRecords.length === 0) {
+        return res.status(400).json({ message: 'Fake or invalid email domain detected. Please use a real email.' });
+      }
+    } catch (err) {
+      // If DNS lookup fails entirely (e.g. domain doesn't exist), block it
+      return res.status(400).json({ message: 'Fake or invalid email domain detected. Please use a real email.' });
+    }
+    // ───────────────────────────────────────────────────────────
 
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
