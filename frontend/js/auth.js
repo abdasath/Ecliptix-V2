@@ -239,6 +239,116 @@ function setupAuthModals() {
   if (registerSubmitBtn) {
     registerSubmitBtn.addEventListener('click', handleRegister);
   }
+
+  // --- Initialize Google Auth ---
+  initGoogleAuth();
+}
+
+function initGoogleAuth() {
+  // 1. Inject the Google SDK dynamically
+  const script = document.createElement('script');
+  script.src = 'https://accounts.google.com/gsi/client';
+  script.async = true;
+  script.defer = true;
+  document.head.appendChild(script);
+
+  // 2. Wait for it to load, then initialize
+  script.onload = () => {
+    // IMPORTANT: Replace this with the actual Client ID from Google Cloud Console
+    const GOOGLE_CLIENT_ID = '441145572626-4k6eqrt0t54t5najn1athcunelaggsca.apps.googleusercontent.com';
+    
+    if (typeof google === 'undefined') return;
+
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleGoogleResponse
+    });
+
+    // 3. Inject the Google button into the Login Form
+    const loginForm = document.querySelector('.form-box.login form');
+    if (loginForm) {
+      // Add "OR" divider
+      const divider = document.createElement('div');
+      divider.innerHTML = '<span style="background: var(--bg-secondary); padding: 0 10px; color: #888; font-size: 0.8rem; font-weight: 500;">OR</span>';
+      divider.style.width = '100%';
+      divider.style.textAlign = 'center';
+      divider.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+      divider.style.lineHeight = '0.1em';
+      divider.style.margin = '1.5rem 0 1rem 0';
+      loginForm.appendChild(divider);
+
+      const gBtnContainer = document.createElement('div');
+      gBtnContainer.id = 'googleBtnLogin';
+      gBtnContainer.style.display = 'flex';
+      gBtnContainer.style.justifyContent = 'center';
+      gBtnContainer.style.width = '100%';
+      loginForm.appendChild(gBtnContainer);
+
+      google.accounts.id.renderButton(gBtnContainer, {
+        theme: 'filled_black',
+        size: 'large',
+        shape: 'pill',
+        text: 'signin_with',
+        logo_alignment: 'left',
+        width: 250
+      });
+    }
+
+    // 4. Inject the Google button into the Register Form
+    const registerForm = document.querySelector('.form-box.register form');
+    if (registerForm) {
+      // Add "OR" divider
+      const divider = document.createElement('div');
+      divider.innerHTML = '<span style="background: var(--bg-secondary); padding: 0 10px; color: #888; font-size: 0.8rem; font-weight: 500;">OR</span>';
+      divider.style.width = '100%';
+      divider.style.textAlign = 'center';
+      divider.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+      divider.style.lineHeight = '0.1em';
+      divider.style.margin = '1.5rem 0 1rem 0';
+      registerForm.appendChild(divider);
+
+      const gBtnContainerReg = document.createElement('div');
+      gBtnContainerReg.id = 'googleBtnRegister';
+      gBtnContainerReg.style.display = 'flex';
+      gBtnContainerReg.style.justifyContent = 'center';
+      gBtnContainerReg.style.width = '100%';
+      registerForm.appendChild(gBtnContainerReg);
+
+      google.accounts.id.renderButton(gBtnContainerReg, {
+        theme: 'filled_black',
+        size: 'large',
+        shape: 'pill',
+        text: 'signup_with',
+        logo_alignment: 'left',
+        width: 250
+      });
+    }
+  };
+}
+
+// Handle the response from Google
+async function handleGoogleResponse(response) {
+  try {
+    const res = await apiRequest('/api/auth/google', {
+      method: 'POST',
+      body: { credential: response.credential } // Let apiRequest handle JSON stringify
+    });
+
+    // Save token and user details exactly like standard login
+    localStorage.setItem('token', res.token);
+    localStorage.setItem('userInfo', JSON.stringify(res.user));
+
+    currentUser = res.user;
+    updateUIForLoggedIn(res.user);
+    checkAdminAccess();
+    closeLoginModal();
+    
+    showNotification(`Welcome, ${res.user.username}!`, 'success');
+
+  } catch (error) {
+    console.error('Google login failed:', error);
+    showNotification(error.message || 'Google Login failed', 'error');
+  }
 }
 
 

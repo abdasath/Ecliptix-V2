@@ -4,7 +4,12 @@ const User = require('../models/User');
 const auth = require('../middleware/auth');
 const redis = require('../config/redis');
 const { loginLimiter, registerLimiter } = require('../middleware/rateLimiter');
+const { OAuth2Client } = require('google-auth-library');
 const router = express.Router();
+
+// The Google Client ID passed securely from env
+// e.g. process.env.GOOGLE_CLIENT_ID
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // ─────────────────────────────────────────────
 // Register
@@ -110,6 +115,67 @@ router.post('/logout', auth, async (req, res) => {
     res.json({ message: 'Logged out successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+
+// ─────────────────────────────────────────────
+// Google OAuth Login / Register
+// ─────────────────────────────────────────────
+router.post('/google', async (req, res) => {
+  try {
+    const { credential } = req.body;
+    if (!credential) {
+      return res.status(400).json({ message: 'No Google credential provided' });
+    }
+
+    // Verify the JWT securely with Google
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID, 
+    });
+
+    const payload = ticket.getPayload();
+    // Google payload contains: email, name, sub (unique Google ID), picture
+    const { email, name, sub: googleId } = payload;
+
+    // 1. Check if user already exists
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      // 2. Register them automatically
+      // We generate a clean username from their name + a random number to avoid collisions
+      const baseUsername = name.replace(/\s+/g, '').slice(0, 15);
+      const randomNum = Math.floor(1000 + Math.random() * 9000);
+      
+      user = await User.create({
+        username: `${baseUsername}${randomNum}`,
+        email: email,
+        googleId: googleId,
+        // password is omitted because schema allows it if googleId is present
+      });
+    } else if (!user.googleId) {
+      // If user exists but hasn't linked Google yet, link it now
+      user.googleId = googleId;
+      await user.save();
+    }
+
+    // 3. Log them in (create session JWT)
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        wallet: user.wallet,
+        role: user.role
+      }
+    });
+
+  } catch (error) {
+    console.error('Google Auth Error:', error);
+    res.status(401).json({ message: 'Invalid Google token' });
   }
 });
 

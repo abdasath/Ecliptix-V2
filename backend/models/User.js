@@ -19,9 +19,17 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: function() {
+      // Password is required only if the user is not signing in via Google
+      return !this.googleId;
+    },
     minlength: 6
-  }, 
+  },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true // Allows multiple null/undefined values
+  },
   role: { type: String, default: 'user' },
   
   wallet: { type: Number, default: 0 },
