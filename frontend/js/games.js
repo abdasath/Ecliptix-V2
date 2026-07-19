@@ -169,7 +169,6 @@ function displayFeaturedGames(games) {
   }
 
   container.innerHTML = remainingFeaturedGames.map(game => createGameCard(game, true)).join('');
-  attachGameCardListeners();
 }
 
 // --- HERO CAROUSEL LOGIC ---
@@ -196,7 +195,10 @@ function setupHeroCarousel(games) {
     const bannerImage = (game.images && game.images.length > 0) ? game.images[0] : game.coverImage;
       
     return `
-      <div class="carousel-slide ${index === 0 ? 'active' : ''}" style="background-image: url('${bannerImage}');">
+      <div class="carousel-slide ${index === 0 ? 'active' : ''}" 
+           style="background-image: url('${bannerImage}');"
+           data-mobile-image="${game.coverImage}"
+           data-desktop-image="${bannerImage}">
         <div class="carousel-content">
           ${game.discount > 0 ? `<div class="carousel-badge" style="margin-bottom: 1rem; display: inline-block;">-${game.discount}% OFF</div>` : ''}
           <h2>${game.title}</h2>
@@ -224,6 +226,24 @@ function setupHeroCarousel(games) {
   // Setup Event Listeners for Controls
   document.getElementById('carouselPrev')?.addEventListener('click', () => moveCarousel(-1));
   document.getElementById('carouselNext')?.addEventListener('click', () => moveCarousel(1));
+
+  // Swap banner images based on screen size (portrait on mobile/tablet, landscape on desktop)
+  function swapCarouselImages() {
+    const isMobile = window.innerWidth <= 1024;
+    document.querySelectorAll('.carousel-slide').forEach(slide => {
+      const mobileImg = slide.dataset.mobileImage;
+      const desktopImg = slide.dataset.desktopImage;
+      if (isMobile && mobileImg) {
+        slide.style.backgroundImage = `url('${mobileImg}')`;
+      } else if (!isMobile && desktopImg) {
+        slide.style.backgroundImage = `url('${desktopImg}')`;
+      }
+    });
+  }
+
+  // Run on load and whenever the window is resized
+  swapCarouselImages();
+  window.addEventListener('resize', swapCarouselImages);
 
   // Start Auto Play
   startCarouselAutoPlay();
@@ -439,9 +459,9 @@ function displayGameDetails(game) {
   const priceDisplay = finalPrice === 0
     ? `<div class="price-current" style="font-size: 2rem; color: #00ff88;">FREE</div>`
     : game.discount > 0
-      ? `<div style="display: flex; align-items: center; gap: 1rem;">
+      ? `<div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
            <span class="price-current" style="font-size: 2rem;">₹${finalPrice.toLocaleString('en-IN')}</span>
-           <span class="price-original">₹${game.price.toLocaleString('en-IN')}</span>
+           <span class="price-original" style="font-size: 1.1rem;">₹${game.price.toLocaleString('en-IN')}</span>
            ${discountBadge}
          </div>`
       : `<div class="price-current" style="font-size: 2rem;">₹${finalPrice.toLocaleString('en-IN')}</div>`;
@@ -502,7 +522,7 @@ function displayGameDetails(game) {
           ${tags ? `<h4 style="margin-top: 1rem;">Tags</h4><div class="game-genres">${tags}</div>` : ''}
         </div>
         ${systemReq}
-        <div class="game-details-actions" style="margin-top: 2rem; display: flex; gap: 1rem;">
+        <div class="game-details-actions" style="margin-top: 2rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem;">
           ${priceDisplay}
           <div style="display: flex; gap: 1rem; align-items: center;">
             <button class="btn-primary" onclick="addToCart('${game._id}'); document.getElementById('gameModal').style.display='none'; document.body.classList.remove('modal-open');">Add to Cart</button>

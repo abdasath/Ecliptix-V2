@@ -282,6 +282,7 @@ function initGoogleAuth() {
       gBtnContainer.style.display = 'flex';
       gBtnContainer.style.justifyContent = 'center';
       gBtnContainer.style.width = '100%';
+      gBtnContainer.style.marginBottom = '25px'; // Ensure bottom spacing
       loginForm.appendChild(gBtnContainer);
 
       google.accounts.id.renderButton(gBtnContainer, {
@@ -312,6 +313,7 @@ function initGoogleAuth() {
       gBtnContainerReg.style.display = 'flex';
       gBtnContainerReg.style.justifyContent = 'center';
       gBtnContainerReg.style.width = '100%';
+      gBtnContainerReg.style.marginBottom = '25px'; // Ensure bottom spacing
       registerForm.appendChild(gBtnContainerReg);
 
       google.accounts.id.renderButton(gBtnContainerReg, {
@@ -466,6 +468,15 @@ function updateUIForLoggedIn(user) {
   document.querySelectorAll('.auth-protected').forEach(element => {
       element.classList.remove('auth-protected');
   });
+
+  // --- MOBILE NAV GAMER CARD UPDATES ---
+  const navUsername = document.querySelector('.nav-username');
+  const navWallet = document.querySelector('.nav-wallet');
+  const navMobileLogout = document.getElementById('navMobileLogout');
+  
+  if (navUsername) navUsername.textContent = user.username || 'Gamer';
+  if (navWallet) navWallet.textContent = userWallet ? userWallet.textContent : `₹${(user.wallet || 0)}`;
+  if (navMobileLogout) navMobileLogout.style.display = 'block'; // Make it flex/block based on CSS rules
 }
 
 // Update UI for logged out user
@@ -477,6 +488,15 @@ function updateUIForLoggedOut() {
   if (loginBtn) loginBtn.style.display = 'inline-block';
   if (logoutBtn) logoutBtn.style.display = 'none';
   if (userWallet) userWallet.textContent = '₹0';
+
+  // --- MOBILE NAV GAMER CARD UPDATES ---
+  const navUsername = document.querySelector('.nav-username');
+  const navWallet = document.querySelector('.nav-wallet');
+  const navMobileLogout = document.getElementById('navMobileLogout');
+  
+  if (navUsername) navUsername.textContent = 'Welcome, Guest!';
+  if (navWallet) navWallet.textContent = 'Please sign in';
+  if (navMobileLogout) navMobileLogout.style.display = 'none';
 }
 
 // Get current user
@@ -562,6 +582,7 @@ function openLoginModal() {
     requestAnimationFrame(() => {
       loginModal.classList.add('show');
       document.body.classList.add('modal-open'); // LOCK SCROLL
+      document.documentElement.classList.add('modal-open'); 
     });
   }
 }
@@ -576,6 +597,7 @@ function closeLoginModal() {
     setTimeout(() => {
       loginModal.style.display = 'none';
       document.body.classList.remove('modal-open');
+      document.documentElement.classList.remove('modal-open');
     }, 400);
   }
 }

@@ -83,9 +83,9 @@ a {
 }
 
 /* GLOBAL SCROLL LOCK (Fixed) */
-body.modal-open {
+html.modal-open, body.modal-open {
     overflow: hidden !important;
-    position: relative;
+    height: 100vh;
     /* Keeps the body steady */
     touch-action: none;
     /* Disables touch scrolling on background (Mobile) */
@@ -751,7 +751,7 @@ input:-webkit-autofill:active {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: #000000;
     backdrop-filter: blur(15px);
     overflow: hidden;
     /* Prevent background window from scrolling */
@@ -781,11 +781,12 @@ html {
 /* 3. The Details: This is where the scroll happens cite: 14 */
 #gameDetails {
     flex: 1;
-    overflow-y: auto !important;
-    /* ...but the content inside does! */
+    overflow-y: auto !important; /* This is where the scroll happens */
     padding: 0 40px 40px 40px;
     scrollbar-width: thin;
     scrollbar-color: #333 transparent;
+    /* Ensure the scrollbar is inside the card, never on the modal overlay */
+    overscroll-behavior: contain;
 }
 
 /* 4. The Sticky X: Absolute to the Card cite: 14 */
@@ -1729,10 +1730,13 @@ a[href="admin.html"] {
     gap: 20px;
 }
 
-/* --- Ensure this is in your style.css --- */
+/* The modal OVERLAY must never scroll — scrolling happens inside #gameDetails */
 #gameModal {
-    overflow-y: auto !important;
-    /* The scrollbar should be here */
+    overflow: hidden !important;
+    /* Scrollbar stays hidden on the overlay; inner content scrolls instead */
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
 }
 
 
@@ -1984,10 +1988,12 @@ a[href="admin.html"] {
         border-radius: 20px !important;
     }
 
-    /* Force the forms to take 100% width (Fixes the squash) */
+    /* Force the forms to take 100% width and stack naturally (Fixes the squash and padding bugs) */
     .container-auth .form-box {
+        position: relative !important;
+        height: auto !important;
         width: 100% !important;
-        padding: 20px 25px !important;
+        padding: 20px 25px 40px 25px !important; /* Added more bottom padding */
     }
 
     /* Hide the sliding "Welcome" panel on mobile (It takes up too much space) */
@@ -2017,19 +2023,90 @@ a[href="admin.html"] {
         display: none;
     }
 
-    /* Change the grid from 2 columns to 1 column */
-    .games-grid {
+    /* Featured Games - 1 Column layout (Premium look) */
+    #featuredGames {
         grid-template-columns: 1fr !important;
-        /* cite: 14 */
         gap: 25px !important;
-        /* Increased gap for better spacing between single cards */
         padding: 0 10px;
-        /* Optional: adds slight breathing room on the sides */
     }
 
-    /* Adjust the game image height for a better mobile aspect ratio */
-    .game-image {
+    #featuredGames .game-image {
         height: 300px !important;
+    }
+
+    /* All other games (Store/Library) - 2 Column layout (Browsing efficiency) */
+    .games-grid:not(#featuredGames) {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+        padding: 0 5px;
+    }
+
+    .games-grid:not(#featuredGames) .game-image {
+        height: 160px !important;
+    }
+
+    /* Hide extra info to fit the smaller 2-column cards */
+    .games-grid:not(#featuredGames) .game-description,
+    .games-grid:not(#featuredGames) .game-genres {
+        display: none !important;
+    }
+
+    /* Force uniform card heights by using flexbox */
+    .games-grid:not(#featuredGames) .game-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%; /* Stretch to match row height */
+    }
+
+    .games-grid:not(#featuredGames) .game-info {
+        display: flex;
+        flex-direction: column;
+        flex: 1; /* Pushes everything below it to the bottom */
+    }
+
+    .games-grid:not(#featuredGames) .game-title {
+        font-size: 0.95rem !important; /* Slightly smaller to fit 2 lines cleanly */
+        margin-bottom: 5px !important;
+        line-height: 1.2;
+    }
+
+    /* Shrink the price elements so the discount badge doesn't overflow */
+    .games-grid:not(#featuredGames) .game-price {
+        flex-wrap: wrap; /* Allow wrapping if it's still too tight */
+        gap: 3px !important;
+        margin-bottom: 8px !important;
+    }
+
+    .games-grid:not(#featuredGames) .price-current {
+        font-size: 1.1rem !important;
+    }
+
+    .games-grid:not(#featuredGames) .price-original {
+        font-size: 0.75rem !important;
+    }
+
+    .games-grid:not(#featuredGames) .discount-badge {
+        padding: 2px 4px !important;
+        font-size: 0.65rem !important;
+    }
+
+    /* Align buttons to the bottom of the card */
+    .games-grid:not(#featuredGames) .game-actions {
+        margin-top: auto !important; /* Pushes buttons to the bottom edge */
+        flex-direction: row !important; /* Put buttons side-by-side */
+        gap: 5px !important;
+        justify-content: space-between;
+    }
+
+    /* Make buttons fit side-by-side nicely and look thin/rectangular */
+    .games-grid:not(#featuredGames) .game-actions button {
+        flex: 1 !important; /* Both buttons take 50% width */
+        font-size: 0.65rem !important; /* Smaller text */
+        padding: 5px 2px !important; /* Reduced top/bottom padding for a thinner look */
+        height: 28px !important; /* Force a thin, sleek height */
+        min-height: 28px !important; /* Override any global min-height */
+        white-space: nowrap; /* Prevent text wrapping */
+        border-radius: 4px !important; /* Slightly sharper corners */
     }
 }
 
@@ -2057,10 +2134,12 @@ a[href="admin.html"] {
         backdrop-filter: blur(15px);
         flex-direction: column !important;
         justify-content: flex-start;
-        padding: 80px 40px !important;
+        padding: 80px 30px 40px 30px !important;
         margin: 0 !important;
-        gap: 30px !important;
-        /* Large gaps to prevent squashing */
+        gap: 15px !important;
+        /* Reduced gap to fit more items */
+        overflow-y: auto;
+        /* Allow scrolling if content is taller than the screen */
         transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 2000;
         border-right: 1px solid #333;
@@ -2134,7 +2213,7 @@ a[href="admin.html"] {
 @media (max-width: 768px) {
 
     body.modal-open main,
-    body.modal-open .hero,
+    body.modal-open .hero-carousel,
     body.modal-open .navbar .container {
         filter: blur(25px) grayscale(100%) brightness(0.2) !important;
         /* Deep Monochrome Blur cite: 14 */
@@ -2262,7 +2341,7 @@ a[href="admin.html"] {
 
     /* Dim and hide background content when the modal is active */
     body.modal-open main,
-    body.modal-open .hero,
+    body.modal-open .hero-carousel,
     body.modal-open .navbar {
         filter: blur(5px);
         /* Blurs the background things */
@@ -2275,9 +2354,9 @@ a[href="admin.html"] {
     /* Ensure the modal stays on top and is fully visible */
     #gameModal {
         z-index: 9999 !important;
-        background-color: rgba(0, 0, 0, 0.9);
-        /* Solid dark background for the modal area */
-
+        background-color: #000000;
+        overflow: hidden !important;
+        /* No flex centering here — the card uses margin: auto which is more reliable */
     }
 }
 
@@ -2304,7 +2383,7 @@ a[href="admin.html"] {
     /* 2. Hide "Behind Things" when Pop-up is open */
     /* This class is added to the <body> via JavaScript */
     body.modal-open main,
-    body.modal-open .hero,
+    body.modal-open .hero-carousel,
     body.modal-open .navbar {
         filter: blur(8px);
         /* Blurs the background */
@@ -2321,7 +2400,6 @@ a[href="admin.html"] {
         margin: 2% auto !important;
         padding: 1.2rem !important;
         background: rgba(26, 26, 26, 0.98);
-        /* Solid dark background */
         border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
@@ -2368,7 +2446,7 @@ a[href="admin.html"] {
     /* 3. Fix 'Behind Things showing' issue */
     /* Blurs and dims main content when any modal is open */
     body.modal-open main,
-    body.modal-open .hero,
+    body.modal-open .hero-carousel,
     body.modal-open .navbar .container {
         filter: blur(10px);
         opacity: 0.15;
@@ -2395,10 +2473,16 @@ a[href="admin.html"] {
 
 @media (max-width: 768px) {
 
-    /* 1. Deep Monochrome Background Focus */
+    /* 1. Deep Monochrome Background Focus — and kill the scrollbar gutter
+       so the popup centers perfectly (no extra right-side gap) */
+    html:has(body.modal-open) {
+        scrollbar-gutter: auto !important;
+    }
+
     body.modal-open main,
-    body.modal-open .hero,
-    body.modal-open .navbar .container {
+    body.modal-open .hero-carousel,
+    body.modal-open .navbar {
+        /* Added full .navbar (not just .container) to hide the border line */
         filter: blur(20px) grayscale(100%) brightness(0.1) !important;
         /*cite: 14*/
         pointer-events: none;
@@ -2408,14 +2492,14 @@ a[href="admin.html"] {
     /* 2. Unified Black & White Pop-up Card (Login, Cart, Details) */
     .modal-large .modal-content,
     .modal-content {
-        width: 95% !important;
-        margin: 5% auto !important;
-        background: #000000 !important;
-        /* CHANGED FROM WHITE TO BLACK */
+        position: relative !important;
+        width: 92% !important;          /* Exactly 92% of the parent width */
+        max-width: 92% !important;
+        margin: 5vh auto !important;     /* Auto margins guarantee perfect center */
+        background: #111111 !important;  /* Make the card slightly lighter than the black background */
         color: #ffffff !important;
-        /* Ensures all text is white */
-        border: 1px solid #333 !important;
-        padding: 1.5rem !important;
+        border: none !important;         /* Remove the unwanted vertical border line */
+        padding: 1.25rem !important;     /* Balanced padding for a neat look */
         box-shadow: 0 0 50px rgba(0, 0, 0, 1);
         border-radius: 12px !important;
     }
@@ -2492,7 +2576,7 @@ a[href="admin.html"] {
 
     /* Fix the 'Behind Things' visibility for Game Details specifically */
     body.modal-open main,
-    body.modal-open .hero,
+    body.modal-open .hero-carousel,
     body.modal-open .navbar .container {
         filter: blur(20px) grayscale(100%) brightness(0.1) !important;
         opacity: 0.1;
@@ -2662,4 +2746,146 @@ a[href="admin.html"] {
 
 .menu-close {
     display: none;
+}
+
+/* =========================================================================
+   MOBILE NAV REVAMP
+   ========================================================================= */
+
+/* Hide mobile-only elements on desktop */
+.mobile-only {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    /* Show mobile-only elements inside the mobile nav */
+    .nav-menu .mobile-only {
+        display: flex !important;
+    }
+    
+    /* Exception for the Logout button to make it a list item block */
+    li#navMobileLogout.mobile-only {
+        display: block !important;
+    }
+    
+    /* Gamer Card styling */
+    .nav-gamer-card {
+        display: flex !important;
+        align-items: center;
+        gap: 15px;
+        padding: 0 0 25px 0 !important;
+        margin-bottom: 10px !important;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        width: 100%;
+    }
+    
+    .nav-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.5rem;
+        color: #fff;
+    }
+    
+    .nav-user-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .nav-username {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #fff;
+    }
+    
+    .nav-wallet {
+        font-size: 0.9rem;
+        color: #00e676; /* Green for money */
+        font-weight: 600;
+    }
+    
+    /* Sub-header styling */
+    .nav-subheader {
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        color: #666;
+        padding-top: 15px !important;
+        margin-bottom: -15px !important; /* Pull links closer */
+    }
+
+    /* Icon alignment in links */
+    .nav-menu a {
+        display: flex !important;
+        align-items: center;
+        gap: 15px;
+        font-weight: 600;
+    }
+
+    .nav-menu a i {
+        font-size: 1.3rem;
+        color: #aaa;
+        transition: color 0.3s ease;
+    }
+    
+    .nav-menu a:hover i,
+    .nav-menu a.active i {
+        color: #fff;
+    }
+    
+    /* Special red color for logout icon */
+    #navMobileLogout a:hover i {
+        color: #ff4747;
+    }
+}
+
+/* =========================================================================
+   MOBILE & TABLET PORTRAIT BANNER (Full Screen)
+   ========================================================================= */
+@media (max-width: 1024px) {
+    /* Truly Responsive Full Screen:
+       '100svh' (Small Viewport Height) dynamically calculates the exact screen height 
+       MINUS the mobile browser address bar. This guarantees the banner perfectly fits 
+       the screen on any device (phone or tablet) without manual guessing. */
+    .hero-carousel {
+        height: 100svh !important;
+        min-height: 100svh !important;
+        margin-bottom: 3rem !important;
+    }
+
+    /* Portrait images: cover fills the screen edge-to-edge (no black gaps).
+       'top center' anchors from the top so the game art/title shows fully
+       instead of zooming into the middle of the image. */
+    .carousel-slide {
+        background-size: cover !important;
+        background-position: top center !important;
+        background-color: #000 !important;
+    }
+
+    /* Clamp long game titles to 2 lines max, show ... for the rest */
+    .carousel-content h2 {
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        font-size: 2rem !important;   /* Slightly smaller on mobile */
+        line-height: 1.2 !important;
+        max-height: 2.4em !important; /* 2 lines * 1.2 line-height */
+    }
+
+    /* Adjust the gradient overlay for portrait — darken bottom more for text readability */
+    .carousel-slide::after {
+        background: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.1) 0%,
+            rgba(0, 0, 0, 0.4) 50%,
+            rgba(0, 0, 0, 0.95) 100%
+        ) !important;
+    }
 }

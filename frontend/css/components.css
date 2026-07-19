@@ -378,10 +378,10 @@ button, a {
   display: inline-block;
   width: 20px;
   height: 20px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
+  border: 3px solid rgba(255, 255, 255, 0.2); /* Faint white ring */
   border-radius: 50%;
-  border-top-color: var(--highlight-color);
-  animation: spin 1s ease-in-out infinite;
+  border-top-color: #ffffff; /* Solid white spinner */
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
