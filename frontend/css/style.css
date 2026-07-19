@@ -2285,12 +2285,23 @@ a[href="admin.html"] {
         opacity: 0;
         pointer-events: none;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        background: #1a1a1a !important; 
-        border: 1px solid rgba(255, 255, 255, 0.15) !important;
-        border-radius: 8px !important; 
+        background: rgba(20, 20, 20, 0.75) !important; /* Frosted dark glass */
+        backdrop-filter: blur(16px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.35) !important; /* Catching top light */
+        border-radius: 30px !important; /* Sleek pill shape */
         color: var(--text-primary) !important;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.9);
+        font-size: 0.95rem !important; /* Slightly larger, clearer text */
+        letter-spacing: 0.5px !important;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.85), 0 0 20px rgba(255, 255, 255, 0.05) !important;
         z-index: 1000 !important; /* Ensure it floats above everything */
+    }
+
+    /* Target the placeholder text specifically for aesthetic styling */
+    .search-box .search-input::placeholder {
+        color: rgba(255, 255, 255, 0.5) !important;
+        font-weight: 300 !important;
     }
 
     .search-box .search-input.mobile-expanded {
@@ -2301,7 +2312,7 @@ a[href="admin.html"] {
 
     .search-box .search-btn {
         background: transparent !important;
-        padding: 8px !important;
+        padding: 8px 0 !important; /* Remove horizontal padding so visual spacing is accurate */
         z-index: 2; /* Keep button clickable on top */
     }
 
@@ -2740,9 +2751,9 @@ a[href="admin.html"] {
     .nav-actions {
         display: flex !important;
         align-items: center !important;
-        gap: 8px !important;
-        /* Tight gap prevents spill-over */
+        gap: 12px !important; /* Balanced, uniform gap between search, cart, and wallet */
         margin-left: auto !important;
+        padding-left: 10px !important; /* Ensure it never crashes into the Ecliptix logo */
     }
 
     /* 4. Fix the "Awful" Wallet look */
@@ -2755,10 +2766,28 @@ a[href="admin.html"] {
         /* Prevents the currency symbol from dropping */
     }
 
-    /* 5. Shrink the Cart icon so it fits beside the name */
+    /* 5. Replace Cart Emoji with premium vector icon */
+    .cart-icon > span:first-child {
+        display: none !important; /* Hides the 🛒 emoji */
+    }
+
     .cart-icon {
         font-size: 1.1rem !important;
-        margin-left: 5px !important;
+        margin-left: 0 !important; /* Removed uneven left margin, relying on flex gap instead */
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    .cart-icon::before {
+        content: '';
+        display: inline-block;
+        width: 22px;
+        height: 22px;
+        /* Boxicon-style Cart SVG */
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a1a1aa'%3E%3Cpath d='M21.822 7.431A1 1 0 0 0 21 7H7.333L6.179 4.23A1.994 1.994 0 0 0 4.333 3H2v2h2.333l4.744 11.385A1 1 0 0 0 10 17h8c.417 0 .79-.259.937-.648l3-8a1 1 0 0 0-.115-.921z'/%3E%3Ccircle cx='10.5' cy='19.5' r='1.5'/%3E%3Ccircle cx='17.5' cy='19.5' r='1.5'/%3E%3C/svg%3E");
+        background-size: contain;
+        background-repeat: no-repeat;
+        margin-right: 4px; /* Space before the count badge */
     }
 
     .cart-count {
