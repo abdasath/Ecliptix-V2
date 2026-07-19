@@ -2055,58 +2055,102 @@ a[href="admin.html"] {
     .games-grid:not(#featuredGames) .game-card {
         display: flex;
         flex-direction: column;
-        height: 100%; /* Stretch to match row height */
+        height: 100%;
+        border-radius: 10px !important;
     }
 
     .games-grid:not(#featuredGames) .game-info {
         display: flex;
         flex-direction: column;
-        flex: 1; /* Pushes everything below it to the bottom */
+        flex: 1;
+        padding: 0.75rem !important;
+        gap: 0.35rem;
     }
 
+    /* Clean, bold game title */
     .games-grid:not(#featuredGames) .game-title {
-        font-size: 0.95rem !important; /* Slightly smaller to fit 2 lines cleanly */
-        margin-bottom: 5px !important;
-        line-height: 1.2;
+        font-size: 0.82rem !important;
+        font-weight: 700 !important;
+        line-height: 1.3 !important;
+        margin-bottom: 0 !important;
+        letter-spacing: 0.01em !important;
+        color: #ffffff !important;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
-    /* Shrink the price elements so the discount badge doesn't overflow */
+    /* Price and rating on one row — same visual weight */
+    .games-grid:not(#featuredGames) .game-meta {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        margin-bottom: 0 !important;
+        margin-top: 0.25rem !important;
+    }
+
+    /* Price stack — current price bold, original smaller */
     .games-grid:not(#featuredGames) .game-price {
-        flex-wrap: wrap; /* Allow wrapping if it's still too tight */
-        gap: 3px !important;
-        margin-bottom: 8px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1px !important;
     }
 
     .games-grid:not(#featuredGames) .price-current {
-        font-size: 1.1rem !important;
+        font-size: 0.95rem !important;
+        font-weight: 700 !important;
+        color: #ffffff !important;
+        line-height: 1.1 !important;
     }
 
     .games-grid:not(#featuredGames) .price-original {
-        font-size: 0.75rem !important;
+        font-size: 0.68rem !important;
+        color: #888 !important;
+        line-height: 1 !important;
     }
 
     .games-grid:not(#featuredGames) .discount-badge {
-        padding: 2px 4px !important;
-        font-size: 0.65rem !important;
+        font-size: 0.6rem !important;
+        padding: 2px 5px !important;
+        border-radius: 3px !important;
+        margin-top: 2px;
+    }
+
+    /* Rating — same size as price text, not oversized */
+    .games-grid:not(#featuredGames) .game-rating {
+        font-size: 0.78rem !important;
+        gap: 0.2rem !important;
+        color: #f5c518 !important;
+        font-weight: 600 !important;
+        align-items: center !important;
+    }
+
+    .games-grid:not(#featuredGames) .game-rating .star {
+        font-size: 0.78rem !important;
     }
 
     /* Align buttons to the bottom of the card */
     .games-grid:not(#featuredGames) .game-actions {
-        margin-top: auto !important; /* Pushes buttons to the bottom edge */
-        flex-direction: row !important; /* Put buttons side-by-side */
+        margin-top: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
         gap: 5px !important;
-        justify-content: space-between;
+        padding-top: 0.5rem !important;
     }
 
-    /* Make buttons fit side-by-side nicely and look thin/rectangular */
+    /* Premium full-width stacked buttons */
     .games-grid:not(#featuredGames) .game-actions button {
-        flex: 1 !important; /* Both buttons take 50% width */
-        font-size: 0.65rem !important; /* Smaller text */
-        padding: 5px 2px !important; /* Reduced top/bottom padding for a thinner look */
-        height: 28px !important; /* Force a thin, sleek height */
-        min-height: 28px !important; /* Override any global min-height */
-        white-space: nowrap; /* Prevent text wrapping */
-        border-radius: 4px !important; /* Slightly sharper corners */
+        width: 100% !important;
+        font-size: 0.72rem !important;
+        font-weight: 600 !important;
+        padding: 7px 6px !important;
+        height: auto !important;
+        min-height: unset !important;
+        border-radius: 6px !important;
+        letter-spacing: 0.03em !important;
+        white-space: nowrap !important;
+        text-align: center !important;
     }
 }
 
@@ -2877,6 +2921,12 @@ a[href="admin.html"] {
         font-size: 2rem !important;   /* Slightly smaller on mobile */
         line-height: 1.2 !important;
         max-height: 2.4em !important; /* 2 lines * 1.2 line-height */
+    }
+
+    /* Move the text content a bit higher on mobile so it sits above center */
+    .carousel-content {
+        top: 38% !important;
+        transform: translateY(-50%) !important;
     }
 
     /* Adjust the gradient overlay for portrait — darken bottom more for text readability */
