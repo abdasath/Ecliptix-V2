@@ -2279,8 +2279,8 @@ a[href="admin.html"] {
         left: 50%; /* Center on screen */
         top: 65px; /* Safely below the navbar */
         transform: translate(-50%, -15px); /* Center horizontally, shift up slightly for animation */
-        width: calc(100vw - 30px) !important; /* Almost full width with safe 15px margins */
-        max-width: 360px !important; /* Cap it on large tablets */
+        width: calc(100vw - 60px) !important; /* Slightly shorter, 30px margins on each side */
+        max-width: 280px !important; /* Cap it smaller for a more compact look */
         padding: 12px 15px !important;
         opacity: 0;
         pointer-events: none;
