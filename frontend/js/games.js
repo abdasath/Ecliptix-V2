@@ -627,15 +627,18 @@ function displayPagination() {
   `;
 
   // Page numbers
+  // Use a smaller delta on mobile so pagination fits on one line
+  const delta = window.innerWidth <= 768 ? 1 : 2;
+
   for (let i = 1; i <= totalPages; i++) {
-    if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+    if (i === 1 || i === totalPages || (i >= currentPage - delta && i <= currentPage + delta)) {
       html += `
         <button class="${i === currentPage ? 'active' : ''}" 
                 onclick="loadGames(${i}); scrollToGamesSection();">
           ${i}
         </button>
       `;
-    } else if (i === currentPage - 3 || i === currentPage + 3) {
+    } else if (i === currentPage - (delta + 1) || i === currentPage + (delta + 1)) {
       html += `<span>...</span>`;
     }
   }

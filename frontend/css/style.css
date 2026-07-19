@@ -2034,6 +2034,33 @@ a[href="admin.html"] {
         height: 300px !important;
     }
 
+    #featuredGames .game-price {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 6px !important;
+    }
+
+    #featuredGames .price-original {
+        font-size: 0.85rem !important;
+        color: #888 !important;
+        text-decoration: line-through !important;
+    }
+
+    /* Move discount badge to the top-right corner of the featured image */
+    #featuredGames .discount-badge {
+        position: absolute !important;
+        /* Image is 300px tall. Move up by 300px + some padding to place it inside the image */
+        top: calc(-300px + 12px) !important; 
+        right: 12px !important;
+        font-size: 0.85rem !important;
+        padding: 5px 8px !important;
+        border-radius: 6px !important;
+        margin-top: 0 !important;
+        z-index: 10 !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    }
+
     /* All other games (Store/Library) - 2 Column layout (Browsing efficiency) */
     .games-grid:not(#featuredGames) {
         grid-template-columns: repeat(2, 1fr) !important;
@@ -2090,11 +2117,12 @@ a[href="admin.html"] {
         margin-top: 0.25rem !important;
     }
 
-    /* Price stack — current price bold, original smaller */
+    /* Price row — side-by-side on mobile to save vertical space */
     .games-grid:not(#featuredGames) .game-price {
         display: flex !important;
-        flex-direction: column !important;
-        gap: 1px !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 5px !important;
     }
 
     .games-grid:not(#featuredGames) .price-current {
@@ -2105,16 +2133,24 @@ a[href="admin.html"] {
     }
 
     .games-grid:not(#featuredGames) .price-original {
-        font-size: 0.68rem !important;
+        font-size: 0.72rem !important;
         color: #888 !important;
-        line-height: 1 !important;
+        text-decoration: line-through !important;
+        line-height: 1.1 !important;
     }
 
+    /* Move discount badge to the top-right corner of the image */
     .games-grid:not(#featuredGames) .discount-badge {
-        font-size: 0.6rem !important;
-        padding: 2px 5px !important;
-        border-radius: 3px !important;
-        margin-top: 2px;
+        position: absolute !important;
+        /* .game-info is position: relative, so moving up by the image height (160px) + margin puts it on the image */
+        top: calc(-160px + 8px) !important; 
+        right: 8px !important;
+        font-size: 0.65rem !important;
+        padding: 4px 6px !important;
+        border-radius: 4px !important;
+        margin-top: 0 !important;
+        z-index: 10 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.5);
     }
 
     /* Rating — same size as price text, not oversized */
@@ -2151,6 +2187,27 @@ a[href="admin.html"] {
         letter-spacing: 0.03em !important;
         white-space: nowrap !important;
         text-align: center !important;
+    }
+
+    /* Fix Pagination Overflow on Mobile */
+    .pagination {
+        gap: 0.25rem !important;
+        flex-wrap: wrap !important;
+        margin: 1.5rem 0 !important;
+    }
+
+    .pagination button {
+        padding: 0.35rem 0.6rem !important;
+        font-size: 0.75rem !important;
+        border-radius: 4px !important;
+    }
+
+    /* Force Previous and Next buttons to be exactly the same size */
+    .pagination button:first-child,
+    .pagination button:last-child {
+        width: 70px !important;
+        text-align: center !important;
+        padding: 0.35rem 0 !important; /* Remove horizontal padding so width is absolute */
     }
 }
 
@@ -2897,8 +2954,8 @@ a[href="admin.html"] {
        MINUS the mobile browser address bar. This guarantees the banner perfectly fits 
        the screen on any device (phone or tablet) without manual guessing. */
     .hero-carousel {
-        height: 100svh !important;
-        min-height: 100svh !important;
+        height: 88svh !important;  /* Slightly shorter than full screen to feel less overwhelming */
+        min-height: 88svh !important;
         margin-bottom: 3rem !important;
     }
 
@@ -2923,9 +2980,10 @@ a[href="admin.html"] {
         max-height: 2.4em !important; /* 2 lines * 1.2 line-height */
     }
 
-    /* Move the text content a bit higher on mobile so it sits above center */
+    /* Push content block lower so it clears the carousel nav arrows (◀▶)
+       and the View Details button doesn't clash with them visually */
     .carousel-content {
-        top: 38% !important;
+        top: 58% !important;
         transform: translateY(-50%) !important;
     }
 
