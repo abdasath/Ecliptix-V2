@@ -2265,9 +2265,44 @@ a[href="admin.html"] {
         margin-right: 15px;
     }
 
-    /* 5. Hide search on mobile to save space */
+    /* 5. Mobile expandable search bar */
     .search-box {
-        display: none !important;
+        display: flex !important;
+        position: relative;
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+
+    .search-box .search-input {
+        position: fixed;
+        left: 50%; /* Center on screen */
+        top: 65px; /* Safely below the navbar */
+        transform: translate(-50%, -15px); /* Center horizontally, shift up slightly for animation */
+        width: calc(100vw - 30px) !important; /* Almost full width with safe 15px margins */
+        max-width: 360px !important; /* Cap it on large tablets */
+        padding: 12px 15px !important;
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        background: #1a1a1a !important; 
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 8px !important; 
+        color: var(--text-primary) !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.9);
+        z-index: 1000 !important; /* Ensure it floats above everything */
+    }
+
+    .search-box .search-input.mobile-expanded {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translate(-50%, 0); /* Drop down perfectly into center */
+    }
+
+    .search-box .search-btn {
+        background: transparent !important;
+        padding: 8px !important;
+        z-index: 2; /* Keep button clickable on top */
     }
 
     .nav-menu a {
@@ -2517,10 +2552,8 @@ a[href="admin.html"] {
 
 @media (max-width: 768px) {
 
-    /* 1. Hide the Search Bar on mobile */
-    .search-box {
-        display: none !important;
-    }
+    /* 1. Mobile Search Bar is handled in the earlier media query */
+    /* Removed display: none for .search-box so the expandable icon works */
 
     /* 2. Show Login/Logout buttons and Wallet */
     .nav-actions {

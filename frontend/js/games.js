@@ -117,8 +117,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 3. Setup Search Listener
   const searchBtn = document.getElementById('searchBtn');
-  if (searchBtn) {
-    searchBtn.addEventListener('click', () => loadGames(1));
+  const searchInput = document.getElementById('searchInput');
+  if (searchBtn && searchInput) {
+    searchBtn.addEventListener('click', (e) => {
+      // Mobile expandable search logic
+      if (window.innerWidth <= 768) {
+        if (!searchInput.classList.contains('mobile-expanded')) {
+          e.preventDefault();
+          searchInput.classList.add('mobile-expanded');
+          searchInput.focus();
+          return;
+        }
+        // If it is expanded but empty, just close it
+        if (searchInput.value.trim() === '') {
+          e.preventDefault();
+          searchInput.classList.remove('mobile-expanded');
+          return;
+        }
+      }
+      loadGames(1);
+    });
+
+    // Close mobile search when clicking outside
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 768) {
+        if (!e.target.closest('.search-box') && searchInput.classList.contains('mobile-expanded')) {
+          searchInput.classList.remove('mobile-expanded');
+        }
+      }
+    });
   }
 
   /* --- Update handleGridClick in js/games.js --- */
