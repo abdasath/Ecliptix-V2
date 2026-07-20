@@ -55,6 +55,19 @@ router.get('/games', auth, isAdmin, async (req, res) => {
 // Create new game → invalidate cache
 router.post('/games', auth, isAdmin, async (req, res) => {
   try {
+    const { title } = req.body;
+    
+    // Check if game already exists (case-insensitive exact match)
+    if (title) {
+      const existingGame = await Game.findOne({ 
+        title: { $regex: new RegExp(`^${title}$`, 'i') } 
+      });
+      
+      if (existingGame) {
+        return res.status(400).json({ message: `This game (${existingGame.title}) already exists in the database.` });
+      }
+    }
+
     const game = new Game(req.body);
     await game.save();
 
