@@ -2876,16 +2876,7 @@ a[href="admin.html"] {
     }
 
     .menu-close {
-        display: inline-block !important;
-        width: auto !important;
-        position: absolute;
-        top: 25px;
-        left: 20px; /* Moved to left side to match hamburger menu */
-        font-size: 2.2rem; /* Slightly larger to match hamburger size */
-        color: var(--text-primary);
-        cursor: pointer;
-        z-index: 2100;
-        transition: color 0.3s;
+        display: none !important;
     }
 
     .menu-close:hover {
@@ -2940,19 +2931,15 @@ a[href="admin.html"] {
         transform: scale(0.5) rotate(-90deg);
     }
 
-    /* 4. Active States: Hamburger hides completely, no second X appears */
-    .menu-toggle.active {
-        opacity: 0;
-        pointer-events: none;
-    }
-    
+    /* 4. Active States: Hamburger hides/rotates, Close scales in */
     .menu-toggle.active .hamburger {
         opacity: 0;
         transform: scale(0.5) rotate(90deg);
     }
 
     .menu-toggle.active .close {
-        display: none !important;
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
     }
 
 
