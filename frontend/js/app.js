@@ -59,26 +59,50 @@ if (menuClose) {
 document.querySelectorAll('.nav-menu a').forEach(link => {
     link.addEventListener('click', (e) => {
         const text = link.textContent.trim();
-        const genres = ['Action', 'Horror', 'Racing', 'RPG', 'All Games'];
+        const genres = ['Action', 'Adventure', 'Horror', 'Open World', 'RPG', 'All Games'];
         
         if (genres.includes(text)) {
             e.preventDefault();
             
-            // Check if we are on the store page (index.html)
+            // 1. Close Menu and Unlock Scroll FIRST so scrollIntoView works
+            navMenu.classList.remove('open');
+            if (menuBtn) menuBtn.classList.remove('active');
+            document.body.classList.remove('menu-open');
+            
+            // 2. Check if we are on the store page (index.html)
             const path = window.location.pathname;
             if (path.endsWith('index.html') || path.endsWith('/') || path.endsWith('frontend/')) {
-                if (typeof filterGames === 'function') {
-                    filterGames(text === 'All Games' ? 'All' : text);
+                const genreSelect = document.getElementById('genreFilter');
+                if (genreSelect) {
+                    // "All Games" sets value to empty string to show all
+                    const targetValue = (text === 'All Games' || text === 'All') ? '' : text;
+                    
+                    // Iterate and select the matching option case-insensitively
+                    for (let i = 0; i < genreSelect.options.length; i++) {
+                        if (genreSelect.options[i].value.toLowerCase() === targetValue.toLowerCase()) {
+                            genreSelect.value = genreSelect.options[i].value;
+                            break;
+                        }
+                    }
+                    
+                    if (typeof loadGames === 'function') {
+                        loadGames(1);
+                        if (typeof scrollToGamesSection === 'function') {
+                            // Slight delay allows the menu to close before scrolling
+                            setTimeout(scrollToGamesSection, 100);
+                        }
+                    }
                 }
             } else {
                 // Redirect to store page with genre parameter
                 window.location.href = `index.html?genre=${text === 'All Games' ? 'All' : text}`;
             }
+        } else {
+            // If it's a regular link, just close the menu
+            navMenu.classList.remove('open');
+            if (menuBtn) menuBtn.classList.remove('active');
+            document.body.classList.remove('menu-open');
         }
-
-        navMenu.classList.remove('open');
-        if (menuBtn) menuBtn.classList.remove('active');
-        document.body.classList.remove('menu-open'); // Unlock scroll
     });
 });
 

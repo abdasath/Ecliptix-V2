@@ -106,8 +106,33 @@ async function loadGames(page = 1) {
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Load Data
   loadFeaturedGames(); 
-  loadGames();
-  loadGenres(); 
+  
+  // Parse URL for genre parameter and set filter automatically
+  const params = new URLSearchParams(window.location.search);
+  const urlGenre = params.get('genre');
+
+  loadGenres().then(() => {
+    if (urlGenre) {
+      const genreSelect = document.getElementById('genreFilter');
+      if (genreSelect) {
+        // Find matching option case-insensitively
+        for (let i = 0; i < genreSelect.options.length; i++) {
+          if (genreSelect.options[i].value.toLowerCase() === urlGenre.toLowerCase() || 
+             (urlGenre.toLowerCase() === 'all' && genreSelect.options[i].value === '')) {
+            genreSelect.value = genreSelect.options[i].value;
+            break;
+          }
+        }
+      }
+    }
+    // Only load games after the dropdown has been correctly populated and set
+    loadGames();
+    if (urlGenre && typeof scrollToGamesSection === 'function') {
+      // Small delay to let games render before scrolling
+      setTimeout(scrollToGamesSection, 300);
+    }
+  });
+  
   setupFilters();
   setupSearch();
 

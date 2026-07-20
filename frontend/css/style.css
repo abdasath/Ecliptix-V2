@@ -2222,32 +2222,65 @@ a[href="admin.html"] {
         padding: 0 15px;
     }
 
-    /* 2. Professional Slide-out Menu (No Collapsing) */
+    /* 2. Professional Slide-out Menu (Premium Glassmorphism) */
     .nav-menu {
         position: fixed;
         top: 0;
         left: -100%;
-        width: 280px;
-        /* Slightly narrower for a sleek look */
+        width: 85%;
+        max-width: 350px;
         height: 100vh;
-        background: rgba(10, 10, 10, 0.98);
+        /* Premium Glass Background */
+        background: rgba(12, 12, 15, 0.75) !important;
+        backdrop-filter: blur(24px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+        box-shadow: 20px 0 60px rgba(0, 0, 0, 0.8) !important;
+        
         display: flex !important;
-        backdrop-filter: blur(15px);
         flex-direction: column !important;
         justify-content: flex-start;
-        padding: 80px 30px 40px 30px !important;
+        padding: 90px 30px 40px 30px !important;
         margin: 0 !important;
         gap: 5px !important;
-        /* Reduced gap to completely eliminate scrolling */
         overflow-y: auto;
-        transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        
+        transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important; /* Silky smooth slide */
         z-index: 2000;
-        border-right: 1px solid #333;
+        list-style: none !important;
     }
 
     .nav-menu.open {
         left: 0;
     }
+    
+    /* Sleek Stagger Animation for Menu Items */
+    .nav-menu li {
+        width: 100%;
+        opacity: 0;
+        transform: translateX(-25px);
+        transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    /* When menu opens, elements slide into place */
+    .nav-menu.open li {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    
+    /* Stagger Delays */
+    .nav-menu.open li:nth-child(1) { transition-delay: 0.05s; }
+    .nav-menu.open li:nth-child(2) { transition-delay: 0.1s; }
+    .nav-menu.open li:nth-child(3) { transition-delay: 0.15s; }
+    .nav-menu.open li:nth-child(4) { transition-delay: 0.2s; }
+    .nav-menu.open li:nth-child(5) { transition-delay: 0.25s; }
+    .nav-menu.open li:nth-child(6) { transition-delay: 0.3s; }
+    .nav-menu.open li:nth-child(7) { transition-delay: 0.35s; }
+    .nav-menu.open li:nth-child(8) { transition-delay: 0.4s; }
+    .nav-menu.open li:nth-child(9) { transition-delay: 0.45s; }
+    .nav-menu.open li:nth-child(10) { transition-delay: 0.5s; }
+    .nav-menu.open li:nth-child(11) { transition-delay: 0.55s; }
+    .nav-menu.open li:nth-child(12) { transition-delay: 0.6s; }
 
     /* 3. High-End Link Styling */
     .nav-menu li {
@@ -2429,30 +2462,8 @@ a[href="admin.html"] {
         padding: 10px;
     }
 
-    /* 2. Slide-in Navbar Menu Logic */
-    .nav-menu {
-        position: fixed;
-        top: 0;
-        left: -100%;
-        /* Hidden by default */
-        width: 80%;
-        height: 100vh;
-        background: #0b0b0b;
-        flex-direction: column !important;
-        padding: 100px 30px 40px !important; /* Reduced bottom padding from 100px to 40px */
-        transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 2000;
-        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.9);
-        list-style: none !important;
-        /* Removes default dots/bullets */
-        padding: 0;
-        margin: 0;
-    }
-
-    .nav-menu.open {
-        left: 0;
-        /* Slides into view */
-    }
+    /* 2. Unified background overlay when menu is open */
+    /* The duplicate .nav-menu block has been completely removed and merged above */
 
     /* Hide the Community & Support section (items 12 through 16) from the mobile menu to save space */
     .nav-menu li:nth-child(12),
@@ -2477,15 +2488,16 @@ a[href="admin.html"] {
         left: 0;
         width: 100vw;
         height: 100vh;
-        background: rgba(0, 0, 0, 0.75); /* Darkens everything uniformly */
-        backdrop-filter: blur(12px); /* Unified, stronger blur */
-        -webkit-backdrop-filter: blur(12px);
+        /* Premium cinematic depth gradient */
+        background: radial-gradient(circle at top right, rgba(20, 20, 30, 0.65) 0%, rgba(5, 5, 8, 0.95) 100%);
+        backdrop-filter: blur(16px); 
+        -webkit-backdrop-filter: blur(16px);
         z-index: 1900;
         pointer-events: auto;
-        animation: fadeInOverlay 0.3s ease forwards;
+        animation: cinematicOverlay 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    @keyframes fadeInOverlay {
+    @keyframes cinematicOverlay {
         from { opacity: 0; }
         to { opacity: 1; }
     }
@@ -2864,11 +2876,12 @@ a[href="admin.html"] {
     }
 
     .menu-close {
-        display: block !important;
+        display: inline-block !important;
+        width: auto !important;
         position: absolute;
-        top: 20px;
-        right: 25px;
-        font-size: 2rem;
+        top: 25px;
+        left: 20px; /* Moved to left side to match hamburger menu */
+        font-size: 2.2rem; /* Slightly larger to match hamburger size */
         color: var(--text-primary);
         cursor: pointer;
         z-index: 2100;
@@ -2927,15 +2940,19 @@ a[href="admin.html"] {
         transform: scale(0.5) rotate(-90deg);
     }
 
-    /* 4. Active States: Hamburger hides/rotates, Close scales in */
+    /* 4. Active States: Hamburger hides completely, no second X appears */
+    .menu-toggle.active {
+        opacity: 0;
+        pointer-events: none;
+    }
+    
     .menu-toggle.active .hamburger {
         opacity: 0;
         transform: scale(0.5) rotate(90deg);
     }
 
     .menu-toggle.active .close {
-        opacity: 1;
-        transform: scale(1) rotate(0deg);
+        display: none !important;
     }
 
 
