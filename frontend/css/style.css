@@ -2237,10 +2237,9 @@ a[href="admin.html"] {
         justify-content: flex-start;
         padding: 80px 30px 40px 30px !important;
         margin: 0 !important;
-        gap: 15px !important;
-        /* Reduced gap to fit more items */
+        gap: 5px !important;
+        /* Reduced gap to completely eliminate scrolling */
         overflow-y: auto;
-        /* Allow scrolling if content is taller than the screen */
         transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 2000;
         border-right: 1px solid #333;
@@ -2317,9 +2316,8 @@ a[href="admin.html"] {
     }
 
     .nav-menu a {
-        padding: 12px 20px !important;
-        /* Internal spacing for touch comfort */
-        margin: 5px 0;
+        padding: 8px 20px !important; /* Reduced vertical padding */
+        margin: 2px 0; /* Reduced margin */
         display: block;
         border-radius: 8px;
         /* Softens the look of the tap area */
@@ -2441,7 +2439,7 @@ a[href="admin.html"] {
         height: 100vh;
         background: #0b0b0b;
         flex-direction: column !important;
-        padding: 100px 30px !important;
+        padding: 100px 30px 40px !important; /* Reduced bottom padding from 100px to 40px */
         transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 2000;
         box-shadow: 10px 0 30px rgba(0, 0, 0, 0.9);
@@ -2454,6 +2452,42 @@ a[href="admin.html"] {
     .nav-menu.open {
         left: 0;
         /* Slides into view */
+    }
+
+    /* Hide the Community & Support section (items 12 through 16) from the mobile menu to save space */
+    .nav-menu li:nth-child(12),
+    .nav-menu li:nth-child(13),
+    .nav-menu li:nth-child(14),
+    .nav-menu li:nth-child(15),
+    .nav-menu li:nth-child(16) {
+        display: none !important;
+    }
+
+    /* Make the navbar transparent when menu is open so the whole screen blurs uniformly */
+    body.menu-open .navbar {
+        background-color: transparent !important;
+        border-bottom: none !important;
+    }
+
+    /* Single, unified blurred overlay for the entire screen */
+    body.menu-open .navbar::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.75); /* Darkens everything uniformly */
+        backdrop-filter: blur(12px); /* Unified, stronger blur */
+        -webkit-backdrop-filter: blur(12px);
+        z-index: 1900;
+        pointer-events: auto;
+        animation: fadeInOverlay 0.3s ease forwards;
+    }
+
+    @keyframes fadeInOverlay {
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 
     /* 3. Modal & Grid Fixes (Prevents spilling out of the box) */
@@ -2978,8 +3012,8 @@ a[href="admin.html"] {
         font-weight: 800;
         letter-spacing: 1.5px;
         color: #666;
-        padding-top: 15px !important;
-        margin-bottom: -15px !important; /* Pull links closer */
+        padding-top: 5px !important;
+        margin-bottom: 0px !important; /* Removed negative margin since links are tighter now */
     }
 
     /* Icon alignment in links */

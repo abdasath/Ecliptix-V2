@@ -221,6 +221,23 @@ function setupAuthModals() {
   });
 }
 
+  // Make the mobile sidebar "Gamer Card" clickable to log in
+  const navGamerCard = document.getElementById('navGamerCard');
+  if (navGamerCard) {
+      navGamerCard.addEventListener('click', () => {
+          if (!currentUser) {
+              // Close the mobile menu first
+              document.querySelector('.nav-menu')?.classList.remove('open');
+              document.querySelector('.menu-toggle')?.classList.remove('active');
+              document.body.classList.remove('menu-open');
+              
+              // Then open the login modal
+              clearAuthFields();
+              openLoginModal();
+          }
+      });
+  }
+
   if (logoutBtn) {
     logoutBtn.addEventListener('click', handleLogout);
   }
@@ -331,9 +348,14 @@ function initGoogleAuth() {
 // Handle the response from Google
 async function handleGoogleResponse(response) {
   try {
+    // Detect whether the user is on the Login or Register tab
+    const authContainer = document.querySelector('.container-auth');
+    const isRegistering = authContainer && authContainer.classList.contains('active');
+    const mode = isRegistering ? 'register' : 'login';
+
     const res = await apiRequest('/api/auth/google', {
       method: 'POST',
-      body: { credential: response.credential } // Let apiRequest handle JSON stringify
+      body: { credential: response.credential, mode: mode }
     });
 
     // Save token and user details exactly like standard login
@@ -443,6 +465,9 @@ async function handleLogout() {
 
   showNotification('Logged out successfully', 'info');
 }
+
+// Expose logout globally for the mobile navigation onclick handlers
+window.logout = handleLogout;
 
 /* --- Updated updateUIForLoggedIn in js/auth.js --- */
 function updateUIForLoggedIn(user) {

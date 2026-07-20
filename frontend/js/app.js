@@ -57,9 +57,27 @@ if (menuClose) {
 
 // Close Menu when clicking a link
 document.querySelectorAll('.nav-menu a').forEach(link => {
-    link.addEventListener('click', () => {
+    link.addEventListener('click', (e) => {
+        const text = link.textContent.trim();
+        const genres = ['Action', 'Horror', 'Racing', 'RPG', 'All Games'];
+        
+        if (genres.includes(text)) {
+            e.preventDefault();
+            
+            // Check if we are on the store page (index.html)
+            const path = window.location.pathname;
+            if (path.endsWith('index.html') || path.endsWith('/') || path.endsWith('frontend/')) {
+                if (typeof filterGames === 'function') {
+                    filterGames(text === 'All Games' ? 'All' : text);
+                }
+            } else {
+                // Redirect to store page with genre parameter
+                window.location.href = `index.html?genre=${text === 'All Games' ? 'All' : text}`;
+            }
+        }
+
         navMenu.classList.remove('open');
-        menuBtn.classList.remove('active');
+        if (menuBtn) menuBtn.classList.remove('active');
         document.body.classList.remove('menu-open'); // Unlock scroll
     });
 });

@@ -12,20 +12,70 @@
 <body>
     <!-- Navigation -->
     <nav class="navbar">
-         <button class="menu-toggle" style="display: none;">
-            <span class="icon hamburger">☰</span>
-            <span class="icon close">✕</span>
-         </button> 
         <div class="container">
+            <button class="menu-toggle">
+                <span class="icon hamburger">☰</span>
+                <span class="icon close">✕</span>
+            </button>
             <div class="nav-brand">
-                <a href="index.html"><h1>Ecliptix</h1></a>
+                <a href="index.html">
+                    <h1>Ecliptix</h1>
+                </a>
             </div>
             <ul class="nav-menu">
-                <li><a href="index.html">Store</a></li>
-                <li><a href="admin.html" class="active">Admin Panel</a></li>
+                <li class="menu-close">✕</li>
+                
+                <!-- Gamer Card (Populated by JS) -->
+                <li id="navGamerCard" class="nav-gamer-card mobile-only">
+                    <div class="nav-avatar"><i class='bx bx-user'></i></div>
+                    <div class="nav-user-info">
+                        <span class="nav-username">Welcome, Guest!</span>
+                        <span class="nav-wallet">Please sign in</span>
+                    </div>
+                </li>
+
+                <!-- Main Links -->
+                <li><a href="index.html"><i class='bx bxs-home mobile-only'></i> Store</a></li>
+                <li><a href="library.html"><i class='bx bx-library mobile-only'></i> Library</a></li>
+                <li><a href="profile.html"><i class='bx bx-user-circle mobile-only'></i> Profile</a></li>
+                <li id="adminNavLink" style="display: none;"><a href="admin.html" class="active"><i class='bx bx-shield-quarter mobile-only'></i> Admin</a></li>
+
+                <!-- Browse Genres -->
+                <li class="nav-subheader mobile-only">BROWSE GENRES</li>
+                <li class="mobile-only"><a href="#"><i class='bx bx-crosshair'></i> Action</a></li>
+                <li class="mobile-only"><a href="#"><i class='bx bx-ghost'></i> Horror</a></li>
+                <li class="mobile-only"><a href="#"><i class='bx bx-car'></i> Racing</a></li>
+                <li class="mobile-only"><a href="#"><i class='bx bx-map-alt'></i> RPG</a></li>
+
+                <!-- Community & Support -->
+                <li class="nav-subheader mobile-only">COMMUNITY & SUPPORT</li>
+                <li class="mobile-only"><a href="#"><i class='bx bx-trophy'></i> Leaderboards</a></li>
+                <li class="mobile-only"><a href="#"><i class='bx bxl-discord-alt'></i> Discord Server</a></li>
+                <li class="mobile-only"><a href="#"><i class='bx bx-cog'></i> Settings</a></li>
+                <li class="mobile-only"><a href="#"><i class='bx bx-help-circle'></i> Support</a></li>
+
+                <!-- Mobile Logout (Hidden by default, shown by JS if logged in) -->
+                <li id="navMobileLogout" class="mobile-only" style="display: none; margin-top: auto;">
+                    <a href="#" onclick="logout(); return false;" style="color: #ff4747;"><i class='bx bx-log-out'></i> Log Out</a>
+                </li>
             </ul>
             <div class="nav-actions">
-                <button id="logoutBtn" class="btn-secondary">Logout</button>
+                <div class="search-box">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search games...">
+
+                    <button id="searchBtn" class="search-btn">
+                        <i class='bx bx-search'></i>
+                    </button>
+                </div>
+                <div class="cart-icon" id="cartIcon">
+                    <span>🛒</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+                <div class="user-menu">
+                    <span id="userWallet" class="wallet">₹0</span>
+                    <button id="loginBtn" class="btn-primary">Login</button>
+                    <button id="logoutBtn" class="btn-secondary" style="display: none;">Logout</button>
+                </div>
             </div>
         </div>
     </nav>

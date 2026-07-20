@@ -141,7 +141,7 @@ router.post('/logout', auth, async (req, res) => {
 // ─────────────────────────────────────────────
 router.post('/google', async (req, res) => {
   try {
-    const { credential } = req.body;
+    const { credential, mode } = req.body;
     if (!credential) {
       return res.status(400).json({ message: 'No Google credential provided' });
     }
@@ -160,7 +160,12 @@ router.post('/google', async (req, res) => {
     let user = await User.findOne({ email });
 
     if (!user) {
-      // 2. Register them automatically
+      // If user does not exist but tried to login, stop them
+      if (mode === 'login') {
+        return res.status(404).json({ message: 'Account does not exist. Please switch to Register first.' });
+      }
+
+      // 2. Register them automatically (if mode === 'register' or legacy missing mode)
       // We generate a clean username from their name + a random number to avoid collisions
       const baseUsername = name.replace(/\s+/g, '').slice(0, 15);
       const randomNum = Math.floor(1000 + Math.random() * 9000);
