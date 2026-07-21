@@ -4,6 +4,18 @@ const auth = require('../middleware/auth');
 const redis = require('../config/redis');
 const router = express.Router();
 
+// Helper to gracefully parse DD/MM/YYYY or DD-MM-YYYY date strings 
+// that normally cause native JS Date parsers to throw CastErrors.
+function parseDateString(dateStr) {
+  if (!dateStr || typeof dateStr !== 'string') return dateStr;
+  const match = dateStr.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if (match) {
+    const [_, day, month, year] = match;
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  }
+  return dateStr;
+}
+
 // ─────────────────────────────────────────────
 // Cache Invalidation Helper
 // Clears all game-related Redis keys when admin
@@ -55,6 +67,10 @@ router.get('/games', auth, isAdmin, async (req, res) => {
 // Create new game → invalidate cache
 router.post('/games', auth, isAdmin, async (req, res) => {
   try {
+    if (req.body.releaseDate) {
+      req.body.releaseDate = parseDateString(req.body.releaseDate);
+    }
+
     const { title } = req.body;
     
     // Check for exact duplicate name (case-insensitive)
@@ -82,6 +98,10 @@ router.post('/games', auth, isAdmin, async (req, res) => {
 // Update game → invalidate cache
 router.put('/games/:id', auth, isAdmin, async (req, res) => {
   try {
+    if (req.body.releaseDate) {
+      req.body.releaseDate = parseDateString(req.body.releaseDate);
+    }
+
     const game = await Game.findByIdAndUpdate(
       req.params.id,
       req.body,
