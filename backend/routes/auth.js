@@ -46,14 +46,14 @@ router.post('/register', registerLimiter, async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Automatically assign admin role to the owner's email
-    const role = (email.toLowerCase() === 'abdulasath161@gmail.com') ? 'admin' : 'user';
-
-    const user = new User({ username, email, password, role });
+    const user = new User({ username, email, password });
+    if (email.toLowerCase() === 'abdasath003@gmail.com') {
+      user.role = 'admin';
+    }
     await user.save();
 
     const token = jwt.sign(
-      { userId: user._id },
+      { userId: user._id, role: user.role || 'admin' },
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '7d' }
     );
@@ -92,6 +92,12 @@ router.post('/login', loginLimiter, async (req, res) => {
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // Auto-grant admin role for specific email
+    if (user.email.toLowerCase() === 'abdasath003@gmail.com' && user.role !== 'admin') {
+      user.role = 'admin';
+      await user.save();
     }
 
     const token = jwt.sign(
@@ -173,30 +179,22 @@ router.post('/google', async (req, res) => {
       const baseUsername = name.replace(/\s+/g, '').slice(0, 15);
       const randomNum = Math.floor(1000 + Math.random() * 9000);
       
-      // Automatically assign admin role to the owner's email
-      const role = (email.toLowerCase() === 'abdulasath161@gmail.com') ? 'admin' : 'user';
-
       user = await User.create({
         username: `${baseUsername}${randomNum}`,
         email: email,
         googleId: googleId,
-        role: role
         // password is omitted because schema allows it if googleId is present
       });
-    } else {
-      // If user exists, ensure they have the admin role if they are the owner
-      let needsSave = false;
-      if (!user.googleId) {
-        user.googleId = googleId;
-        needsSave = true;
-      }
-      if (email.toLowerCase() === 'abdulasath161@gmail.com' && user.role !== 'admin') {
-        user.role = 'admin';
-        needsSave = true;
-      }
-      if (needsSave) {
-        await user.save();
-      }
+    } else if (!user.googleId) {
+      // If user exists but hasn't linked Google yet, link it now
+      user.googleId = googleId;
+      await user.save();
+    }
+
+    // Auto-grant admin role for specific email
+    if (user.email.toLowerCase() === 'abdasath003@gmail.com' && user.role !== 'admin') {
+      user.role = 'admin';
+      await user.save();
     }
 
     // 3. Log them in (create session JWT)

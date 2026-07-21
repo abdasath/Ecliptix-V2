@@ -159,6 +159,10 @@ async function handleRegister() {
     clearAuthFields();
 
     showNotification('Registration successful!', 'success');
+    
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
   } catch (error) {
     showNotification(error.message || 'Registration failed', 'error');
   }
@@ -369,6 +373,9 @@ async function handleGoogleResponse(response) {
     
     showNotification(`Welcome, ${res.user.username}!`, 'success');
 
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
   } catch (error) {
     console.error('Google login failed:', error);
     showNotification(error.message || 'Google Login failed', 'error');
@@ -412,8 +419,8 @@ async function handleLogin() {
       showNotification('Login successful!', 'success');
 
       setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 2000);
+        window.location.reload();
+      }, 1500);
     }
   } catch (error) {
     console.error('Login Error:', error);
