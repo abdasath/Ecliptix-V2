@@ -249,7 +249,7 @@ async function handleRazorpayPayment() {
       prefill: {
         name:    orderData.userName  || '',
         email:   orderData.userEmail || '',
-        contact: '',  // Intentionally blank — prevents merchant phone from leaking to all users
+        contact: '',
       },
 
       theme: {
