@@ -249,7 +249,7 @@ async function handleRazorpayPayment() {
       prefill: {
         name:    orderData.userName  || '',
         email:   orderData.userEmail || '',
-        contact: '',
+        contact: '9999999999', // Dummy number — overrides Razorpay test-mode merchant phone injection
       },
 
       theme: {
