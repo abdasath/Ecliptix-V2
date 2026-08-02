@@ -247,8 +247,9 @@ async function handleRazorpayPayment() {
       },
 
       prefill: {
-        name:  orderData.userName  || '',
-        email: orderData.userEmail || '',
+        name:    orderData.userName  || '',
+        email:   orderData.userEmail || '',
+        contact: '',  // Intentionally blank — prevents merchant phone from leaking to all users
       },
 
       theme: {
