@@ -216,11 +216,81 @@
         </div>
     </div>
 
+    <!-- ── AI Game Finder (Floating Chat Widget) ── -->
+    <!-- Floating trigger button -->
+    <button class="ai-fab" id="aiFab" title="AI Game Finder">
+        <span class="ai-fab-icon ai-fab-open"><i class='bx bx-bot'></i></span>
+        <span class="ai-fab-icon ai-fab-close" style="display:none"><i class='bx bx-x'></i></span>
+        <span class="ai-fab-pulse"></span>
+    </button>
+
+    <!-- Chat popup panel -->
+    <div class="ai-chat-panel" id="aiChatPanel">
+        <!-- Header -->
+        <div class="ai-chat-header">
+            <div class="ai-chat-header-left">
+                <div class="ai-chat-avatar"><i class='bx bx-bot'></i></div>
+                <div>
+                    <div class="ai-chat-name">Ecliptix AI</div>
+                    <div class="ai-chat-status"><span class="ai-status-dot"></span> Game Advisor</div>
+                </div>
+            </div>
+            <button class="ai-chat-close" id="aiChatClose"><i class='bx bx-x'></i></button>
+        </div>
+
+        <!-- Body -->
+        <div class="ai-chat-body">
+            <!-- Welcome message -->
+            <div class="ai-welcome">
+                <p>🎮 Ask me anything! I'll find the perfect game for you.</p>
+            </div>
+
+            <!-- Suggestion chips -->
+            <div class="ai-chips">
+                <button class="ai-suggestion-chip">Action games under ₹500</button>
+                <button class="ai-suggestion-chip">RPG like The Witcher</button>
+                <button class="ai-suggestion-chip">Scary horror games</button>
+                <button class="ai-suggestion-chip">Open world adventure</button>
+                <button class="ai-suggestion-chip">Best rated games</button>
+            </div>
+
+            <!-- Loading -->
+            <div class="ai-loading" id="aiSearchLoading" style="display:none">
+                <div class="ai-typing-dots"><span></span><span></span><span></span></div>
+                <p>AI is thinking...</p>
+            </div>
+
+            <!-- AI response bubble -->
+            <div class="ai-response-bubble" id="aiSearchResponse" style="display:none">
+                <div class="ai-bubble-avatar"><i class='bx bx-bot'></i></div>
+                <div class="ai-bubble-text" id="aiResponseText"></div>
+            </div>
+
+            <!-- Game result cards -->
+            <div class="ai-results-grid" id="aiSearchResults"></div>
+        </div>
+
+        <!-- Input bar -->
+        <div class="ai-chat-footer">
+            <input
+                type="text"
+                id="aiSearchInput"
+                class="ai-chat-input"
+                placeholder='e.g. "RPG like Witcher" or "horror game"'
+                autocomplete="off"
+            >
+            <button id="aiSearchBtn" class="ai-chat-send">
+                <i class='bx bx-send'></i>
+            </button>
+        </div>
+    </div>
+
     <script src="js/api.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/games.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/ai-search.js"></script>
 </body>
 
 </html>
