@@ -4,11 +4,6 @@
 (function () {
   'use strict';
 
-  const API = (
-    window.location.hostname === 'localhost' ||
-    window.location.hostname === '127.0.0.1'
-  ) ? 'http://localhost:5000' : 'https://ecliptix-v2.onrender.com';
-
   let fab, panel, closeBtn, input, sendBtn, loadingEl, responseEl, responseText, resultsEl;
   let isOpen = false;
 
@@ -101,7 +96,7 @@
     setLoading(true);
 
     try {
-      const res  = await fetch(`${API}/api/rag/search?q=${encodeURIComponent(query)}&limit=5`);
+      const res  = await fetch(`${window.API_BASE_URL || API_BASE_URL}/api/rag/search?q=${encodeURIComponent(query)}&limit=5`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Search failed');
 
