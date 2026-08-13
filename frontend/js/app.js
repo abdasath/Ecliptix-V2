@@ -20,7 +20,8 @@ function setupGlobalSearch() {
             const query = searchInput.value.trim();
             if (query) {
                 const isStore = window.location.pathname.endsWith('index.html') || window.location.pathname === '/';
-                if (!isStore) {
+                const isAdmin = window.location.pathname.endsWith('admin.html');
+                if (!isStore && !isAdmin) {
                     window.location.href = `index.html?search=${encodeURIComponent(query)}`;
                 }
             }

@@ -20,7 +20,28 @@ document.addEventListener('DOMContentLoaded', () => {
   loadAdminGames();
   setupGameForm();
   setupLogout();
+  setupAdminSearch();
 });
+
+// Setup instant local search for admin panel
+function setupAdminSearch() {
+  const searchInput = document.getElementById('searchInput');
+  if (!searchInput) return;
+
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase().trim();
+    if (!query) {
+      displayAdminGames(allAdminGames);
+      return;
+    }
+
+    const filteredGames = allAdminGames.filter(game => 
+      game.title.toLowerCase().includes(query) || 
+      game.developer.toLowerCase().includes(query)
+    );
+    displayAdminGames(filteredGames);
+  });
+}
 
 // Load all games for admin
 async function loadAdminGames() {
