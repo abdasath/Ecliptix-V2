@@ -7,7 +7,26 @@ const menuClose = document.querySelector('.menu-close');
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Ecliptix initialized');
     checkAdminStatus(); // Check for admin immediately
+    setupGlobalSearch(); // Setup universal search bar routing
 });
+
+// Setup universal search bar for non-store pages
+function setupGlobalSearch() {
+    const searchInput = document.getElementById('searchInput');
+    if (!searchInput) return;
+
+    searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const query = searchInput.value.trim();
+            if (query) {
+                const isStore = window.location.pathname.endsWith('index.html') || window.location.pathname === '/';
+                if (!isStore) {
+                    window.location.href = `index.html?search=${encodeURIComponent(query)}`;
+                }
+            }
+        }
+    });
+}
 
 // Admin Status Checker
 const checkAdminStatus = () => {

@@ -110,6 +110,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // Parse URL for genre parameter and set filter automatically
   const params = new URLSearchParams(window.location.search);
   const urlGenre = params.get('genre');
+  const urlSearch = params.get('search');
+
+  // If a global search redirected us here, pre-fill the search bar
+  if (urlSearch) {
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) searchInput.value = urlSearch;
+  }
 
   loadGenres().then(() => {
     if (urlGenre) {
@@ -127,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // Only load games after the dropdown has been correctly populated and set
     loadGames();
-    if (urlGenre && typeof scrollToGamesSection === 'function') {
+    if ((urlGenre || urlSearch) && typeof scrollToGamesSection === 'function') {
       // Small delay to let games render before scrolling
       setTimeout(scrollToGamesSection, 300);
     }
@@ -135,10 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
   setupFilters();
   setupSearch();
-
-  // 2. Setup Filter Listeners
-  document.getElementById('genreFilter').addEventListener('change', () => loadGames(1));
-  document.getElementById('sortFilter').addEventListener('change', () => loadGames(1));
 
   // 3. Setup Search Listener
   const searchBtn = document.getElementById('searchBtn');
