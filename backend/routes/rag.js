@@ -45,9 +45,11 @@ router.get('/search', async (req, res) => {
   // ── Run RAG pipeline ──
   try {
     console.log(`🤖 RAG search: "${query}"`);
-    const result = await ragService.search(q.trim(), parseInt(limit));
+    const sessionId = req.ip || 'anonymous';
+    const result = await ragService.search(q.trim(), parseInt(limit), sessionId);
 
     const response = {
+      type: result.type,
       query: q.trim(),
       aiResponse: result.aiResponse,
       games: result.games,
@@ -76,7 +78,7 @@ router.get('/search', async (req, res) => {
       return res.status(503).json({ message: 'Vector search index not ready. Please run the indexing script first.' });
     }
 
-    res.status(500).json({ message: 'AI recommendation failed. Please try again.' });
+    res.status(500).json({ message: `AI recommendation failed: ${error.message}` });
   }
 });
 

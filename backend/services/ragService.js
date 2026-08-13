@@ -4,60 +4,172 @@
  * Core RAG pipeline for Ecliptix AI Game Recommendations.
  *
  * Flow:
- *   1. Embed user query  →  Gemini text-embedding-004
- *   2. Vector search     →  MongoDB Atlas $vectorSearch (top 5 games)
- *   3. Build context     →  Format retrieved games into a prompt
- *   4. Generate response →  gemini-2.0-flash with system instructions
- *   5. Return            →  { aiResponse, games[] }
+ *   1. Parse intent      →  Gemini extracts maxPrice and refined search string
+ *   2. Embed query       →  Gemini text-embedding-004
+ *   3. Vector search     →  MongoDB Atlas $vectorSearch (top 50 games)
+ *   4. Post-filter       →  $match on price to strictly enforce budget
+ *   5. Build context     →  Format retrieved games into a prompt
+ *   6. Generate response →  gemini-3.5-flash with system instructions
  */
 
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { GoogleGenAI } = require('@google/genai');
 const mongoose = require('mongoose');
+const redis = require('../config/redis');
+const OpenAI = require('openai');
 
 const GEMINI_API_KEY   = process.env.GEMINI_API_KEY;
-const EMBEDDING_MODEL  = 'text-embedding-004';
-const GENERATION_MODEL = 'gemini-2.0-flash';
-const VECTOR_INDEX_NAME = 'game_vector_index'; // must match Atlas index name
+const GROQ_API_KEY     = process.env.GROQ_API_KEY;
+const EMBEDDING_MODEL  = 'gemini-embedding-001'; // 3072 dims
+const GROQ_MODEL       = 'llama-3.3-70b-versatile';
+const VECTOR_INDEX_NAME = 'game_vector_index';
 
-// ── Gemini clients ────────────────────────────────────────────────────────────
-let genAI;
-let embeddingModel;
-let generationModel;
-
-function getClients() {
-  if (!genAI) {
+// ── Gemini client (ONLY for embeddings) ──────────────────────────────────────
+let ai;
+function getEmbeddingModel() {
+  if (!ai) {
     if (!GEMINI_API_KEY || GEMINI_API_KEY === 'your_gemini_api_key_here') {
       throw new Error('GEMINI_API_KEY not configured in environment variables');
     }
-    genAI           = new GoogleGenerativeAI(GEMINI_API_KEY);
-    embeddingModel  = genAI.getGenerativeModel({ model: EMBEDDING_MODEL });
-    generationModel = genAI.getGenerativeModel({ model: GENERATION_MODEL });
+    ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
   }
-  return { embeddingModel, generationModel };
+  return ai;
 }
 
-// ── Step 1: Embed the user query ──────────────────────────────────────────────
+// ── Groq client (For all conversational tasks) ───────────────────────────────
+let groq;
+function getGroqClient() {
+  if (!groq) {
+    if (!GROQ_API_KEY || GROQ_API_KEY === 'your-groq-api-key') {
+      console.warn('GROQ_API_KEY not configured. Ecliptix AI generation will fail.');
+    }
+    groq = new OpenAI({
+      apiKey: GROQ_API_KEY || 'missing-key',
+      baseURL: 'https://api.groq.com/openai/v1'
+    });
+  }
+  return groq;
+}
+
+// ── Step 1: AI Intent Parsing (Understand Intents & Constraints) ─────────────
+async function parseUserIntent(query, sessionContextStr = "") {
+  const prompt = `Analyze this game search query: "${query}"
+
+Previous conversation context:
+${sessionContextStr || "None"}
+
+Determine the 'intentType' (MUST be one of these exactly):
+- "recommendation": User wants to find or suggest games (e.g. "games under 1000", "best RPGs").
+- "qa": User is asking a factual question about a game (e.g. "what is the storyline of Starfield?").
+- "comparison": User wants to compare games (e.g. "compare GTA V and Cyberpunk").
+- "opinion": User asks for a subjective opinion on a game (e.g. "is Baldur's Gate 3 worth it?").
+- "general": User asks a broad gaming educational question (e.g. "what is a soulslike?").
+
+If the user is asking a follow-up question (e.g. "who is the villain?" or "how much is it?"), use the Previous conversation context to determine which game they are talking about, and include that in the 'searchIntent'.
+
+Extract the maximum price (in INR/Rs) the user is willing to pay. 
+- If they say "under 1000", maxPrice is 1000. 
+- If they say "cheap", maxPrice is 500. 
+- If they say "free", maxPrice is 0.
+- If price is not mentioned, maxPrice is 99999.
+
+Also extract the core search intent to find relevant games in the database. Resolve any pronouns using the conversation context.
+Example: "what is the storyline of Starfield" -> "Starfield".
+Example: "god of war like games under 1000" -> "god of war action adventure hack slash".
+Example Context: lastGame="Cyberpunk", Query: "is it good?" -> "Cyberpunk".
+
+Return strictly valid JSON with keys: intentType, maxPrice, searchIntent.`;
+
+  try {
+    const client = getGroqClient();
+    const response = await client.chat.completions.create({
+      model: GROQ_MODEL,
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.1,
+      response_format: { type: "json_object" },
+    });
+    
+    let rawText = response.choices[0].message.content.trim();
+    const parsed = JSON.parse(rawText);
+    parsed.intentType = (parsed.intentType || "recommendation").toLowerCase();
+    return parsed;
+  } catch (err) {
+    console.error("Intent parsing failed, falling back to raw query:", err.message);
+    return { intentType: "recommendation", maxPrice: 99999, searchIntent: query };
+  }
+}
+
+// ── Step 2: Embed query ──────────────────────────────────────────────────────
 async function embedQuery(query) {
-  const { embeddingModel } = getClients();
-  const result = await embeddingModel.embedContent(query);
-  return result.embedding.values;
+  if (!ai) getEmbeddingModel();
+  const result = await ai.models.embedContent({
+    model: EMBEDDING_MODEL,
+    contents: query
+  });
+  return result.embeddings[0].values;
 }
 
-// ── Step 2: MongoDB Atlas Vector Search ───────────────────────────────────────
-async function vectorSearch(queryEmbedding, limit = 5) {
+// ── Step 3 & 4: MongoDB Atlas Vector Search + Post-Filter ────────────────────
+async function vectorSearch(queryEmbedding, maxPrice = 99999, limit = 5) {
   const Game = require('../models/Game');
   const db   = mongoose.connection.db;
 
-  const results = await db.collection('games').aggregate([
+  const pipeline = [
     {
       $vectorSearch: {
         index: VECTOR_INDEX_NAME,
         path: 'embedding',
         queryVector: queryEmbedding,
-        numCandidates: limit * 10,  // search wider, return top N
-        limit: limit,
+        numCandidates: 100, // Search wide to ensure we find cheap games
+        limit: 50,          // Return top 50 matches initially
+      }
+    }
+  ];
+
+  // If user specified a budget, strictly filter the vector search results!
+  if (maxPrice < 99999) {
+    pipeline.push({
+      $match: { price: { $lte: maxPrice } }
+    });
+  }
+
+  // Cap it to the final requested limit (usually 5)
+  pipeline.push({ $limit: limit });
+
+  pipeline.push({
+    $project: {
+      _id: 1,
+      title: 1,
+      description: 1,
+      shortDescription: 1,
+      price: 1,
+      discount: 1,
+      genres: 1,
+      tags: 1,
+      developer: 1,
+      publisher: 1,
+      rating: 1,
+      coverImage: 1,
+      score: { $meta: 'vectorSearchScore' }
+    }
+  });
+
+  return await db.collection('games').aggregate(pipeline).toArray();
+}
+
+// ── Atlas Text Search for QA/General ─────────────────────────────────────────
+async function atlasTextSearch(query, limit = 5) {
+  const db = mongoose.connection.db;
+  const pipeline = [
+    {
+      $search: {
+        index: "game_text_index",
+        text: {
+          query: query,
+          path: ["title", "description", "developer", "publisher"]
+        }
       }
     },
+    { $limit: limit },
     {
       $project: {
         _id: 1,
@@ -72,15 +184,15 @@ async function vectorSearch(queryEmbedding, limit = 5) {
         publisher: 1,
         rating: 1,
         coverImage: 1,
-        score: { $meta: 'vectorSearchScore' }
+        score: { $meta: 'searchScore' }
       }
     }
-  ]).toArray();
+  ];
 
-  return results;
+  return await db.collection('games').aggregate(pipeline).toArray();
 }
 
-// ── Step 3: Format retrieved games into LLM context ───────────────────────────
+// ── Step 5: Format retrieved games into LLM context ──────────────────────────
 function buildContext(games) {
   return games.map((g, i) => {
     const finalPrice = g.discount > 0
@@ -99,70 +211,116 @@ function buildContext(games) {
   }).join('\n\n');
 }
 
-// ── Step 4: Generate AI recommendation ───────────────────────────────────────
-async function generateRecommendation(userQuery, context, games) {
-  const { generationModel } = getClients();
+// ── Step 6: Generate AI recommendation ───────────────────────────────────────
+async function generateResponse(userQuery, context, games, intentType) {
+  const systemInstruction = `You are Ecliptix AI, a premium video game advisor. Answer factual game questions in 2–3 concise sentences (25–60 words). Prioritize the protagonist, main objective or conflict, and the unique hook that makes the game compelling. Avoid filler, unnecessary history, and long explanations. Use the retrieved database context when available, but improve the answer using your general gaming knowledge when necessary. Recommend games only when explicitly requested. Format game titles in **bold**.`;
 
-  const systemInstruction = `You are Ecliptix's AI game advisor — enthusiastic, knowledgeable, and concise.
-Your job is to help users find the perfect game from the Ecliptix store.
+  let prompt = `User's Query: "${userQuery}"\nIntent Type: ${intentType}\n\n`;
+  if (context) {
+    prompt += `Database Context (use this to answer):\n${context}\n\n`;
+  }
+  
+  if (intentType === "recommendation") {
+    prompt += `Based on these games, give a personalized, enthusiastic recommendation. Explain why these games match what the user is looking for. Avoid generic marketing language. Do not hallucinate unavailable games. Keep responses concise.`;
+  } else if (intentType === "qa") {
+    prompt += `For storyline questions, answer in exactly **2 concise sentences (25–50 words)**. Always mention **who the protagonist is, what their main goal or conflict is, and what makes the story compelling**. Do not describe gameplay mechanics, reviews, genres, or overall impressions unless the user specifically asks about them. The answer should feel like a premium game-store story summary.`;
+  } else if (intentType === "comparison") {
+    prompt += `Compare the games mentioned in the query based on the context. Highlight their differences in gameplay, story, or style.`;
+  } else if (intentType === "opinion") {
+    prompt += `Provide a balanced, subjective opinion on the game(s) mentioned, drawing from the context or general gaming consensus.`;
+  } else {
+    prompt += `Answer this general gaming question educationally.`;
+  }
 
-Rules:
-- Be conversational and friendly, like a gamer friend giving advice
-- Briefly explain WHY each recommended game matches the user's request
-- Mention price and genre naturally in your response
-- Keep your response under 180 words total
-- If the retrieved games don't match well, be honest and suggest the user try a different search
-- Do NOT make up games that aren't in the provided list
-- Format game titles in **bold**`;
-
-  const prompt = `User is looking for: "${userQuery}"
-
-Here are the most semantically relevant games from our store:
-
-${context}
-
-Based on these games, give a personalized, enthusiastic recommendation. Explain why these games match what the user is looking for.`;
-
-  const result = await generationModel.generateContent({
-    contents: [{ role: 'user', parts: [{ text: prompt }] }],
-    systemInstruction: { parts: [{ text: systemInstruction }] },
-    generationConfig: {
-      maxOutputTokens: 350,
-      temperature: 0.7,
-    }
-  });
-
-  return result.response.text();
+  try {
+    const client = getGroqClient();
+    const response = await client.chat.completions.create({
+      model: GROQ_MODEL,
+      messages: [
+        { role: "system", content: systemInstruction },
+        { role: "user", content: prompt }
+      ],
+      temperature: 0.4,
+      max_tokens: 250,
+    });
+    return response.choices[0].message.content.trim();
+  } catch (err) {
+    console.error("Groq generation failed:", err.message);
+    return "The AI service is temporarily unavailable. Please try again in a moment.";
+  }
 }
 
-// ── Main exported function ────────────────────────────────────────────────────
-async function search(userQuery, limit = 5) {
+// ── Main exported function ───────────────────────────────────────────────────
+async function search(userQuery, limit = 5, sessionId = "anonymous") {
   if (!userQuery || userQuery.trim().length < 2) {
     throw new Error('Please enter at least 2 characters to search');
   }
 
-  const query = userQuery.trim().slice(0, 300); // safety cap
+  const query = userQuery.trim().slice(0, 300);
 
-  // Step 1 — embed query
-  const queryEmbedding = await embedQuery(query);
-
-  // Step 2 — vector search
-  const games = await vectorSearch(queryEmbedding, Math.min(limit, 8));
-
-  if (games.length === 0) {
-    return {
-      aiResponse: "I couldn't find any matching games for that query. Try describing the type of gameplay, genre, or mood you're looking for — like 'relaxing exploration game' or 'intense multiplayer shooter'.",
-      games: []
-    };
+  // Load session memory
+  let sessionContextStr = "";
+  const memKey = `rag:memory:${sessionId}`;
+  if (redis.status === 'ready') {
+    const mem = await redis.get(memKey);
+    if (mem) {
+      try {
+        const memObj = JSON.parse(mem);
+        sessionContextStr = `lastReferencedGame="${memObj.lastGame || ''}", lastIntent="${memObj.lastIntent || ''}"`;
+      } catch (e) {}
+    }
   }
 
-  // Step 3 — build context
+  // 1. Parse intent
+  const intent = await parseUserIntent(query, sessionContextStr);
+  const type = intent.intentType; // recommendation, qa, comparison, opinion, general
+
+  let games = [];
+  
+  // 2 & 3. Retrieve games
+  if (type === "recommendation") {
+    // Semantic vector search
+    const queryEmbedding = await embedQuery(intent.searchIntent);
+    games = await vectorSearch(queryEmbedding, intent.maxPrice, Math.min(limit, 8));
+  } else {
+    // Exact text search for QA, comparisons, etc.
+    games = await atlasTextSearch(intent.searchIntent, Math.min(limit, 5));
+    // Fallback to vector search if text search yields nothing
+    if (games.length === 0) {
+       const queryEmbedding = await embedQuery(intent.searchIntent);
+       games = await vectorSearch(queryEmbedding, intent.maxPrice, Math.min(limit, 5));
+    }
+  }
+
+  // 4. Build context and generate response
   const context = buildContext(games);
+  const aiResponse = await generateResponse(query, context, games, type);
 
-  // Step 4 — generate recommendation
-  const aiResponse = await generateRecommendation(query, context, games);
+  // 5. Determine which games to return based on intent type
+  let finalGames = [];
+  if (type === "recommendation") {
+    finalGames = games;
+  } else if (type === "comparison") {
+    finalGames = games.slice(0, 2); // Show up to 2 cards for comparison
+  } else {
+    // QA, opinion, general -> no cards
+    finalGames = [];
+  }
 
-  return { aiResponse, games };
+  // Save session memory
+  if (redis.status === 'ready' && games.length > 0) {
+    const memoryToSave = {
+      lastGame: games[0].title,
+      lastIntent: type
+    };
+    await redis.setex(memKey, 3600, JSON.stringify(memoryToSave)); // 1 hour memory
+  }
+
+  return {
+    type,
+    aiResponse,
+    games: finalGames
+  };
 }
 
 module.exports = { search };

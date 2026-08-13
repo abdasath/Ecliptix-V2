@@ -37,6 +37,25 @@
       : '<i class="bx bx-send"></i>';
   }
 
+  // ── Navigate to Store Game ─────────────────────────────────────
+  function navigateToGame(gameTitle) {
+    const searchInput = document.getElementById('searchInput');
+    const gamesGrid = document.getElementById('gamesGrid');
+
+    if (!searchInput) {
+      window.location.href = `/?search=${encodeURIComponent(gameTitle)}`;
+      return;
+    }
+
+    searchInput.value = gameTitle;
+    searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+    if (gamesGrid) {
+      const topOffset = gamesGrid.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: topOffset, behavior: 'smooth' });
+    }
+  }
+
   // ── Render a game card ────────────────────────────────────────
   function renderCard(game) {
     const finalPrice = game.discount > 0
@@ -48,6 +67,10 @@
 
     const card = document.createElement('div');
     card.className = 'ai-game-card';
+    card.style.cursor = 'pointer';
+    card.title = 'Click to view in store';
+    card.addEventListener('click', () => navigateToGame(game.title));
+    
     card.innerHTML = `
       <div class="ai-game-cover">
         <img src="${game.coverImage}" alt="${game.title}" loading="lazy" onerror="this.src='images/placeholder.jpg'">
@@ -83,12 +106,20 @@
       if (!res.ok) throw new Error(data.message || 'Search failed');
 
       // Show AI bubble
-      responseText.textContent = data.aiResponse || '';
+      // Basic markdown parser for bold and newlines
+      let formattedText = (data.aiResponse || '')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\n/g, '<br>');
+      responseText.innerHTML = formattedText;
       responseEl.style.display = 'flex';
 
       // Show game cards
-      if (data.games && data.games.length > 0) {
-        data.games.forEach(g => resultsEl.appendChild(renderCard(g)));
+      // Only render cards for recommendations or comparisons
+      if (['recommendation', 'comparison'].includes(data.type)) {
+        if (data.games && data.games.length > 0) {
+          data.games.forEach(g => resultsEl.appendChild(renderCard(g)));
+        }
       }
 
       // Scroll to response

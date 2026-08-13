@@ -3099,7 +3099,7 @@ a[href="admin.html"] {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   AI GAME FINDER — Floating Chat Widget
+   AI GAME FINDER — Floating Chat Widget  (Black & White Aesthetic)
    ═══════════════════════════════════════════════════════════════ */
 
 /* ── Floating Action Button (FAB) ── */
@@ -3110,24 +3110,24 @@ a[href="admin.html"] {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #6c63ff, #3b82f6);
+  background: linear-gradient(135deg, #ffffff 0%, #c0c0c0 100%);
   border: none;
   cursor: pointer;
   z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 32px rgba(108, 99, 255, 0.5), 0 2px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 32px rgba(255, 255, 255, 0.15), 0 2px 8px rgba(0,0,0,0.5);
   transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s;
   overflow: visible;
 }
 .ai-fab:hover {
   transform: scale(1.12);
-  box-shadow: 0 12px 40px rgba(108, 99, 255, 0.7), 0 4px 12px rgba(0,0,0,0.4);
+  box-shadow: 0 12px 40px rgba(255, 255, 255, 0.25), 0 4px 12px rgba(0,0,0,0.6);
 }
 .ai-fab-icon {
   font-size: 1.6rem;
-  color: #fff;
+  color: #0a0a0a;
   display: flex;
   align-items: center;
 }
@@ -3137,7 +3137,7 @@ a[href="admin.html"] {
   position: absolute;
   inset: -6px;
   border-radius: 50%;
-  border: 2px solid rgba(108, 99, 255, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.35);
   animation: ai-pulse 2s ease-out infinite;
   pointer-events: none;
 }
@@ -3153,10 +3153,10 @@ a[href="admin.html"] {
   right: 28px;
   width: 370px;
   max-height: 560px;
-  background: #111827;
-  border: 1px solid rgba(108, 99, 255, 0.25);
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 20px;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
   z-index: 9998;
   display: flex;
   flex-direction: column;
@@ -3178,14 +3178,16 @@ a[href="admin.html"] {
   align-items: center;
   justify-content: space-between;
   padding: 16px 18px;
-  background: linear-gradient(135deg, #6c63ff 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #111111 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   flex-shrink: 0;
 }
 .ai-chat-header-left { display: flex; align-items: center; gap: 12px; }
 .ai-chat-avatar {
   width: 40px;
   height: 40px;
-  background: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -3193,29 +3195,32 @@ a[href="admin.html"] {
   font-size: 1.3rem;
   color: #fff;
 }
-.ai-chat-name  { font-weight: 700; color: #fff; font-size: 0.95rem; }
+.ai-chat-name  { font-weight: 700; color: #ffffff; font-size: 0.95rem; }
 .ai-chat-status {
   display: flex;
   align-items: center;
   gap: 5px;
-  color: rgba(255,255,255,0.8);
+  color: rgba(255,255,255,0.55);
   font-size: 0.75rem;
 }
 .ai-status-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #4ade80;
-  box-shadow: 0 0 6px #4ade80;
+  background: #ffffff;
+  box-shadow: 0 0 6px rgba(255,255,255,0.6);
   animation: ai-blink 2s ease-in-out infinite;
 }
-@keyframes ai-blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+@keyframes ai-blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 .ai-chat-close {
-  background: rgba(255,255,255,0.15);
-  border: none;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
   color: #fff;
   width: 30px;
   height: 30px;
+  min-width: 30px;
+  min-height: 30px;
+  padding: 0;
   border-radius: 50%;
   cursor: pointer;
   font-size: 1.2rem;
@@ -3224,7 +3229,7 @@ a[href="admin.html"] {
   justify-content: center;
   transition: background 0.2s;
 }
-.ai-chat-close:hover { background: rgba(255,255,255,0.3); }
+.ai-chat-close:hover { background: rgba(255,255,255,0.2); }
 
 /* Body — scrollable */
 .ai-chat-body {
@@ -3235,18 +3240,18 @@ a[href="admin.html"] {
   flex-direction: column;
   gap: 12px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(108,99,255,0.3) transparent;
+  scrollbar-color: rgba(255,255,255,0.15) transparent;
 }
 .ai-chat-body::-webkit-scrollbar { width: 4px; }
-.ai-chat-body::-webkit-scrollbar-thumb { background: rgba(108,99,255,0.4); border-radius: 4px; }
+.ai-chat-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
 
 /* Welcome bubble */
 .ai-welcome p {
-  background: rgba(108,99,255,0.15);
-  border: 1px solid rgba(108,99,255,0.2);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 12px 12px 12px 4px;
   padding: 10px 14px;
-  color: #c4c4f0;
+  color: #b0b0b0;
   font-size: 0.85rem;
   margin: 0;
 }
@@ -3258,9 +3263,9 @@ a[href="admin.html"] {
   gap: 6px;
 }
 .ai-suggestion-chip {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(108,99,255,0.3);
-  color: #a5b4fc;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #d4d4d4;
   padding: 5px 11px;
   border-radius: 20px;
   font-size: 0.75rem;
@@ -3269,8 +3274,8 @@ a[href="admin.html"] {
   white-space: nowrap;
 }
 .ai-suggestion-chip:hover {
-  background: rgba(108,99,255,0.2);
-  border-color: #6c63ff;
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.4);
   color: #fff;
 }
 
@@ -3287,7 +3292,7 @@ a[href="admin.html"] {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #6c63ff;
+  background: #ffffff;
   animation: ai-bounce 1.2s ease-in-out infinite;
 }
 .ai-typing-dots span:nth-child(2) { animation-delay: 0.2s; }
@@ -3306,18 +3311,18 @@ a[href="admin.html"] {
 .ai-bubble-avatar {
   width: 30px;
   height: 30px;
-  background: linear-gradient(135deg, #6c63ff, #3b82f6);
+  background: linear-gradient(135deg, #ffffff, #a0a0a0);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.9rem;
-  color: #fff;
+  color: #0a0a0a;
   flex-shrink: 0;
   margin-top: 2px;
 }
 .ai-bubble-text {
-  background: rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 4px 12px 12px 12px;
   padding: 10px 13px;
@@ -3334,7 +3339,7 @@ a[href="admin.html"] {
   gap: 8px;
 }
 .ai-game-card {
-  background: rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 10px;
   overflow: hidden;
@@ -3342,7 +3347,7 @@ a[href="admin.html"] {
   transition: border-color 0.2s, transform 0.2s;
 }
 .ai-game-card:hover {
-  border-color: rgba(108,99,255,0.5);
+  border-color: rgba(255,255,255,0.3);
   transform: translateY(-2px);
 }
 .ai-game-cover { position: relative; aspect-ratio: 16/9; overflow: hidden; }
@@ -3351,8 +3356,8 @@ a[href="admin.html"] {
   position: absolute;
   top: 5px;
   right: 5px;
-  background: #ef4444;
-  color: #fff;
+  background: #ffffff;
+  color: #0a0a0a;
   font-size: 0.65rem;
   font-weight: 700;
   padding: 1px 5px;
@@ -3370,7 +3375,7 @@ a[href="admin.html"] {
 }
 .ai-game-genre { font-size: 0.65rem; color: #9ca3af; margin: 0 0 3px; }
 .ai-game-rating { font-size: 0.65rem; color: #f59e0b; margin: 0 0 4px; }
-.ai-price-final { font-size: 0.78rem; font-weight: 700; color: #4ade80; }
+.ai-price-final { font-size: 0.78rem; font-weight: 700; color: #ffffff; }
 .ai-price-original { font-size: 0.68rem; color: #6b7280; text-decoration: line-through; margin-right: 4px; }
 .ai-game-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px; }
 
@@ -3380,14 +3385,14 @@ a[href="admin.html"] {
   align-items: center;
   gap: 8px;
   padding: 12px 14px;
-  border-top: 1px solid rgba(255,255,255,0.07);
-  background: #0d1117;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  background: #080808;
   flex-shrink: 0;
 }
 .ai-chat-input {
   flex: 1;
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
   border-radius: 22px;
   padding: 9px 15px;
   color: #f3f4f6;
@@ -3395,15 +3400,15 @@ a[href="admin.html"] {
   outline: none;
   transition: border-color 0.2s;
 }
-.ai-chat-input:focus { border-color: #6c63ff; }
+.ai-chat-input:focus { border-color: rgba(255,255,255,0.4); }
 .ai-chat-input::placeholder { color: #6b7280; }
 .ai-chat-send {
   width: 38px;
   height: 38px;
-  background: linear-gradient(135deg, #6c63ff, #3b82f6);
+  background: linear-gradient(135deg, #ffffff, #c0c0c0);
   border: none;
   border-radius: 50%;
-  color: #fff;
+  color: #0a0a0a;
   font-size: 1rem;
   cursor: pointer;
   display: flex;
@@ -3412,8 +3417,8 @@ a[href="admin.html"] {
   transition: transform 0.2s, box-shadow 0.2s;
   flex-shrink: 0;
 }
-.ai-chat-send:hover { transform: scale(1.1); box-shadow: 0 4px 16px rgba(108,99,255,0.5); }
-.ai-chat-send:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.ai-chat-send:hover { transform: scale(1.1); box-shadow: 0 4px 16px rgba(255,255,255,0.2); }
+.ai-chat-send:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
 /* Mobile */
 @media (max-width: 480px) {

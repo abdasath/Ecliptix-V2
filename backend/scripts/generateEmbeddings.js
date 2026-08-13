@@ -10,12 +10,10 @@
 
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 const mongoose = require('mongoose');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 // ── Config ──────────────────────────────────────────────────────────────────
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const MONGODB_URI    = process.env.MONGODB_URI;
-const EMBEDDING_MODEL = 'text-embedding-004'; // 768 dimensions, free tier
+const GEMINI_API_KEY   = process.env.GEMINI_API_KEY;
+const MONGODB_URI      = process.env.MONGODB_URI;
 
 if (!GEMINI_API_KEY || GEMINI_API_KEY === 'your_gemini_api_key_here') {
   console.error('❌ GEMINI_API_KEY not set in .env');
@@ -23,11 +21,22 @@ if (!GEMINI_API_KEY || GEMINI_API_KEY === 'your_gemini_api_key_here') {
 }
 
 // ── Gemini client ────────────────────────────────────────────────────────────
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-const embeddingModel = genAI.getGenerativeModel({ model: EMBEDDING_MODEL });
+const { GoogleGenAI } = require('@google/genai');
+const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
-// ── Game model (inline to avoid circular deps) ──────────────────────────────
+// ── Game model require moved down below to avoid duplicate declaration ────────
 const Game = require('../models/Game');
+
+// ── Generate embedding for a single text ─────────────────────────────────────
+async function generateEmbedding(text) {
+  const result = await ai.models.embedContent({
+    model: "gemini-embedding-001",
+    contents: text
+  });
+  return result.embeddings[0].values; // array of 3072 floats
+}
+
+
 
 // ── Build text blob for embedding ────────────────────────────────────────────
 function buildGameText(game) {
@@ -50,12 +59,6 @@ function buildGameText(game) {
   ].join('\n');
 }
 
-// ── Generate embedding for a single text ─────────────────────────────────────
-async function generateEmbedding(text) {
-  const result = await embeddingModel.embedContent(text);
-  return result.embedding.values; // array of 768 floats
-}
-
 // ── Sleep to respect rate limits ─────────────────────────────────────────────
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -75,7 +78,7 @@ async function main() {
 
   for (const game of games) {
     // Skip if already has a valid embedding
-    if (game.embedding && game.embedding.length === 768) {
+    if (game.embedding && game.embedding.length === 3072) {
       console.log(`⏩ Skipping "${game.title}" (already embedded)`);
       skipped++;
       continue;

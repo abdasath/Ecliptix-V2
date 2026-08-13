@@ -51,10 +51,7 @@ router.get('/', async (req, res) => {
 
     const query = {};
     if (search) {
-      query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
-      ];
+      query.title = { $regex: search, $options: 'i' };
     }
     if (genre && genre !== 'All Genres') {
       query.genres = genre;
