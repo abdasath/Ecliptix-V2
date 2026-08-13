@@ -392,8 +392,9 @@ function createGameCard(game, isFeatured = false) {
     `<span class="genre-tag">${genre}</span>`
   ).join('') || '';
 
+  const transitionId = isFeatured ? `feat-${game._id}` : `game-${game._id}`;
   return `
-    <div class="game-card" data-game-id="${game._id}" style="view-transition-name: game-${game._id};">
+    <div class="game-card" data-game-id="${game._id}" style="view-transition-name: ${transitionId};">
       <img src="${game.coverImage}" alt="${game.title}" class="game-image" data-cover="${game.coverImage}" data-images='${JSON.stringify(game.images || [])}'>
       <div class="game-info">
         <h3 class="game-title">${game.title}</h3>
