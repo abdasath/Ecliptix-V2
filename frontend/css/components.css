@@ -444,4 +444,20 @@ button, a {
   box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 
+/* ============================================================
+   SORT BY DROPDOWN — same visual language as the Genre dropdown
+   ============================================================ */
+/* Keep each sort option on one line so the panel sizes to the
+   longest option text (width: max-content) without wrapping */
+#sortDropdownList .dropdown-item {
+  white-space: nowrap;
+}
+
+/* Hover/focus highlight identical to the Genre dropdown (which uses
+   rgba(255, 255, 255, 0.1) via inline handlers in games.js) */
+#sortDropdownList .dropdown-item:hover,
+#sortDropdownList .dropdown-item:focus {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 

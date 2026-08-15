@@ -118,12 +118,27 @@
                         </ul>
                     </div>
 
-                    <select id="sortFilter">
-                        <option value="">Sort By</option>
-                        <option value="priceLowHigh">Price: Low to High</option>
-                        <option value="priceHighLow">Price: High to Low</option>
-                        <option value="highestRated">Highest Rated</option>
-                    </select>
+                    <!-- Sort By → custom dropdown styled exactly like the Genre dropdown,
+                         but with a content-aware width. The native select is kept
+                         hidden so the existing games.js filtering stays intact -->
+                    <div class="custom-dropdown" id="sortDropdown" style="position: relative; flex: 0 0 auto;">
+                        <select id="sortFilter" aria-hidden="true" tabindex="-1" style="display: none;">
+                            <option value="">Sort By</option>
+                            <option value="priceLowHigh">Price: Low to High</option>
+                            <option value="priceHighLow">Price: High to Low</option>
+                            <option value="highestRated">Highest Rated</option>
+                        </select>
+                        <button class="dropdown-toggle" id="sortDropdownBtn" style="background: var(--card-bg); color: var(--text-primary); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; display: inline-flex; justify-content: space-between; align-items: center; gap: 0.5rem; min-width: 150px; white-space: nowrap; font-family: inherit; font-size: inherit;">
+                            <span id="sortSelectedText">Sort By</span>
+                            <i class='bx bx-chevron-down'></i>
+                        </button>
+                        <ul class="dropdown-menu" id="sortDropdownList" style="position: absolute; top: calc(100% + 5px); right: 0; width: max-content; min-width: 150px; max-width: calc(100vw - 24px); max-height: 250px; overflow-y: auto; background: #121212; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 4px; z-index: 1000; display: none; margin: 0; padding: 0; list-style: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+                            <li class="dropdown-item" data-value="" style="padding: 10px 15px; cursor: pointer; color: white; transition: background 0.2s;">Sort By</li>
+                            <li class="dropdown-item" data-value="priceLowHigh" style="padding: 10px 15px; cursor: pointer; color: white; transition: background 0.2s;">Price: Low to High</li>
+                            <li class="dropdown-item" data-value="priceHighLow" style="padding: 10px 15px; cursor: pointer; color: white; transition: background 0.2s;">Price: High to Low</li>
+                            <li class="dropdown-item" data-value="highestRated" style="padding: 10px 15px; cursor: pointer; color: white; transition: background 0.2s;">Highest Rated</li>
+                        </ul>
+                    </div>
 
 
                 </div>
@@ -295,6 +310,7 @@
     <script src="js/api.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/games.js"></script>
+    <script src="js/filter-dropdowns.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/app.js"></script>
     <script src="js/ai-search.js"></script>
