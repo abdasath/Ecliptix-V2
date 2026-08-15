@@ -39,24 +39,64 @@ function scrollToGamesSection() {
 // --- LOAD GENRES FOR DROPDOWN ---
 async function loadGenres() {
   try {
-    // Updated URL to match the backend route
     const res = await fetch(`${API_BASE_URL}/api/games/meta/genres`);
-
     if (!res.ok) throw new Error('Failed to fetch genres');
 
     const genres = await res.json();
-    const genreFilter = document.getElementById('genreFilter');
+    const genreDropdownList = document.getElementById('genreDropdownList');
+    if (!genreDropdownList) return;
 
     // Reset dropdown
-    genreFilter.innerHTML = '<option value="">All Genres</option>';
+    genreDropdownList.innerHTML = '<li class="dropdown-item" data-value="" style="padding: 10px 15px; cursor: pointer; color: white; transition: background 0.2s;">All Genres</li>';
 
     // Populate
     genres.forEach(genre => {
-      const option = document.createElement('option');
-      option.value = genre;
-      option.textContent = genre;
-      genreFilter.appendChild(option);
+      const li = document.createElement('li');
+      li.className = 'dropdown-item';
+      li.dataset.value = genre;
+      li.textContent = genre;
+      li.style.cssText = 'padding: 10px 15px; cursor: pointer; color: white; transition: background 0.2s;';
+      
+      // Hover effect since inline style pseudo-classes aren't standard
+      li.onmouseover = () => li.style.background = 'rgba(255, 255, 255, 0.1)';
+      li.onmouseout = () => li.style.background = 'transparent';
+      
+      genreDropdownList.appendChild(li);
     });
+    
+    // Setup Custom Dropdown interactions
+    const btn = document.getElementById('genreDropdownBtn');
+    const text = document.getElementById('genreSelectedText');
+    const input = document.getElementById('genreFilter');
+    
+    if (btn && genreDropdownList && input) {
+        // Toggle dropdown
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isShowing = genreDropdownList.style.display === 'block';
+            genreDropdownList.style.display = isShowing ? 'none' : 'block';
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', () => {
+            genreDropdownList.style.display = 'none';
+        });
+
+        // Select an item
+        genreDropdownList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('dropdown-item')) {
+                const value = e.target.dataset.value;
+                const label = e.target.textContent;
+                input.value = value;
+                text.textContent = label;
+                genreDropdownList.style.display = 'none';
+                
+                // Trigger change event to load games
+                input.dispatchEvent(new Event('change'));
+            }
+        });
+    }
+
   } catch (error) {
     console.error('Failed to load genres:', error);
   }
@@ -121,12 +161,16 @@ document.addEventListener('DOMContentLoaded', () => {
   loadGenres().then(() => {
     if (urlGenre) {
       const genreSelect = document.getElementById('genreFilter');
-      if (genreSelect) {
+      const genreText = document.getElementById('genreSelectedText');
+      const dropdownItems = document.querySelectorAll('#genreDropdownList .dropdown-item');
+      if (genreSelect && genreText && dropdownItems.length) {
         // Find matching option case-insensitively
-        for (let i = 0; i < genreSelect.options.length; i++) {
-          if (genreSelect.options[i].value.toLowerCase() === urlGenre.toLowerCase() || 
-             (urlGenre.toLowerCase() === 'all' && genreSelect.options[i].value === '')) {
-            genreSelect.value = genreSelect.options[i].value;
+        for (let i = 0; i < dropdownItems.length; i++) {
+          const itemVal = dropdownItems[i].dataset.value;
+          if (itemVal.toLowerCase() === urlGenre.toLowerCase() || 
+             (urlGenre.toLowerCase() === 'all' && itemVal === '')) {
+            genreSelect.value = itemVal;
+            genreText.textContent = dropdownItems[i].textContent;
             break;
           }
         }

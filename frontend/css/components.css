@@ -392,11 +392,30 @@ button, a {
 
 
 @media (max-width: 480px) {
+  /* ── Game Details Modal alignment (mobile) ─────────────────────────────
+     The overlay (.modal-large) is `position: fixed; left: 0; width: 100%`.
+     Shrinking the overlay itself to 94% pinned it against the left edge and
+     left a dead 6vw stripe on the right — every card centered inside it
+     (`margin: auto`) was therefore shifted off-center. Keep the overlay
+     full-bleed so the card centers against the REAL viewport:
+       · equal left/right outer gaps (4vw each side)
+       · reasonable top/bottom breathing room (5vh each side)
+     The card itself has a fixed 90vh shell; long content scrolls internally
+     inside #gameDetails, so the overlay never needs to scroll.            */
   .modal-large {
-    width: 94%;
-    max-height: 90vh;
-    overflow-y: auto;
-    padding: 16px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .modal-large .modal-content {
+    width: 92%;
+    max-width: 92%;
+    margin: 5vh auto; /* horizontal `auto` ⇒ perfectly equal L/R spacing */
   }
 
   .modal-content {

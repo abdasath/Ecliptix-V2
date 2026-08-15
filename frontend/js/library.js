@@ -10,6 +10,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// Re-render when auth changes globally (e.g. login from modal)
+window.addEventListener('auth-changed', () => {
+  if (isAuthenticated()) {
+    loadLibrary();
+  } else {
+    showLoginPrompt();
+  }
+});
+
 // Load user's library
 async function loadLibrary() {
   if (!isAuthenticated()) {

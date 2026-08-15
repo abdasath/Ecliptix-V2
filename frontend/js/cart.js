@@ -30,6 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
   setupCartModal();
 });
 
+// Re-render cart when auth changes globally (e.g. login from modal)
+window.addEventListener('auth-changed', () => {
+  loadCart(); // loadCart internally checks isAuthenticated() and empties cart if not
+});
+
 // Load cart from API
 async function loadCart() {
   if (!isAuthenticated()) {

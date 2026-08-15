@@ -107,9 +107,16 @@
             <div class="section-header">
                 <h2 class="section-title">All Games</h2>
                 <div class="filters">
-                    <select id="genreFilter">
-                        <option value="">All Genres</option>
-                    </select>
+                    <div class="custom-dropdown" id="genreDropdown" style="position: relative; flex: 1;">
+                        <input type="hidden" id="genreFilter" value="">
+                        <button class="dropdown-toggle" id="genreDropdownBtn" style="background: var(--card-bg); color: var(--text-primary); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; width: 100%; display: flex; justify-content: space-between; align-items: center; font-family: inherit; font-size: inherit;">
+                            <span id="genreSelectedText">All Genres</span>
+                            <i class='bx bx-chevron-down'></i>
+                        </button>
+                        <ul class="dropdown-menu" id="genreDropdownList" style="position: absolute; top: calc(100% + 5px); left: 0; min-width: 100%; max-height: 250px; overflow-y: auto; background: #121212; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 4px; z-index: 1000; display: none; margin: 0; padding: 0; list-style: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+                            <li class="dropdown-item" data-value="" style="padding: 10px 15px; cursor: pointer; color: white; transition: background 0.2s;">All Genres</li>
+                        </ul>
+                    </div>
 
                     <select id="sortFilter">
                         <option value="">Sort By</option>

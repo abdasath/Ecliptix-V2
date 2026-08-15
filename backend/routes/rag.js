@@ -19,7 +19,7 @@ const CACHE_TTL_SECONDS = 3600; // 1 hour cache for repeated queries
 // GET /api/rag/search?q=...&limit=5
 // Main search endpoint — Redis cached
 // ─────────────────────────────────────────────────────────────────────────────
-router.get('/search', async (req, res) => {
+router.get('/search', auth, async (req, res) => {
   const { q, limit = 5 } = req.query;
 
   if (!q || q.trim().length < 2) {
@@ -45,7 +45,7 @@ router.get('/search', async (req, res) => {
   // ── Run RAG pipeline ──
   try {
     console.log(`🤖 RAG search: "${query}"`);
-    const sessionId = req.ip || 'anonymous';
+    const sessionId = req.user.id;
     const result = await ragService.search(q.trim(), parseInt(limit), sessionId);
 
     const response = {

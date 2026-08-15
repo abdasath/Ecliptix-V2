@@ -11,6 +11,25 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     showLoginPrompt();
   }
+  
+  // Conditionally show Test Mode warnings
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    const testBadge = document.getElementById('testModeBanner');
+    const testHint = document.getElementById('testCardHint');
+    if (testBadge) testBadge.style.display = 'inline-block';
+    if (testHint) testHint.style.display = 'block';
+  }
+});
+
+// Re-render when auth changes globally (e.g. login from modal)
+window.addEventListener('auth-changed', () => {
+  if (isAuthenticated()) {
+    loadProfile();
+    loadOrderHistory();
+    setupWalletActions();
+  } else {
+    showLoginPrompt();
+  }
 });
 
 // Load user profile
@@ -283,6 +302,16 @@ async function handleRazorpayPayment() {
     };
 
     const rzp = new Razorpay(options);
+
+    // Add custom loading overlay to fix blank screen delay
+    const rzpLoader = document.createElement('div');
+    rzpLoader.innerHTML = '<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; width:100vw; position:fixed; top:0; left:0; background:rgba(10,10,10,0.95); z-index:999999; transition: opacity 0.5s;"><i class="bx bx-loader-alt bx-spin" style="font-size:4rem; color:#0074e4; margin-bottom:1.5rem;"></i><p style="color:white; font-size:1.2rem; font-family:inherit; font-weight: 500; margin:0;">Securely Connecting to Razorpay...</p></div>';
+    document.body.appendChild(rzpLoader);
+
+    // Hide loader after a short delay since Razorpay doesn't have an 'opened' event
+    setTimeout(() => {
+        if(rzpLoader.parentNode) rzpLoader.parentNode.removeChild(rzpLoader);
+    }, 1500);
 
     rzp.on('payment.failed', function (response) {
       showNotification(`Payment failed: ${response.error.description}`, 'error');

@@ -39,6 +39,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Global Auth Synchronization
+const PROTECTED_PAGES = ['library.html', 'profile.html', 'admin.html', 'cart.html', 'wallet.html'];
+
+function enforceAuthState() {
+  const token = localStorage.getItem('token');
+  
+  if (!token) {
+    // If not logged in, but on a protected page, redirect to home
+    const isProtected = PROTECTED_PAGES.some(page => window.location.pathname.includes(page));
+    if (isProtected) {
+      window.location.href = 'index.html';
+      return; // Stop execution
+    }
+    
+    // Otherwise, just clear the UI state cleanly
+    handleLoggedOutCleanup();
+  }
+}
+
+// 1. Listen for cross-tab auth changes
+window.addEventListener('storage', (e) => {
+  if (e.key === 'token') {
+    enforceAuthState();
+  }
+});
+
+// 2. Listen for same-tab auth changes
+window.addEventListener('auth-changed', () => {
+  enforceAuthState();
+});
+
 // Check if user is logged in
 /* --- Update in auth.js --- */
 async function checkAuthStatus() {
@@ -160,9 +191,7 @@ async function handleRegister() {
 
     showNotification('Registration successful!', 'success');
     
-    setTimeout(() => {
-      window.location.reload();
-    }, 1500);
+    window.dispatchEvent(new Event('auth-changed')); // Trigger global sync
   } catch (error) {
     showNotification(error.message || 'Registration failed', 'error');
   }
@@ -373,9 +402,7 @@ async function handleGoogleResponse(response) {
     
     showNotification(`Welcome, ${res.user.username}!`, 'success');
 
-    setTimeout(() => {
-      window.location.reload();
-    }, 1500);
+    window.dispatchEvent(new Event('auth-changed')); // Trigger global sync
   } catch (error) {
     console.error('Google login failed:', error);
     showNotification(error.message || 'Google Login failed', 'error');
@@ -417,10 +444,7 @@ async function handleLogin() {
       }
 
       showNotification('Login successful!', 'success');
-
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+      window.dispatchEvent(new Event('auth-changed')); // Trigger global sync
     }
   } catch (error) {
     console.error('Login Error:', error);
@@ -444,11 +468,8 @@ async function handleLogout() {
   localStorage.removeItem('userInfo');
   currentUser = null;
 
-  updateUIForLoggedOut();
-  checkAdminAccess();
-  clearAuthFields();
-
-  // 3. Clear the global cart items array
+  window.dispatchEvent(new Event('auth-changed')); // Trigger global sync
+  
   if (typeof cartItems !== 'undefined') {
     cartItems = [];
   }

@@ -89,6 +89,21 @@
       return;
     }
 
+    // Auth Check: Prevent search if not logged in
+    const token = localStorage.getItem('token');
+    if (!token) {
+      responseText.innerHTML = '<em>Please log in to use the Ecliptix AI Assistant.</em>';
+      responseEl.style.display = 'flex';
+      resultsEl.innerHTML = '';
+      
+      // Automatically pop open the login modal
+      const loginBtn = document.getElementById('loginBtn');
+      if (loginBtn) {
+        setTimeout(() => loginBtn.click(), 800);
+      }
+      return;
+    }
+
     // Clear previous results
     resultsEl.innerHTML = '';
     responseEl.style.display  = 'none';
@@ -96,7 +111,9 @@
     setLoading(true);
 
     try {
-      const res  = await fetch(`${window.API_BASE_URL || API_BASE_URL}/api/rag/search?q=${encodeURIComponent(query)}&limit=5`);
+      const res  = await fetch(`${window.API_BASE_URL || API_BASE_URL}/api/rag/search?q=${encodeURIComponent(query)}&limit=5`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Search failed');
 

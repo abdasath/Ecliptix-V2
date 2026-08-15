@@ -26,7 +26,6 @@ app.use('/api/cart', require('./routes/cart'));
 app.use('/api/admin/wallet', require('./routes/admin/wallet'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/admin', require('./routes/admin'));
-app.use('/api/wallet', require('./routes/wallet'));
 app.use('/api/payment', require('./routes/payment')); // Razorpay
 app.use('/api/rag', require('./routes/rag'));          // AI Game Recommendations
 
