@@ -3370,6 +3370,7 @@ a[href="admin.html"] {
 /* User message — right-aligned */
 .ai-msg-user {
   justify-content: flex-end;
+  margin-top: 24px; /* Gap above the user's question */
 }
 .ai-bubble-user {
   background: rgba(255, 255, 255, 0.12);
