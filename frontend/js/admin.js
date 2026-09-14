@@ -1,6 +1,9 @@
 // Admin Panel Management
 let allAdminGames = [];
 
+// XSS guard: escape DB-provided game fields before injecting into innerHTML
+
+
 document.addEventListener('DOMContentLoaded', () => {
   const adminContainer = document.getElementById('adminPanelContainer'); // Ensure your HTML has this ID
 
@@ -17,9 +20,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // If they ARE authenticated, show the content and load data
   if (adminContainer) adminContainer.style.display = 'block';
+  setupAdminTabs(); // Initialize the bubble tabs
   loadAdminGames();
   setupGameForm();
   setupLogout();
+
+  // Bind Add Game Button safely
+  const btnOpenAddGame = document.getElementById('btnOpenAddGame');
+  if (btnOpenAddGame) {
+    btnOpenAddGame.addEventListener('click', (e) => {
+      e.preventDefault();
+      openAddGameModal(false);
+    });
+  }
+
   setupAdminSearch();
 });
 
@@ -55,44 +69,130 @@ async function loadAdminGames() {
   }
 }
 
+let currentAdminTab = 'all';
+
+function setupAdminTabs() {
+  const tabAll = document.getElementById('tabAllGames');
+  const tabFeatured = document.getElementById('tabFeaturedGames');
+
+  if (!tabAll || !tabFeatured) return;
+
+  const setActiveTab = (tab) => {
+    currentAdminTab = tab;
+    if (tab === 'all') {
+      tabAll.className = 'btn-primary';
+      tabAll.style.boxShadow = '0 4px 15px rgba(0, 255, 136, 0.2)';
+      tabFeatured.className = 'btn-secondary';
+      tabFeatured.style.boxShadow = 'none';
+    } else {
+      tabFeatured.className = 'btn-primary';
+      tabFeatured.style.boxShadow = '0 4px 15px rgba(0, 255, 136, 0.2)';
+      tabAll.className = 'btn-secondary';
+      tabAll.style.boxShadow = 'none';
+    }
+    displayAdminGames(allAdminGames); // re-render based on new tab
+  };
+
+  tabAll.addEventListener('click', () => setActiveTab('all'));
+  tabFeatured.addEventListener('click', () => setActiveTab('featured'));
+}
+
 // Display games in admin panel
 function displayAdminGames(games) {
   const container = document.getElementById('gamesList');
   if (!container) return;
 
-  if (games.length === 0) {
-    container.innerHTML = '<p class="empty-state">No games found</p>';
+  let gamesToShow = games;
+  
+  if (currentAdminTab === 'featured') {
+    gamesToShow = games.filter(g => g.featured);
+    if (gamesToShow.length === 0) {
+      container.innerHTML = '<p class="empty-state">No featured games currently set. Edit a game to feature it.</p>';
+      return;
+    }
+  }
+
+  if (gamesToShow.length === 0) {
+    container.innerHTML = '<p class="empty-state">No games found in catalog.</p>';
     return;
   }
 
-  container.innerHTML = games.map(game => createAdminGameCard(game)).join('');
+  container.innerHTML = gamesToShow.map(game => createAdminGameCard(game, currentAdminTab === 'featured')).join('');
 }
 
 // Create admin game card
-function createAdminGameCard(game) {
+function createAdminGameCard(game, isFeaturedList = false) {
   const finalPrice = game.discount > 0
-  ? Math.round(game.price * (1 - game.discount / 100)) // Added Math.round here
+  ? Math.round(game.price * (1 - game.discount / 100))
   : game.price;
 
+  // If we're displaying in the "All Games" list, and the game is featured, show a badge
+  const featuredBadge = (game.featured && !isFeaturedList) 
+    ? `<div style="position: absolute; top: 10px; right: 10px; background: #e94560; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; z-index: 10; box-shadow: 0 2px 10px rgba(233, 69, 96, 0.5);">FEATURED</div>` 
+    : '';
+
   return `
-    <div class="game-card">
-      <img src="${game.coverImage}" alt="${game.title}" class="game-image">
-      <div class="game-info">
-        <h3 class="game-title">${game.title}</h3>
-        <p class="game-description">${game.shortDescription || game.description.substring(0, 100)}...</p>
-        <div class="game-meta">
-          <div class="game-price">
-            <div class="price-current">₹${finalPrice.toLocaleString('en-IN')}</div>
-            ${game.discount > 0 ? `<span class="discount-badge">-${game.discount}%</span>` : ''}
+    <div class="game-card admin-game-card" style="position: relative; border: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.4);">
+      ${featuredBadge}
+      <img src="${escapeHTML(game.coverImage)}" alt="${escapeHTML(game.title)}" class="game-image" style="height: 160px; object-fit: cover;">
+      <div class="game-info" style="padding: 16px;">
+        <h3 class="game-title" style="font-size: 1.1rem; margin-bottom: 8px;">${escapeHTML(game.title)}</h3>
+        <p class="game-description" style="font-size: 0.85rem; color: #aaa; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${escapeHTML(game.shortDescription || (game.description || '').substring(0, 100))}...</p>
+        <div class="game-meta" style="margin-bottom: 16px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px;">
+          <div class="game-price" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div class="price-current" style="font-size: 1.2rem; font-weight: bold; color: #00ff88;">₹${finalPrice.toLocaleString('en-IN')}</div>
+            ${game.discount > 0 ? `<span class="discount-badge" style="background: rgba(0, 255, 136, 0.2); color: #00ff88; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">-${escapeHTML(game.discount)}%</span>` : ''}
           </div>
         </div>
-        <div class="game-actions">
-          <button class="btn-secondary" onclick="editGame('${game._id}')">Edit</button>
-          <button class="btn-primary" style="background: #e94560;" onclick="deleteGame('${game._id}')">Delete</button>
+        <div class="game-actions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <button class="btn-secondary" style="padding: 8px; font-size: 0.9rem;" onclick="editGame('${escapeHTML(game._id)}')"><i class='bx bx-edit'></i> Edit</button>
+          <button class="btn-primary" style="background: rgba(233, 69, 96, 0.1); color: #e94560; border: 1px solid rgba(233, 69, 96, 0.3); padding: 8px; font-size: 0.9rem;" onclick="deleteGame('${escapeHTML(game._id)}')"><i class='bx bx-trash'></i> Delete</button>
         </div>
       </div>
     </div>
   `;
+}
+
+
+// Open the Add/Edit Game Modal
+function openAddGameModal(isEdit = false) {
+    try {
+        const modal = document.getElementById('adminFormModal');
+        if (!modal) throw new Error("adminFormModal not found");
+        
+        // Show modal with animation
+        modal.style.display = 'block';
+        setTimeout(() => {
+            modal.classList.add('show');
+            document.body.classList.add('modal-open');
+        }, 10);
+        
+        const form = document.getElementById('gameForm');
+        if (!form) throw new Error("gameForm not found");
+        
+        if (!isEdit) {
+            form.reset();
+            document.getElementById('adminModalTitle').innerText = 'Add New Game';
+            form.querySelector('button[type="submit"]').innerText = 'Add Game';
+            form.onsubmit = async (e) => {
+                e.preventDefault();
+                await handleAddGame();
+            };
+        }
+    } catch(err) {
+        console.error("Error opening modal:", err);
+    }
+}
+
+function closeAddGameModal() {
+    const modal = document.getElementById('adminFormModal');
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.classList.remove('modal-open');
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 400); // match css transition
+    }
 }
 
 // Setup game form
@@ -166,6 +266,7 @@ async function handleAddGame() {
 
 
     showNotification('Game added successfully!', 'success');
+    closeAddGameModal();
     form.reset();
     await loadAdminGames();
   } catch (error) {
@@ -205,12 +306,14 @@ async function editGame(gameId) {
     await handleUpdateGame(gameId);
   };
 
+  document.getElementById('adminModalTitle').innerText = 'Edit Game';
+  openAddGameModal(true);
+
   // Change button text
   const submitBtn = form.querySelector('button[type="submit"]');
   if (submitBtn) submitBtn.textContent = 'Update Game';
 
-  // Scroll to form
-  form.scrollIntoView({ behavior: 'smooth' });
+  
 }
 
 // Handle update game
@@ -244,6 +347,7 @@ async function handleUpdateGame(gameId) {
     });
 
     showNotification('Game updated successfully!', 'success');
+    closeAddGameModal();
 
     // Reset form
     const form = document.getElementById('gameForm');
@@ -296,3 +400,13 @@ function setupLogout() {
   }
 }
 
+
+
+document.addEventListener('click', (e) => {
+    const target = e.target.closest('#btnOpenAddGame');
+    if (target) {
+        e.preventDefault();
+        console.log("Fallback click caught!");
+        openAddGameModal(false);
+    }
+});

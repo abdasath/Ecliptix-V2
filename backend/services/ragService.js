@@ -20,7 +20,7 @@ const OpenAI = require('openai');
 const GEMINI_API_KEY   = process.env.GEMINI_API_KEY;
 const GROQ_API_KEY     = process.env.GROQ_API_KEY;
 const EMBEDDING_MODEL  = 'gemini-embedding-001'; // 3072 dims
-const GROQ_MODEL       = 'llama-3.3-70b-versatile';
+const GROQ_MODEL       = 'openai/gpt-oss-120b';
 const VECTOR_INDEX_NAME = 'game_vector_index';
 
 // ── Gemini client (ONLY for embeddings) ──────────────────────────────────────
@@ -86,6 +86,7 @@ Return strictly valid JSON with keys: intentType, maxPrice, searchIntent.`;
       messages: [{ role: "user", content: prompt }],
       temperature: 0.1,
       response_format: { type: "json_object" },
+      max_tokens: 512,
     });
     
     let rawText = response.choices[0].message.content.trim();
@@ -93,7 +94,7 @@ Return strictly valid JSON with keys: intentType, maxPrice, searchIntent.`;
     parsed.intentType = (parsed.intentType || "recommendation").toLowerCase();
     return parsed;
   } catch (err) {
-    console.error("Intent parsing failed, falling back to raw query:", err.message);
+    console.error(`[RAG] Intent parsing failed | Provider: Groq | Model: ${GROQ_MODEL} | Status: ${err.status || 'N/A'} | Code: ${err.code || 'N/A'} | Error: ${err.message}`);
     return { intentType: "recommendation", maxPrice: 99999, searchIntent: query };
   }
 }
@@ -213,7 +214,7 @@ function buildContext(games) {
 
 // ── Step 6: Generate AI recommendation ───────────────────────────────────────
 async function generateResponse(userQuery, context, games, intentType) {
-  const systemInstruction = `You are Ecliptix AI, a premium video game advisor. Answer factual game questions in 2–3 concise sentences (25–60 words). Prioritize the protagonist, main objective or conflict, and the unique hook that makes the game compelling. Avoid filler, unnecessary history, and long explanations. Use the retrieved database context when available, but improve the answer using your general gaming knowledge when necessary. Recommend games only when explicitly requested. Format game titles in **bold**.`;
+  const systemInstruction = `You are Ecliptix AI, a premium video game advisor. You must ALWAYS provide a friendly, conversational text response to the user, even if their query is just a few words (like "Best rated games"). Answer factual game questions in 2–3 concise sentences (25–60 words). Avoid filler, unnecessary history, and long explanations. Use the retrieved database context when available, but improve the answer using your general gaming knowledge when necessary. Format game titles in **bold**.`;
 
   let prompt = `User's Query: "${userQuery}"\nIntent Type: ${intentType}\n\n`;
   if (context) {
@@ -241,11 +242,11 @@ async function generateResponse(userQuery, context, games, intentType) {
         { role: "user", content: prompt }
       ],
       temperature: 0.4,
-      max_tokens: 250,
+      max_tokens: 1024,
     });
     return response.choices[0].message.content.trim();
   } catch (err) {
-    console.error("Groq generation failed:", err.message);
+    console.error(`[RAG] Groq generation failed | Provider: Groq | Model: ${GROQ_MODEL} | Status: ${err.status || 'N/A'} | Code: ${err.code || 'N/A'} | Error: ${err.message}`);
     return "The AI service is temporarily unavailable. Please try again in a moment.";
   }
 }

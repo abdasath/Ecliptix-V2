@@ -4,6 +4,20 @@ const API_BASE_URL = (
   window.location.hostname === '127.0.0.1'
 ) ? 'http://localhost:5000' : 'https://ecliptix-v2.onrender.com';
 
+// ── Global HTML escaping helper (XSS hardening) ─────────────────────────────
+// Anything that comes from the database (game titles, descriptions, admin
+// input, AI responses) must be passed through this before entering innerHTML.
+function escapeHTML(value) {
+  return String(value == null ? '' : value).replace(/[&<>"']/g, (ch) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  })[ch]);
+}
+window.escapeHTML = escapeHTML;
+
 
 // Helper function to get auth token
 function getAuthToken() {

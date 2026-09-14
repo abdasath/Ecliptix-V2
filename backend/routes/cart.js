@@ -11,7 +11,8 @@ router.get('/', auth, async (req, res) => {
       .populate('cart.game');
     res.json(user.cart);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Ecliptix route error:', error);
+    res.status(500).json({ message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -43,7 +44,8 @@ router.post('/add/:gameId', auth, async (req, res) => {
     
     res.json(updatedUser.cart);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Ecliptix route error:', error);
+    res.status(500).json({ message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -61,7 +63,8 @@ router.delete('/remove/:gameId', auth, async (req, res) => {
     
     res.json(updatedUser.cart);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Ecliptix route error:', error);
+    res.status(500).json({ message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -73,7 +76,8 @@ router.delete('/clear', auth, async (req, res) => {
     await user.save();
     res.json({ message: 'Cart cleared' });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Ecliptix route error:', error);
+    res.status(500).json({ message: 'Something went wrong. Please try again.' });
   }
 });
 

@@ -183,36 +183,12 @@ if (authContainer) {
 let scrollPosition = 0;
 
 window.lockScroll = function() {
-    // 1. Remember exactly where you are
-    scrollPosition = window.scrollY;
-    
-    // 2. Freeze the body at that exact negative pixel
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollPosition}px`;
-    document.body.style.width = '100%';
     document.body.style.overflow = 'hidden';
-    
     document.body.classList.add('modal-open');
 };
 
 /* --- UPDATED unlockScroll in js/app.js --- */
 window.unlockScroll = function() {
-    // 1. Unfreeze the body
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.width = '';
     document.body.style.overflow = '';
     document.body.classList.remove('modal-open');
-
-    // 2. DISABLE SMOOTH SCROLLING (The Magic Fix)
-    // This forces the browser to jump instantly instead of sliding
-    document.documentElement.style.scrollBehavior = 'auto';
-
-    // 3. INSTANTLY jump back to the saved spot
-    window.scrollTo(0, scrollPosition);
-
-    // 4. Re-enable smooth scrolling after the jump is done
-    setTimeout(() => {
-        document.documentElement.style.scrollBehavior = '';
-    }, 50);
 };

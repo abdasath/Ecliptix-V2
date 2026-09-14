@@ -8,6 +8,13 @@ const { loginLimiter, registerLimiter } = require('../middleware/rateLimiter');
 const { OAuth2Client } = require('google-auth-library');
 const router = express.Router();
 
+// Security: never fall back to a hardcoded JWT secret. If the secret is
+// missing, refuse to run so auth tokens can never be forged.
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET is not configured');
+}
+
 // The Google Client ID passed securely from env
 // e.g. process.env.GOOGLE_CLIENT_ID
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -54,7 +61,7 @@ router.post('/register', registerLimiter, async (req, res) => {
 
     const token = jwt.sign(
       { userId: user._id, role: user.role || 'admin' },
-      process.env.JWT_SECRET || 'your-secret-key',
+      JWT_SECRET,
       { expiresIn: '7d' }
     );
 
@@ -68,7 +75,8 @@ router.post('/register', registerLimiter, async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Ecliptix route error:', error);
+    res.status(500).json({ message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -102,7 +110,7 @@ router.post('/login', loginLimiter, async (req, res) => {
 
     const token = jwt.sign(
       { userId: user._id, role: user.role },
-      process.env.JWT_SECRET || 'your-secret-key',
+      JWT_SECRET,
       { expiresIn: '7d' }
     );
 
@@ -117,7 +125,8 @@ router.post('/login', loginLimiter, async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Ecliptix route error:', error);
+    res.status(500).json({ message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -141,7 +150,8 @@ router.post('/logout', auth, async (req, res) => {
 
     res.json({ message: 'Logged out successfully' });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Ecliptix route error:', error);
+    res.status(500).json({ message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -200,7 +210,7 @@ router.post('/google', async (req, res) => {
     // 3. Log them in (create session JWT)
     const token = jwt.sign(
       { userId: user._id, role: user.role },
-      process.env.JWT_SECRET || 'your-secret-key',
+      JWT_SECRET,
       { expiresIn: '7d' }
     );
 
@@ -232,7 +242,8 @@ router.get('/me', auth, async (req, res) => {
 
     res.json(user);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Ecliptix route error:', error);
+    res.status(500).json({ message: 'Something went wrong. Please try again.' });
   }
 });
 

@@ -3,9 +3,21 @@
     padding: 0;
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
+}/* Specifically target the login button inside the white panel */
+.toggle-panel.toggle-right .btn-auth.toggle-btn {
+    border: 2px solid #000000 !important;
+    color: #000000 !important;
 }
 
-button:focus,
+/* Ensure the input field inside fills the new container width */
+.container-auth .input-box input {
+    width: 100% !important;
+    padding: 13px 45px 13px 20px;
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    color: #e6e6e6;
+}button:focus,
 a:focus,
 input:focus,
 textarea:focus {
@@ -17,22 +29,54 @@ textarea:focus {
 }
 
 :root {
-    --primary-color: #000000;
-    --secondary-color: #0a0a0a;
-    --accent-color: #e6e6e6;
-    --highlight-color: #0074e4;
-    --text-primary: #ffffff;
-    --text-secondary: #b8b8b8;
-    --card-bg: #1a1a1a;
-    --card-hover: #252525;
-    --border-color: #2a2a2a;
-    --success-color: #00ff88;
-    --warning-color: #ffb800;
-    --gradient-start: #000000;
-    --gradient-end: #0a0a0a;
-    --shadow-color: rgba(0, 0, 0, 0.8);
-    --epic-blue: #0074e4;
-    --epic-dark: #0e0e0e;
+    /* Backgrounds */
+    --bg-0: #050505;
+    --bg-1: #0A0A0A;
+    --bg-2: #111111;
+    --bg-3: #171717;
+
+    /* Surfaces */
+    --surface-1: #1A1A1A;
+    --surface-2: #202020;
+    --surface-3: #262626;
+
+    /* Borders */
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(255, 255, 255, 0.15);
+
+    /* Accents */
+    --accent-dark: #2563EB;
+    --accent-base: #3B82F6;
+    --accent-light: #60A5FA;
+
+    /* System / Utility */
+    --success-color: #22C55E;
+    --warning-color: #F59E0B;
+    --error-color: #EF4444;
+
+    /* Text */
+    --text-primary: #FFFFFF;
+    --text-secondary: #A1A1AA;
+    --text-muted: #71717A;
+    --primary-color: #000000; /* Added for black text on white buttons */
+    --highlight-color: #0074e4; /* Restored for cart badge and pagination */
+
+    /* Shadows */
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
+
+    /* Radii */
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+
+    /* Motion */
+    --ease-spring: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --transition-fast: 150ms ease;
+    --transition-base: 250ms var(--ease-spring);
+    --transition-slow: 350ms var(--ease-spring);
 }
 
 /* =========================================
@@ -53,7 +97,7 @@ body {
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: var(--primary-color);
+    background: var(--bg-0);
     color: var(--text-primary);
     min-height: 100vh;
     line-height: 1.6;
@@ -85,11 +129,9 @@ a {
 /* GLOBAL SCROLL LOCK (Fixed) */
 html.modal-open, body.modal-open {
     overflow: hidden !important;
-    height: 100vh;
     /* Keeps the body steady */
     touch-action: none;
     /* Disables touch scrolling on background (Mobile) */
-    /* padding-right: 0 !important; */
     /* Prevents layout shift */
 }
 /* Add this to your cart's scrollable area */
@@ -251,11 +293,12 @@ html.modal-open, body.modal-open {
     position: relative;
     cursor: pointer;
     font-size: 1.5rem;
-    transition: transform 0.3s;
+    transition: all 0.2s ease;
 }
 
 .cart-icon:hover {
-    transform: scale(1.1);
+    transform: translateY(-2px);
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
 }
 
 .cart-count {
@@ -275,13 +318,21 @@ html.modal-open, body.modal-open {
 }
 
 .wallet {
-    color: var(--text-primary);
-    font-weight: 500;
-    font-size: 1rem;
-    padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 4px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 0.5rem 1.25rem;
+    background: linear-gradient(135deg, var(--accent-base), var(--accent-dark));
+    border-radius: var(--radius-md);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    transition: all var(--transition-fast);
+}
+
+.wallet:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.5);
+    background: linear-gradient(135deg, var(--accent-light), var(--accent-base));
 }
 
 
@@ -307,7 +358,7 @@ html.modal-open, body.modal-open {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.85);
+    background-color: rgba(0, 0, 0, 0.5); /* Lightened from 0.85 to show site underneath */
     backdrop-filter: blur(10px);
     opacity: 0;
     pointer-events: none;
@@ -345,10 +396,24 @@ html.modal-open, body.modal-open {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+/* Specifically target the login button inside the white panel */
+.toggle-panel.toggle-right .btn-auth.toggle-btn {
+    border: 2px solid #000000 !important;
+    color: #000000 !important;
+}
+
+/* Ensure the input field inside fills the new container width */
+.container-auth .input-box input {
+    width: 100% !important;
+    padding: 13px 45px 13px 20px;
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    color: #e6e6e6;
+}    align-items: center;
     /* Centering text horizontally */
     padding: 40px;
-    background: #000;
+    background: transparent;
     z-index: 1;
     transition: 0.6s ease-in-out 1.2s, visibility 0s 1s;
     text-align: center;
@@ -383,13 +448,13 @@ html.modal-open, body.modal-open {
 
 
 
+
+
 /* Specifically target the login button inside the white panel */
 .toggle-panel.toggle-right .btn-auth.toggle-btn {
     border: 2px solid #000000 !important;
     color: #000000 !important;
 }
-
-
 
 /* Ensure the input field inside fills the new container width */
 .container-auth .input-box input {
@@ -408,7 +473,7 @@ html.modal-open, body.modal-open {
     height: 550px;
     background: #000;
     margin: 5% auto;
-    border-radius: 30px;
+    border-radius: 16px;
     border: 1px solid #2a2a2a;
     overflow: hidden;
     color: #e6e6e6;
@@ -430,7 +495,12 @@ input:-webkit-autofill:active {
 /* Makes the specific sub-text in the sliding panels bolder */
 .toggle-panel p {
     font-weight: 500 !important;
-    color: inherit; /* Ensures it stays black or white depending on the side */
+}
+.toggle-panel.toggle-left p {
+    color: #4a4a4a !important; /* Fix WCAG AA contrast on off-white background */
+}
+.toggle-panel.toggle-right p {
+    color: #e6e6e6 !important;
 }
 /* --- High-Priority Close Button Sync --- */
 .modal .close {
@@ -455,10 +525,13 @@ input:-webkit-autofill:active {
     color: #ffffff;
 }
 
-/* Ensure 'X' turns black when white panel is active (Register view) cite: 14 */
+/* Ensure 'X' turns black when white panel is active (Register view) */
 .container-auth.active .close {
     color: #000 !important;
 }
+
+
+
 
 
 /* Centered Form Boxes */
@@ -506,6 +579,8 @@ input:-webkit-autofill:active {
     /* A soft gradient from pure white to a light grey/silver */
     background: #e6e6e6; 
     border-radius: 150px;
+    -webkit-clip-path: inset(0 0 0 0 round 150px);
+    clip-path: inset(0 0 0 0 round 150px);
     z-index: 2;
     transition: 1.8s ease-in-out;
     /* Adding a subtle inner glow for smoothness */
@@ -641,7 +716,7 @@ input:-webkit-autofill:active {
 
 /* Update this specific block in your style.css */
 #adminNavLink a:hover {
-    background: rgba(233, 69, 96, 0.25) !important; /* Increased opacity for a clearer lite-red background */
+    background: transparent !important; 
     text-shadow: 0 0 15px rgba(233, 69, 96, 1);
     border-radius: 6px !important; /* Gives the background smooth, pill-like corners */
 }
@@ -654,9 +729,7 @@ input:-webkit-autofill:active {
 .input-box input:focus {
     border-color: #e6e6e6;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-}
-
-/* --- Icon Styling & Positioning --- */
+}/* --- Icon Styling & Positioning --- */
 .input-box i {
     position: absolute;
     right: 20px;
@@ -983,14 +1056,14 @@ html {
     top: 0; left: 0; right: 0; bottom: 0;
     background: linear-gradient(
         to right,
-        rgba(0, 0, 0, 0.9) 0%,
-        rgba(0, 0, 0, 0.6) 40%,
-        rgba(0, 0, 0, 0.1) 100%
+        rgba(0, 0, 0, 0.75) 0%,
+        rgba(0, 0, 0, 0.35) 45%,
+        rgba(0, 0, 0, 0.05) 100%
     ),
     linear-gradient(
         to top,
-        rgba(0, 0, 0, 0.9) 0%,
-        transparent 30%
+        rgba(0, 0, 0, 0.7) 0%,
+        transparent 25%
     );
 }
 
@@ -1000,7 +1073,8 @@ html {
     left: 8%;
     transform: translateY(-50%);
     z-index: 2;
-    max-width: 600px;
+    max-width: min(600px, 50vw);
+    padding-right: 2rem;
 }
 
 .carousel-content h2 {
@@ -1058,59 +1132,78 @@ html {
     gap: 1rem;
 }
 
-/* Controls */
+/* --- PREMIUM CAROUSEL CONTROLS --- */
 .carousel-control {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(255, 255, 255, 0.07);
     color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     cursor: pointer;
     z-index: 10;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
-    backdrop-filter: blur(5px);
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    backdrop-filter: blur(10px);
 }
 
 .carousel-control:hover {
-    background: var(--primary-color);
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.5);
     transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
 }
 
 .carousel-control.prev { left: 20px; }
 .carousel-control.next { right: 20px; }
 
-/* Indicators */
+/* --- PREMIUM CAROUSEL INDICATORS (THUMBNAIL STRIP) --- */
 .carousel-indicators {
     position: absolute;
-    bottom: 20px;
+    bottom: 25px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 8px;
+    gap: 12px;
     z-index: 10;
+    align-items: center;
 }
 
 .carousel-indicator {
-    width: 30px;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 2px;
+    width: 65px;
+    height: 40px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 6px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    opacity: 0.4;
+    border: 2px solid transparent;
+    filter: brightness(0.7);
+}
+
+.carousel-indicator:hover {
+    opacity: 0.8;
+    filter: brightness(1);
+    transform: translateY(-3px);
 }
 
 .carousel-indicator.active {
-    background: var(--primary-color);
-    width: 40px;
+    opacity: 1;
+    border-color: #ffffff;
+    filter: brightness(1);
+    width: 75px;
+    height: 46px;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
 }
+
+
 
 
 /* --- FINAL LAYOUT FIX --- */
@@ -1300,7 +1393,9 @@ a[href="admin.html"] {
 
 #gameForm button[type="submit"]:hover {
     background: #005bb5;
-    transform: translateY(-2px);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 116, 228, 0.3); /* Subtle blue shadow instead of aggressive white glow */
+    scale: 1; /* Override the default btn-primary scale */
 }
 
 /* 6. Checkbox styling (Featured Game) */
@@ -1546,38 +1641,53 @@ a[href="admin.html"] {
     border-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Pagination */
+/* --- PREMIUM GAMING PAGINATION --- */
 .pagination {
     display: flex;
     justify-content: center;
     gap: 0.5rem;
-    margin: 2rem 0;
+    margin: 2.5rem 0;
 }
 
 .pagination button {
-    background: var(--card-bg);
-    color: var(--text-primary);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 0.6rem 1.1rem;
+    border-radius: 8px; /* Sleeker curves */
+    font-size: 0.95rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .pagination button:hover:not(:disabled) {
-    background: var(--card-hover);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .pagination button:disabled {
-    opacity: 0.3;
+    opacity: 0.2;
     cursor: not-allowed;
+    background: transparent;
 }
 
 .pagination .active {
-    background: var(--text-primary);
-    color: var(--primary-color);
-    border-color: var(--text-primary);
+    background: linear-gradient(135deg, var(--highlight-color), #005bb5);
+    color: #ffffff;
+    border-color: var(--highlight-color);
+    box-shadow: 0 4px 15px rgba(0, 116, 228, 0.4);
+    transform: scale(1.05);
+    font-weight: 700;
+}
+
+.pagination .active:hover {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 116, 228, 0.6);
 }
 
 /* Empty State */
@@ -1786,7 +1896,6 @@ a[href="admin.html"] {
     body.menu-open {
         overflow: hidden !important;
         /* 🛑 STOPS SCROLLING */
-        height: 100vh;
     }
 
     /* 3. Blur the background content when menu is open */
@@ -2072,10 +2181,18 @@ a[href="admin.html"] {
         height: 160px !important;
     }
 
-    /* Hide extra info to fit the smaller 2-column cards */
-    .games-grid:not(#featuredGames) .game-description,
+    /* Hide extra info to fit the smaller 2-column cards, but keep the description for preview */
     .games-grid:not(#featuredGames) .game-genres {
         display: none !important;
+    }
+    .games-grid:not(#featuredGames) .game-description {
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+        font-size: 0.75rem !important;
+        line-height: 1.3 !important;
+        margin-bottom: 0.25rem !important;
     }
 
     /* Force uniform card heights by using flexbox */
@@ -2197,9 +2314,9 @@ a[href="admin.html"] {
     }
 
     .pagination button {
-        padding: 0.35rem 0.6rem !important;
-        font-size: 0.75rem !important;
-        border-radius: 4px !important;
+        padding: 0.4rem 0.7rem !important;
+        font-size: 0.8rem !important;
+        border-radius: 6px !important;
     }
 
     /* Force Previous and Next buttons to be exactly the same size */
@@ -2438,12 +2555,12 @@ a[href="admin.html"] {
 
 /* Smooth hover for cards */
 .game-card {
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease;
 }
 
 .game-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
 }
 
 /* ============================================================
@@ -2812,28 +2929,11 @@ a[href="admin.html"] {
         /* Prevents the currency symbol from dropping */
     }
 
-    /* 5. Replace Cart Emoji with premium vector icon */
-    .cart-icon > span:first-child {
-        display: none !important; /* Hides the 🛒 emoji */
-    }
-
     .cart-icon {
         font-size: 1.1rem !important;
         margin-left: 0 !important; /* Removed uneven left margin, relying on flex gap instead */
         display: flex !important;
         align-items: center !important;
-    }
-
-    .cart-icon::before {
-        content: '';
-        display: inline-block;
-        width: 22px;
-        height: 22px;
-        /* Boxicon-style Cart SVG */
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a1a1aa'%3E%3Cpath d='M21.822 7.431A1 1 0 0 0 21 7H7.333L6.179 4.23A1.994 1.994 0 0 0 4.333 3H2v2h2.333l4.744 11.385A1 1 0 0 0 10 17h8c.417 0 .79-.259.937-.648l3-8a1 1 0 0 0-.115-.921z'/%3E%3Ccircle cx='10.5' cy='19.5' r='1.5'/%3E%3Ccircle cx='17.5' cy='19.5' r='1.5'/%3E%3C/svg%3E");
-        background-size: contain;
-        background-repeat: no-repeat;
-        margin-right: 4px; /* Space before the count badge */
     }
 
     .cart-count {
@@ -3085,6 +3185,8 @@ a[href="admin.html"] {
     .carousel-content {
         top: 58% !important;
         transform: translateY(-50%) !important;
+        max-width: 90% !important;
+        padding-right: 1rem !important;
     }
 
     /* Adjust the gradient overlay for portrait — darken bottom more for text readability */
@@ -3152,7 +3254,7 @@ a[href="admin.html"] {
   bottom: 100px;
   right: 28px;
   width: 370px;
-  max-height: 560px;
+  max-height: 620px;
   background: #0a0a0a;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 20px;
@@ -3169,6 +3271,407 @@ a[href="admin.html"] {
 .ai-chat-panel.active {
   opacity: 1;
   transform: translateY(0) scale(1);
+  pointer-events: all;
+}
+
+/* Header */
+.ai-chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #111111 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+}
+.ai-chat-header-left { display: flex; align-items: center; gap: 12px; }
+.ai-chat-avatar {
+  width: 40px;
+  height: 40px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: #fff;
+}
+.ai-chat-name  { font-weight: 700; color: #ffffff; font-size: 0.95rem; }
+.ai-chat-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: rgba(255,255,255,0.55);
+  font-size: 0.75rem;
+}
+.ai-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 6px rgba(255,255,255,0.6);
+  animation: ai-blink 2s ease-in-out infinite;
+}
+@keyframes ai-blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.ai-chat-close {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  min-height: 30px;
+  padding: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.ai-chat-close:hover { background: rgba(255,255,255,0.2); }
+
+/* Body — scrollable */
+.ai-chat-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.15) transparent;
+}
+.ai-chat-body::-webkit-scrollbar { width: 4px; }
+.ai-chat-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+
+/* Messages container */
+.ai-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Individual message row */
+.ai-msg {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  animation: ai-msg-in 0.3s ease-out both;
+}
+@keyframes ai-msg-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* User message — right-aligned */
+.ai-msg-user {
+  justify-content: flex-end;
+}
+.ai-bubble-user {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px 12px 4px 12px;
+  padding: 9px 13px;
+  color: #f3f4f6;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
+/* Bot message — left-aligned (reuses existing .ai-bubble-avatar and .ai-bubble-text) */
+.ai-msg-bot {
+  justify-content: flex-start;
+}
+.ai-msg-bot .ai-bubble-text {
+  max-width: 85%;
+}
+
+/* Typing indicator within the conversation */
+.ai-typing-content {
+  padding: 10px 16px !important;
+}
+
+
+/* Welcome bubble */
+.ai-welcome p {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px 12px 12px 4px;
+  padding: 10px 14px;
+  color: #b0b0b0;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* Smooth hide for welcome + chips (prevents panel shrink glitch) */
+.ai-welcome,
+.ai-chips {
+  transition: opacity 0.25s ease, max-height 0.3s ease, margin 0.3s ease, padding 0.3s ease;
+  max-height: 200px;
+  overflow: hidden;
+}
+.ai-welcome.ai-hidden,
+.ai-chips.ai-hidden {
+  opacity: 0;
+  max-height: 0;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+}
+
+/* Suggestion chips */
+.ai-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ai-suggestion-chip {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #d4d4d4;
+  padding: 5px 11px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+.ai-suggestion-chip:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.4);
+  color: #fff;
+}
+
+/* Typing dots loader */
+.ai-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #9ca3af;
+  font-size: 0.82rem;
+}
+.ai-typing-dots { display: flex; gap: 4px; align-items: center; }
+.ai-typing-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ffffff;
+  animation: ai-bounce 1.2s ease-in-out infinite;
+}
+.ai-typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.ai-typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes ai-bounce {
+  0%,60%,100% { transform: translateY(0); }
+  30%          { transform: translateY(-8px); }
+}
+
+/* AI response bubble */
+.ai-response-bubble {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.ai-bubble-avatar {
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, #ffffff, #a0a0a0);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: #0a0a0a;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.ai-bubble-text {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px 12px 12px 12px;
+  padding: 10px 13px;
+  color: #e5e7eb;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  flex: 1;
+}
+
+/* Game cards grid */
+.ai-results-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.ai-game-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.ai-game-card:hover {
+  border-color: rgba(255,255,255,0.3);
+  transform: translateY(-2px);
+}
+.ai-game-cover { position: relative; aspect-ratio: 16/9; overflow: hidden; }
+.ai-game-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ai-badge-discount {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: #ffffff;
+  color: #0a0a0a;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.ai-game-info { padding: 7px 8px; }
+.ai-game-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #f3f4f6;
+  margin: 0 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ai-game-genre { font-size: 0.65rem; color: #9ca3af; margin: 0 0 3px; }
+.ai-game-rating { font-size: 0.65rem; color: #f59e0b; margin: 0 0 4px; }
+.ai-price-final { font-size: 0.78rem; font-weight: 700; color: #ffffff; }
+.ai-price-original { font-size: 0.68rem; color: #6b7280; text-decoration: line-through; margin-right: 4px; }
+.ai-game-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px; }
+
+/* Footer input */
+.ai-chat-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  background: #080808;
+  flex-shrink: 0;
+}
+.ai-chat-input {
+  flex: 1;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 22px;
+  padding: 9px 15px;
+  color: #f3f4f6;
+  font-size: 0.83rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.ai-chat-input:focus { border-color: rgba(255,255,255,0.4); }
+.ai-chat-input::placeholder { color: #6b7280; }
+.ai-chat-send {
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, #ffffff, #c0c0c0);
+  border: none;
+  border-radius: 50%;
+  color: #0a0a0a;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
+}
+.ai-chat-send:hover { transform: scale(1.1); box-shadow: 0 4px 16px rgba(255,255,255,0.2); }
+.ai-chat-send:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* Mobile */
+@media (max-width: 480px) {
+  .ai-chat-panel {
+    width: calc(100vw - 24px);
+    right: 12px;
+    bottom: 90px;
+    max-height: 70vh;
+  }
+  .ai-fab { right: 16px; bottom: 20px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   AI GAME FINDER — Floating Chat Widget  (Black & White Aesthetic)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Floating Action Button (FAB) ── */
+.ai-fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffffff 0%, #c0c0c0 100%);
+  border: none;
+  cursor: pointer;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 32px rgba(255, 255, 255, 0.15), 0 2px 8px rgba(0,0,0,0.5);
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s;
+  overflow: visible;
+}
+.ai-fab:hover {
+  transform: scale(1.12);
+  box-shadow: 0 12px 40px rgba(255, 255, 255, 0.25), 0 4px 12px rgba(0,0,0,0.6);
+}
+.ai-fab-icon {
+  font-size: 1.6rem;
+  color: #0a0a0a;
+  display: flex;
+  align-items: center;
+}
+
+/* Pulse ring animation */
+.ai-fab-pulse {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  animation: ai-pulse 2s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes ai-pulse {
+  0%   { transform: scale(1);   opacity: 0.7; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* ── Chat Panel ── */
+.ai-chat-panel {
+  position: fixed;
+  bottom: 100px;
+  right: 28px;
+  width: 370px;
+  max-height: 620px;
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
+  z-index: 9998;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  /* Idea 1: Morph from the FAB corner */
+  opacity: 0;
+  transform-origin: calc(100% - 15px) calc(100% + 50px);
+  transform: scale(0.1);
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.ai-chat-panel.active {
+  opacity: 1;
+  transform: scale(1);
   pointer-events: all;
 }
 
@@ -3429,4 +3932,75 @@ a[href="admin.html"] {
     max-height: 70vh;
   }
   .ai-fab { right: 16px; bottom: 20px; }
+}
+/* --- PREMIUM AI FAB MORPH ANIMATION --- */
+.ai-fab {
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s, background 0.4s ease !important;
+}
+
+.ai-fab-icon {
+  position: absolute !important;
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s ease !important;
+  font-size: 24px;
+}
+
+.ai-fab-open {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+  color: black;
+}
+
+.ai-fab-close {
+  opacity: 0;
+  transform: rotate(-135deg) scale(0);
+  color: black;
+}
+
+.ai-fab.active .ai-fab-open {
+  opacity: 0;
+  transform: rotate(135deg) scale(0);
+}
+
+.ai-fab.active .ai-fab-close {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+/* Hide pulse ring when chat is open */
+.ai-fab.active .ai-fab-pulse {
+  display: none;
+}
+
+/* Admin Form Modal — scroll fix */
+#adminFormModal .modal-content {
+    overflow-y: auto !important;
+}
+
+#adminFormModal .close {
+    position: sticky !important;
+    top: 5px !important;
+    align-self: flex-end;
+    margin-bottom: -45px;
+    z-index: 10000 !important;
+    width: 36px !important;
+    height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 12px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+    font-size: 24px !important;
+    font-weight: 300 !important;
+    line-height: 1 !important;
+    transition: all 0.3s ease !important;
+}
+
+#adminFormModal .close:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    transform: scale(1.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
 }

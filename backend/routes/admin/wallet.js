@@ -46,7 +46,8 @@ router.post('/manipulate', auth, isAdmin, async (req, res) => {
       wallet: user.wallet 
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Ecliptix route error:', error);
+    res.status(500).json({ message: 'Something went wrong. Please try again.' });
   }
 });
 

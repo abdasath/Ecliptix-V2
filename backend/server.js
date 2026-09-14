@@ -3,6 +3,13 @@ const cors = require("cors");
 const path = require("path");
 require("dotenv").config();
 
+// ── Security: fail-fast at boot if JWT_SECRET is missing ─────────────────
+// A hardcoded fallback secret would let anyone forge auth tokens.
+if (!process.env.JWT_SECRET) {
+  console.error("[FATAL] JWT_SECRET is not configured. Set JWT_SECRET in the server environment before starting.");
+  process.exit(1);
+}
+
 const PORT = process.env.PORT || 5000;
 
 const connectDB = require("./config/database");
@@ -43,8 +50,13 @@ app.get('/api/health', async (req, res) => {
   });
 });
 
-// Seed route (for development - add sample games)
+// Seed route (for development ONLY - add sample games)
 app.get('/seed/games', async (req, res) => {
+  // Block in production — only allow on localhost
+  if (process.env.NODE_ENV === 'production') {
+    return res.status(403).json({ message: 'Seed route is disabled in production.' });
+  }
+
   try {
     const Game = require('./models/Game');
 

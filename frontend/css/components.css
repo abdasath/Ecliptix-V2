@@ -23,9 +23,9 @@ button, a {
 }
 
 .btn-primary:hover {
-  background: rgba(255, 255, 255, 0.9);
+  filter: brightness(0.9);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .btn-primary:active {
@@ -43,13 +43,12 @@ button, a {
   font-size: 0.95rem;
   font-weight: 500;
   transition: all 0.2s ease;
-  text-decoration: none;
   display: inline-block;
-  position: relative;
+  text-decoration: none;
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.5);
   transform: translateY(-1px);
 }

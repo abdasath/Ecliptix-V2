@@ -4,6 +4,9 @@ let featuredGames = [];
 let currentPage = 1;
 let totalPages = 1;
 
+// XSS guard: escape untrusted DB fields before injecting them into HTML
+
+
 // Load featured games
 async function loadFeaturedGames() {
   try {
@@ -27,11 +30,15 @@ function applySearch() {
 }
 
 function scrollToGamesSection() {
-  const section = document.querySelector('.games-section'); // <section class="games-section"> in index.html
+  const section = document.querySelector('.games-section');
   if (section) {
-    section.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
+    const navbar = document.querySelector('.navbar');
+    const navbarHeight = navbar ? navbar.offsetHeight : 85;
+    const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+    
+    window.scrollTo({
+      top: sectionTop - navbarHeight - 20, // 20px extra breathing room
+      behavior: 'smooth'
     });
   }
 }
@@ -251,14 +258,14 @@ const handleGridClick = (e) => {
 
 // Display featured games
 function displayFeaturedGames(games) {
-  // 1. Setup Hero Carousel with top 5 games
-  const topGames = games.slice(0, 5);
+  // 1. Setup Hero Carousel with top 6 games
+  const topGames = games.slice(0, 6);
   if (document.getElementById('heroCarousel')) {
     setupHeroCarousel(topGames);
   }
 
-  // 2. Setup Featured Games Grid (exclude the top 5 games shown in banner, show next 11)
-  const remainingFeaturedGames = games.slice(5, 16);
+  // 2. Setup Featured Games Grid (exclude the top 6 games shown in banner, show next 10)
+  const remainingFeaturedGames = games.slice(6, 16);
   const container = document.getElementById('featuredGames');
   if (!container) return;
 
@@ -295,19 +302,19 @@ function setupHeroCarousel(games) {
       
     return `
       <div class="carousel-slide ${index === 0 ? 'active' : ''}" 
-           style="background-image: url('${bannerImage}');"
-           data-mobile-image="${game.coverImage}"
-           data-desktop-image="${bannerImage}">
-        <div class="carousel-content">
-          ${game.discount > 0 ? `<div class="carousel-badge" style="margin-bottom: 1rem; display: inline-block;">-${game.discount}% OFF</div>` : ''}
-          <h2>${game.title}</h2>
-          <p>${game.shortDescription}</p>
+           style="background-image: url('${escapeHTML(bannerImage)}');"
+           data-mobile-image="${escapeHTML(game.coverImage)}"
+           data-desktop-image="${escapeHTML(bannerImage)}">
+        <div class="carousel-content" data-aos="fade-up" data-aos-delay="200">
+          ${game.discount > 0 ? `<div class="carousel-badge" style="margin-bottom: 0.5rem; display: inline-block; font-size: 0.8rem; padding: 0.15rem 0.6rem;">-${escapeHTML(game.discount)}% OFF</div>` : ''}
+          <h2>${escapeHTML(game.title)}</h2>
+          <p>${escapeHTML(game.shortDescription)}</p>
           <div class="carousel-meta">
-            <span class="carousel-badge">${game.genres?.[0] || 'Action'}</span>
-            <span class="carousel-badge">⭐ ${game.rating || '4.5'}</span>
+            <span class="carousel-badge">${escapeHTML(game.genres?.[0] || 'Action')}</span>
+            <span class="carousel-badge">⭐ ${escapeHTML(game.rating || '4.5')}</span>
           </div>
           <div class="carousel-actions">
-            <button class="btn-primary" onclick="viewGameDetails('${game._id}')">View Details</button>
+            <button class="btn-primary" onclick="viewGameDetails('${escapeHTML(game._id)}')">View Details</button>
             <div class="carousel-price" style="display:flex; align-items:center;">
               ${finalPrice === 0 ? 'FREE' : '₹' + finalPrice.toLocaleString('en-IN')}
             </div>
@@ -317,9 +324,12 @@ function setupHeroCarousel(games) {
     `;
   }).join('');
 
-  // Build Indicators
-  indicators.innerHTML = games.map((_, index) => 
-    `<div class="carousel-indicator ${index === 0 ? 'active' : ''}" onclick="goToSlide(${index})"></div>`
+  // Build Indicators (Thumbnail Strip)
+  indicators.innerHTML = games.map((game, index) => 
+    `<div class="carousel-indicator ${index === 0 ? 'active' : ''}" 
+          style="background-image: url('${escapeHTML(game.coverImage)}');"
+          onclick="goToSlide(${index})">
+     </div>`
   ).join('');
 
   // Setup Event Listeners for Controls
@@ -436,16 +446,16 @@ function createGameCard(game, isFeatured = false) {
       : `<div class="price-current">₹${finalPrice.toLocaleString('en-IN')}</div>`;
 
   const genres = game.genres?.slice(0, 2).map(genre =>
-    `<span class="genre-tag">${genre}</span>`
+    `<span class="genre-tag">${escapeHTML(genre)}</span>`
   ).join('') || '';
 
   const transitionId = isFeatured ? `feat-${game._id}` : `game-${game._id}`;
   return `
-    <div class="game-card" data-game-id="${game._id}" style="view-transition-name: ${transitionId};">
-      <img src="${game.coverImage}" alt="${game.title}" class="game-image" data-cover="${game.coverImage}" data-images='${JSON.stringify(game.images || [])}'>
+    <div class="game-card" data-aos="fade-up" data-game-id="${escapeHTML(game._id)}" style="view-transition-name: ${escapeHTML(transitionId)};">
+      <img src="${escapeHTML(game.coverImage)}" alt="${escapeHTML(game.title)}" class="game-image" data-cover="${escapeHTML(game.coverImage)}" data-images='${escapeHTML(JSON.stringify(game.images || []))}'>
       <div class="game-info">
-        <h3 class="game-title">${game.title}</h3>
-        <p class="game-description">${game.shortDescription || game.description.substring(0, 100)}...</p>
+        <h3 class="game-title">${escapeHTML(game.title)}</h3>
+        <p class="game-description">${escapeHTML(game.shortDescription || game.description || '')}</p>
         <div class="game-genres">${genres}</div>
         <div class="game-meta">
           <div class="game-price">
@@ -453,13 +463,13 @@ function createGameCard(game, isFeatured = false) {
             ${discountBadge}
           </div>
           <div class="game-rating">
-            ⭐ ${game.rating?.toFixed(1) || '0.0'}
+            ⭐ ${escapeHTML(game.rating?.toFixed(1) || '0.0')}
           </div>
         </div>
         
         <div class="game-actions">
-          <button class="btn-primary btn-view-details" data-id="${game._id}">View Details</button>
-          <button type="button" class="btn-secondary btn-add-cart" data-id="${game._id}">
+          <button class="btn-primary btn-view-details" data-id="${escapeHTML(game._id)}">View Details</button>
+          <button type="button" class="btn-secondary btn-add-cart" data-id="${escapeHTML(game._id)}">
             Add to Cart
           </button>
         </div>
@@ -566,8 +576,8 @@ function displayGameDetails(game) {
          </div>`
       : `<div class="price-current" style="font-size: 2rem;">₹${finalPrice.toLocaleString('en-IN')}</div>`;
 
-  const genres = game.genres?.map(g => `<span class="genre-tag">${g}</span>`).join('') || '';
-  const tags = game.tags?.map(t => `<span class="genre-tag">${t}</span>`).join('') || '';
+  const genres = game.genres?.map(g => `<span class="genre-tag">${escapeHTML(g)}</span>`).join('') || '';
+  const tags = game.tags?.map(t => `<span class="genre-tag">${escapeHTML(t)}</span>`).join('') || '';
 
   // Generate System Requirements HTML
   const systemReq = game.systemRequirements ? `
@@ -576,19 +586,19 @@ function displayGameDetails(game) {
       <div class="req-grid" style="display: grid; gap: 2rem;">
         <div>
           <h5>Minimum</h5>
-          <p><strong>OS:</strong> ${game.systemRequirements.minimum?.os || 'N/A'}</p>
-          <p><strong>Processor:</strong> ${game.systemRequirements.minimum?.processor || 'N/A'}</p>
-          <p><strong>Memory:</strong> ${game.systemRequirements.minimum?.memory || 'N/A'}</p>
-          <p><strong>Graphics:</strong> ${game.systemRequirements.minimum?.graphics || 'N/A'}</p>
-          <p><strong>Storage:</strong> ${game.systemRequirements.minimum?.storage || 'N/A'}</p>
+          <p><strong>OS:</strong> ${escapeHTML(game.systemRequirements.minimum?.os || 'N/A')}</p>
+          <p><strong>Processor:</strong> ${escapeHTML(game.systemRequirements.minimum?.processor || 'N/A')}</p>
+          <p><strong>Memory:</strong> ${escapeHTML(game.systemRequirements.minimum?.memory || 'N/A')}</p>
+          <p><strong>Graphics:</strong> ${escapeHTML(game.systemRequirements.minimum?.graphics || 'N/A')}</p>
+          <p><strong>Storage:</strong> ${escapeHTML(game.systemRequirements.minimum?.storage || 'N/A')}</p>
         </div>
         <div>
           <h5>Recommended</h5>
-          <p><strong>OS:</strong> ${game.systemRequirements.recommended?.os || 'N/A'}</p>
-          <p><strong>Processor:</strong> ${game.systemRequirements.recommended?.processor || 'N/A'}</p>
-          <p><strong>Memory:</strong> ${game.systemRequirements.recommended?.memory || 'N/A'}</p>
-          <p><strong>Graphics:</strong> ${game.systemRequirements.recommended?.graphics || 'N/A'}</p>
-          <p><strong>Storage:</strong> ${game.systemRequirements.recommended?.storage || 'N/A'}</p>
+          <p><strong>OS:</strong> ${escapeHTML(game.systemRequirements.recommended?.os || 'N/A')}</p>
+          <p><strong>Processor:</strong> ${escapeHTML(game.systemRequirements.recommended?.processor || 'N/A')}</p>
+          <p><strong>Memory:</strong> ${escapeHTML(game.systemRequirements.recommended?.memory || 'N/A')}</p>
+          <p><strong>Graphics:</strong> ${escapeHTML(game.systemRequirements.recommended?.graphics || 'N/A')}</p>
+          <p><strong>Storage:</strong> ${escapeHTML(game.systemRequirements.recommended?.storage || 'N/A')}</p>
         </div>
       </div>
    </div>` : '';
@@ -597,21 +607,21 @@ function displayGameDetails(game) {
   container.innerHTML = `
     <div class="game-details">
       <div class="game-details-header">
-        <img src="${game.images[0]}" alt="${game.title}" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 10px; margin-bottom: 2rem;">
-        <h2>${game.title}</h2>
+        <img src="${escapeHTML(game.images[0])}" alt="${escapeHTML(game.title)}" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 10px; margin-bottom: 2rem;">
+        <h2>${escapeHTML(game.title)}</h2>
         <div class="game-details-meta">
-          <p><strong>Developer:</strong> ${game.developer}</p>
-          <p><strong>Publisher:</strong> ${game.publisher}</p>
-          <p><strong>Release Date:</strong> ${new Date(game.releaseDate).toLocaleDateString()}</p>
-          <div class="game-rating" style="margin-top: 1rem;">⭐ ${game.rating?.toFixed(1) || '0.0'} Rating</div>
+          <p><strong>Developer:</strong> ${escapeHTML(game.developer)}</p>
+          <p><strong>Publisher:</strong> ${escapeHTML(game.publisher)}</p>
+          <p><strong>Release Date:</strong> ${escapeHTML(new Date(game.releaseDate).toLocaleDateString())}</p>
+          <div class="game-rating" style="margin-top: 1rem;">⭐ ${escapeHTML(game.rating?.toFixed(1) || '0.0')} Rating</div>
         </div>
       </div>
       <div class="game-details-content">
         <div class="game-description-full">
   <h3>About</h3>
   ${(game.description || '')
-      .split(/\n\s*\n/)   // split by empty line
-      .map(paragraph => `<p>${paragraph.trim()}</p>`)
+      .split(/\n\s*\n/)
+      .map(paragraph => `<p>${escapeHTML(paragraph.trim())}</p>`)
       .join('')
     }
 </div>
@@ -625,14 +635,14 @@ function displayGameDetails(game) {
         <div class="game-details-actions" style="margin-top: 2rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem;">
           ${priceDisplay}
           <div style="display: flex; gap: 1rem; align-items: center;">
-            <button class="btn-primary" onclick="addToCart('${game._id}'); document.getElementById('gameModal').style.display='none'; document.body.classList.remove('modal-open');">Add to Cart</button>
+            <button class="btn-primary" onclick="addToCart('${escapeHTML(game._id)}'); document.getElementById('gameModal').style.display='none'; document.body.classList.remove('modal-open');">Add to Cart</button>
           </div>
         </div>
       </div>
     </div>
   `;
 
-
+  
 
 /* --- Global Modal Closing Logic in games.js --- */
 document.addEventListener('click', (e) => {

@@ -22,6 +22,9 @@ document.addEventListener("submit", (e) => {
 // Shopping Cart Management
 let cartItems = [];
 
+// XSS guard: escape DB-provided game fields before injecting into innerHTML
+
+
 // Initialize cart on page load
 document.addEventListener('DOMContentLoaded', () => {
   if (isAuthenticated()) {
@@ -135,12 +138,12 @@ function updateCartUI() {
 
         return `
           <div class="cart-item">
-            <img src="${game.coverImage}" alt="${game.title}" class="cart-item-image">
+            <img src="${escapeHTML(game.coverImage)}" alt="${escapeHTML(game.title)}" class="cart-item-image">
             <div class="cart-item-info">
-              <h4>${game.title}</h4>
+              <h4>${escapeHTML(game.title)}</h4>
               <p class="cart-item-price">₹${finalPrice.toLocaleString('en-IN')}</p>
             </div>
-            <button class="cart-item-remove" onclick="removeFromCart('${game._id}')">×</button>
+            <button class="cart-item-remove" onclick="removeFromCart('${escapeHTML(game._id)}')">×</button>
           </div>
         `;
       }).join('');

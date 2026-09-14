@@ -14,6 +14,7 @@ const auth    = require('../middleware/auth');
 const redis   = require('../config/redis');
 
 const CACHE_TTL_SECONDS = 3600; // 1 hour cache for repeated queries
+const AI_ERROR_RESPONSE = 'The AI service is temporarily unavailable. Please try again in a moment.';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // GET /api/rag/search?q=...&limit=5
@@ -56,11 +57,13 @@ router.get('/search', auth, async (req, res) => {
       cached: false
     };
 
-    // ── Cache result in Redis ──
+    // ── Cache result in Redis (skip caching AI failures or empty responses) ──
     try {
-      if (redis.status === 'ready') {
+      if (redis.status === 'ready' && result.aiResponse && result.aiResponse !== AI_ERROR_RESPONSE) {
         await redis.setex(cacheKey, CACHE_TTL_SECONDS, JSON.stringify(response));
         console.log(`🟢 RAG result cached for 1h: "${query}"`);
+      } else if (!result.aiResponse || result.aiResponse === AI_ERROR_RESPONSE) {
+        console.warn(`🟡 RAG response NOT cached (empty or error): "${query}"`);
       }
     } catch (cacheWriteErr) {
       console.warn('Redis cache write failed:', cacheWriteErr.message);
@@ -78,7 +81,7 @@ router.get('/search', auth, async (req, res) => {
       return res.status(503).json({ message: 'Vector search index not ready. Please run the indexing script first.' });
     }
 
-    res.status(500).json({ message: `AI recommendation failed: ${error.message}` });
+    res.status(500).json({ message: 'AI recommendation failed. Please try again.' });
   }
 });
 

@@ -55,6 +55,9 @@ function enforceAuthState() {
     
     // Otherwise, just clear the UI state cleanly
     handleLoggedOutCleanup();
+  } else {
+    // User is logged in — make sure admin link is visible if applicable
+    checkAdminAccess();
   }
 }
 
@@ -400,6 +403,12 @@ async function handleGoogleResponse(response) {
     checkAdminAccess();
     closeLoginModal();
     
+    // Re-check admin AFTER modal close animation finishes
+    setTimeout(() => {
+      checkAdminAccess();
+      if (typeof checkAdminStatus === 'function') checkAdminStatus();
+    }, 450);
+
     showNotification(`Welcome, ${res.user.username}!`, 'success');
 
     window.dispatchEvent(new Event('auth-changed')); // Trigger global sync
@@ -438,6 +447,12 @@ async function handleLogin() {
       updateUIForLoggedIn(response.user);
       checkAdminAccess();
       closeLoginModal();
+
+      // Re-check admin AFTER modal close animation finishes (modal uses 400ms transition)
+      setTimeout(() => {
+        checkAdminAccess();
+        if (typeof checkAdminStatus === 'function') checkAdminStatus();
+      }, 450);
 
       if (typeof loadCart === 'function') {
         await loadCart();

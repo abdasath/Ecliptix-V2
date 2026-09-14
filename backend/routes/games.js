@@ -129,7 +129,8 @@ router.get('/meta/genres', async (req, res) => {
 
     res.json(genres);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Games route error:', error);
+    res.status(500).json({ message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -171,7 +172,8 @@ router.get('/featured/list', async (req, res) => {
 
     res.json(games);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Games route error:', error);
+    res.status(500).json({ message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -200,7 +202,8 @@ router.get('/:id', async (req, res) => {
 
     res.json(game);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Games route error:', error);
+    res.status(500).json({ message: 'Something went wrong. Please try again.' });
   }
 });
 

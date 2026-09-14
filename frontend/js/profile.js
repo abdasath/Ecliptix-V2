@@ -2,6 +2,9 @@
 let userProfile = null;
 let orderHistory = [];
 
+// XSS guard: escape DB-provided fields before injecting into innerHTML
+
+
 // Initialize profile on page load
 document.addEventListener('DOMContentLoaded', () => {
   if (isAuthenticated()) {
@@ -142,7 +145,7 @@ function displayOrderHistory(orders) {
     const date = new Date(order.createdAt).toLocaleDateString();
     const gamesList = order.games.map(item => {
       const game = item.game;
-      return `<div class="order-game">• ${game.title} - ₹${item.price.toLocaleString('en-IN')}</div>`;
+      return `<div class="order-game">• ${escapeHTML(game && game.title)} - ₹${(item.price || 0).toLocaleString('en-IN')}</div>`;
     }).join('');
 
     return `
@@ -155,7 +158,7 @@ function displayOrderHistory(orders) {
           ${gamesList}
         </div>
         <div style="margin-top: 0.5rem;">
-          <span class="badge badge-${order.status}">${order.status}</span>
+          <span class="badge badge-${escapeHTML(order.status)}">${escapeHTML(order.status)}</span>
         </div>
       </div>
     `;

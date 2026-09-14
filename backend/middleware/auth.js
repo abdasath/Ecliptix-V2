@@ -2,6 +2,13 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const redis = require('../config/redis');
 
+// Security: never fall back to a hardcoded JWT secret. If the secret is
+// missing, refuse to run so auth tokens can never be forged.
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET is not configured');
+}
+
 const auth = async (req, res, next) => {
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -27,7 +34,7 @@ const auth = async (req, res, next) => {
       console.warn('⚠️  Redis blacklist check failed:', redisErr.message);
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    const decoded = jwt.verify(token, JWT_SECRET);
     const user = await User.findById(decoded.userId).select('-password');
 
     if (!user) {

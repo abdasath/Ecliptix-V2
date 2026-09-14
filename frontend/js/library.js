@@ -1,6 +1,9 @@
 // Library Management
 let ownedGames = [];
 
+// XSS guard: escape DB-provided game fields before injecting into innerHTML
+
+
 // Initialize library on page load
 document.addEventListener('DOMContentLoaded', () => {
   if (isAuthenticated()) {
@@ -58,12 +61,12 @@ function displayLibraryGames(games) {
 // Create library game card
 function createLibraryGameCard(game) {
   return `
-    <div class="game-card" onclick="viewGameDetails('${game._id}')">
-      <img src="${game.coverImage}" alt="${game.title}" class="game-image">
+    <div class="game-card" onclick="viewGameDetails('${escapeHTML(game._id)}')">
+      <img src="${escapeHTML(game.coverImage)}" alt="${escapeHTML(game.title)}" class="game-image">
       <div class="game-info">
-        <h3 class="game-title">${game.title}</h3>
+        <h3 class="game-title">${escapeHTML(game.title)}</h3>
         <div class="game-actions">
-          <button class="btn-primary" onclick="event.stopPropagation(); viewGameDetails('${game._id}')">Play</button>
+          <button class="btn-primary" onclick="event.stopPropagation(); viewGameDetails('${escapeHTML(game._id)}')">Play</button>
         </div>
       </div>
     </div>

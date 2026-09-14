@@ -1,296 +1,220 @@
-# 🎮 GameStore - Gaming Platform
+# 🎮 Ecliptix — Full-Stack Game Marketplace
 
-A complete gaming buy and sell platform similar to Steam/Epic Games, built with HTML, CSS, JavaScript (frontend) and Node.js/Express with MongoDB (backend).
+A premium full-stack game marketplace inspired by Steam and Epic Games, featuring a **smart game advisor chatbot**, **real Razorpay payments**, **800+ game catalog**, and a **stunning dark-themed UI**. Built entirely with Vanilla JavaScript, Node.js, Express, and MongoDB.
 
-## Features
-
-### User Features
-- ✅ User Authentication (Register/Login)
-- ✅ Browse Games with Search & Filters
-- ✅ Game Details with System Requirements
-- ✅ Shopping Cart
-- ✅ Wallet System (Add Funds)
-- ✅ Purchase Games
-- ✅ Game Library (Owned Games)
-- ✅ Purchase History
-- ✅ User Profile
-
-### Admin Features
-- ✅ Add New Games
-- ✅ Edit Games
-- ✅ Delete Games
-- ✅ View All Games
-
-## Tech Stack
-
-### Frontend
-- HTML5
-- CSS3 (Modern, Steam-like UI)
-- Vanilla JavaScript (ES6+)
-
-### Backend
-- Node.js
-- Express.js
-- MongoDB (with Mongoose)
-- JWT Authentication
-- bcryptjs (Password Hashing)
-
-## Project Structure
-
-```
-gaming-platform/
-├── backend/
-│   ├── config/
-│   │   └── database.js          # MongoDB connection
-│   ├── middleware/
-│   │   └── auth.js              # JWT authentication middleware
-│   ├── models/
-│   │   ├── Game.js             # Game model
-│   │   ├── User.js             # User model
-│   │   └── Order.js            # Order model
-│   ├── routes/
-│   │   ├── auth.js             # Authentication routes
-│   │   ├── games.js            # Game routes
-│   │   ├── cart.js             # Cart routes
-│   │   ├── orders.js            # Order routes
-│   │   └── admin.js             # Admin routes
-│   ├── server.js                # Express server
-│   └── package.json
-├── frontend/
-│   ├── css/
-│   │   ├── style.css           # Main styles
-│   │   └── components.css      # Component styles
-│   ├── js/
-│   │   ├── api.js              # API helper functions
-│   │   ├── auth.js             # Authentication logic
-│   │   ├── games.js            # Games management
-│   │   ├── cart.js             # Cart management
-│   │   ├── library.js          # Library management
-│   │   ├── profile.js          # Profile management
-│   │   ├── admin.js            # Admin panel
-│   │   └── app.js              # Main app initialization
-│   ├── index.html              # Home/Store page
-│   ├── library.html            # User library page
-│   ├── profile.html            # User profile page
-│   └── admin.html              # Admin panel
-└── README.md
-```
-
-## Setup Instructions
-
-### Prerequisites
-- Node.js (v14 or higher)
-- MongoDB (local or MongoDB Atlas)
-- npm or yarn
-
-### Backend Setup
-
-1. Navigate to the backend directory:
-```bash
-cd gaming-platform/backend
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Create a `.env` file in the backend directory:
-```env
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/gaming-platform
-JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
-```
-
-4. Start MongoDB (if running locally):
-```bash
-# On macOS with Homebrew
-brew services start mongodb-community
-
-# On Linux
-sudo systemctl start mongod
-
-# Or use MongoDB Atlas (cloud) - just update MONGODB_URI in .env
-```
-
-5. Start the backend server:
-```bash
-# Development mode (with nodemon)
-npm run dev
-
-# Production mode
-npm start
-```
-
-The backend server will run on `http://localhost:5000`
-
-### Frontend Setup
-
-1. Navigate to the frontend directory:
-```bash
-cd gaming-platform/frontend
-```
-
-2. Open `index.html` in a web browser, or use a local server:
-
-```bash
-# Using Python 3
-python3 -m http.server 8000
-
-# Using Node.js http-server
-npx http-server -p 8000
-
-# Using PHP
-php -S localhost:8000
-```
-
-3. Open `http://localhost:8000` in your browser
-
-### Seed Sample Games
-
-After starting the backend, you can seed the database with sample games:
-
-```bash
-# Using curl
-curl -X POST http://localhost:5000/api/seed
-
-# Or using Postman/Thunder Client
-POST http://localhost:5000/api/seed
-```
-
-## API Endpoints
-
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login user
-- `GET /api/auth/me` - Get current user (requires auth)
-
-### Games
-- `GET /api/games` - Get all games (with filters)
-- `GET /api/games/:id` - Get single game
-- `GET /api/games/featured/list` - Get featured games
-- `GET /api/games/meta/genres` - Get all genres
-
-### Cart
-- `GET /api/cart` - Get user cart (requires auth)
-- `POST /api/cart/add/:gameId` - Add game to cart (requires auth)
-- `DELETE /api/cart/remove/:gameId` - Remove from cart (requires auth)
-- `DELETE /api/cart/clear` - Clear cart (requires auth)
-
-### Orders
-- `GET /api/orders` - Get user orders (requires auth)
-- `POST /api/orders/checkout` - Checkout cart (requires auth)
-- `POST /api/orders/wallet/add` - Add funds to wallet (requires auth)
-
-### Admin
-- `GET /api/admin/games` - Get all games (admin)
-- `POST /api/admin/games` - Create game (admin)
-- `PUT /api/admin/games/:id` - Update game (admin)
-- `DELETE /api/admin/games/:id` - Delete game (admin)
-
-## Usage
-
-### As a User
-
-1. **Register/Login**: Click the "Login" button and register a new account or login
-2. **Browse Games**: Browse featured games or all games
-3. **Search & Filter**: Use the search bar and filters to find games
-4. **View Details**: Click on any game to see full details
-5. **Add to Cart**: Click "Add to Cart" on any game
-6. **Add Funds**: Go to Profile page and add funds to your wallet
-7. **Checkout**: Open cart and click "Checkout" to purchase games
-8. **View Library**: Go to Library page to see your owned games
-9. **View History**: Check Profile page for purchase history
-
-### As an Admin
-
-1. **Login**: Login with any user account (admin check is simplified for demo)
-2. **Access Admin Panel**: Navigate to `admin.html`
-3. **Add Games**: Fill the form and submit to add new games
-4. **Edit Games**: Click "Edit" on any game card
-5. **Delete Games**: Click "Delete" to remove games
-
-## Features in Detail
-
-### Game Management
-- Games have titles, descriptions, prices, discounts
-- System requirements (minimum & recommended)
-- Genres, tags, ratings
-- Featured games section
-- Image galleries
-
-### Shopping Cart
-- Add/remove games
-- View cart total
-- Prevent adding owned games
-- Prevent duplicate items
-
-### Wallet System
-- Virtual wallet for purchases
-- Add funds functionality
-- Automatic deduction on checkout
-
-### User Library
-- View all owned games
-- Quick access to game details
-- Organized game collection
-
-## Security Notes
-
-⚠️ **Important**: This is a demo project. For production use:
-
-1. Change `JWT_SECRET` to a strong, random string
-2. Add proper admin role checking (currently any authenticated user can be admin)
-3. Add input validation and sanitization
-4. Use HTTPS in production
-5. Add rate limiting
-6. Implement proper error handling
-7. Add CORS restrictions
-8. Use environment variables for all secrets
-
-## Troubleshooting
-
-### MongoDB Connection Error
-- Make sure MongoDB is running
-- Check `MONGODB_URI` in `.env` file
-- For MongoDB Atlas, ensure IP is whitelisted
-
-### CORS Errors
-- Backend has CORS enabled for all origins (development only)
-- In production, restrict to your frontend domain
-
-### API Not Responding
-- Check if backend server is running on port 5000
-- Verify `API_BASE_URL` in `frontend/js/api.js`
-- Check browser console for errors
-
-### Games Not Loading
-- Run the seed endpoint to add sample games
-- Check MongoDB connection
-- Verify game data in database
-
-## Future Enhancements
-
-- [ ] User reviews and ratings
-- [ ] Wishlist functionality
-- [ ] Game recommendations
-- [ ] Social features (friends, achievements)
-- [ ] Payment gateway integration
-- [ ] Email notifications
-- [ ] Game downloads/installation
-- [ ] Multiplayer game support
-- [ ] Advanced search with filters
-- [ ] Game categories and collections
-
-## License
-
-This project is open source and available for educational purposes.
-
-## Contributing
-
-Feel free to fork, modify, and use this project for learning or as a starting point for your own gaming platform!
+> 🔗 **Live Demo:** [ecliptix-v2.onrender.com](https://ecliptix-v2.onrender.com)
 
 ---
 
-**Enjoy building and gaming! 🎮**
+## ✨ Key Features
 
+### 🛒 Store & Marketplace
+- Browse **800+ games** with search, genre filters, and pagination
+- Hero carousel showcasing featured titles
+- Game detail modals with full descriptions, system requirements, and genre tags
+- Discount badges, ratings, and dynamic pricing
+
+### 🤖 AI Game Advisor (RAG Chatbot)
+- Conversational chat widget with user/AI bubbles and typing indicators
+- **Retrieval-Augmented Generation (RAG)** pipeline:
+  - Intent parsing via Groq LLM
+  - Google Gemini vector embeddings (3072-dim)
+  - MongoDB Atlas Vector Search for semantic game matching
+  - Context-aware multi-turn responses with Redis session memory
+- Supports recommendations, Q&A, comparisons, and opinions
+
+### 💳 Real Payments
+- **Razorpay integration** with server-side signature verification
+- Wallet system — top up with real money or test cards
+- Full checkout flow with order history and purchase tracking
+
+### 🔐 Authentication & Security
+- JWT authentication with **Redis-backed token blacklisting** (real server-side logout)
+- bcrypt password hashing (10 salt rounds)
+- Rate limiting on login (10/15min) and registration (5/hour)
+- Email domain validation via MX record lookup
+- Google OAuth 2.0 sign-in
+- XSS protection with global `escapeHTML()` across all innerHTML injections
+- Cross-tab auth synchronization (no stale sessions)
+
+### 📚 User Features
+- Game library (owned games collection)
+- Shopping cart with add/remove/clear
+- User profile with wallet balance and purchase history
+- Responsive mobile navigation with genre quick-links
+
+### 🛠️ Admin Panel
+- CRUD operations for game management
+- Admin-only route protection
+- Bulk game catalog management
+
+---
+
+## 🏗️ Tech Stack
+
+| Layer | Technologies |
+|---|---|
+| **Frontend** | HTML5 · CSS3 (Custom Properties, Glassmorphism) · Vanilla JavaScript (ES6+) |
+| **Backend** | Node.js 22 · Express.js · Mongoose ODM |
+| **Database** | MongoDB Atlas · Redis (ioredis) |
+| **AI/ML** | Groq (GPT-OSS 120B) · Google Gemini (Embeddings) · MongoDB Atlas Vector Search |
+| **Payments** | Razorpay (Test + Production) |
+| **Auth** | JWT · bcrypt · Google OAuth 2.0 · Redis JWT Blacklist |
+| **Deployment** | Render (Backend) · Vercel (Frontend) |
+
+---
+
+## 📁 Project Structure
+
+```
+Ecliptix/
+├── backend/
+│   ├── config/
+│   │   ├── database.js          # MongoDB Atlas connection
+│   │   └── redis.js             # Redis client with graceful fallback
+│   ├── middleware/
+│   │   ├── auth.js              # JWT verification + Redis blacklist check
+│   │   └── rateLimiter.js       # Express rate limiting
+│   ├── models/
+│   │   ├── Game.js              # Game schema (800+ fields, embeddings)
+│   │   ├── User.js              # User schema (wallet, cart, owned games)
+│   │   └── Order.js             # Order/purchase history
+│   ├── routes/
+│   │   ├── auth.js              # Register, Login, Logout, Google OAuth
+│   │   ├── games.js             # Game listing, search, filters
+│   │   ├── cart.js              # Cart CRUD
+│   │   ├── orders.js            # Checkout, wallet top-up
+│   │   ├── payment.js           # Razorpay order creation + verification
+│   │   ├── rag.js               # AI chatbot search endpoint
+│   │   └── admin.js             # Admin game management
+│   ├── services/
+│   │   └── ragService.js        # Full RAG pipeline (intent → embed → search → generate)
+│   ├── scripts/
+│   │   ├── generateEmbeddings.js    # Batch vector embedding generator
+│   │   └── upgradeHighResImages.js  # Image quality upgrade script
+│   ├── server.js                # Express app + route mounting
+│   └── package.json
+├── frontend/
+│   ├── css/
+│   │   ├── style.css            # Main styles (3500+ lines, dark theme)
+│   │   └── components.css       # Reusable component styles
+│   ├── js/
+│   │   ├── api.js               # API client (auto-detects dev/prod)
+│   │   ├── auth.js              # Auth management + cross-tab sync
+│   │   ├── games.js             # Game listing, cards, details modal
+│   │   ├── cart.js              # Shopping cart logic
+│   │   ├── library.js           # Owned games display
+│   │   ├── profile.js           # Profile, wallet, order history
+│   │   ├── ai-search.js         # AI chatbot widget
+│   │   ├── filter-dropdowns.js  # Custom genre dropdown
+│   │   ├── admin.js             # Admin panel logic
+│   │   └── app.js               # Global init, mobile menu, scroll lock
+│   ├── images/                  # Local game assets and icons
+│   ├── index.html               # Store (main page)
+│   ├── library.html             # User game library
+│   ├── profile.html             # Profile + wallet + orders
+│   └── admin.html               # Admin panel
+└── README.md
+```
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js v22+
+- MongoDB Atlas account (or local MongoDB)
+- Redis (optional — app works without it)
+- Razorpay account (for payments)
+- Gemini API key (for AI embeddings)
+- Groq API key (for AI responses)
+
+### Backend Setup
+
+```bash
+cd backend
+npm install
+```
+
+Create a `.env` file:
+
+```env
+PORT=5000
+MONGODB_URI=mongodb+srv://your-connection-string
+JWT_SECRET=your-strong-random-secret
+GEMINI_API_KEY=your-gemini-api-key
+GROQ_API_KEY=your-groq-api-key
+RAZORPAY_KEY_ID=your-razorpay-key-id
+RAZORPAY_KEY_SECRET=your-razorpay-secret
+REDIS_URL=redis://localhost:6379
+```
+
+```bash
+# Development
+npm run dev
+
+# Production
+npm start
+```
+
+### Frontend Setup
+
+```bash
+cd frontend
+
+# Use any static file server
+npx http-server -p 5500
+# Or use VS Code Live Server extension
+```
+
+---
+
+## 🔌 API Endpoints
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| `POST` | `/api/auth/register` | ❌ | Register new user |
+| `POST` | `/api/auth/login` | ❌ | Login |
+| `POST` | `/api/auth/logout` | ✅ | Logout (blacklists JWT) |
+| `GET` | `/api/auth/me` | ✅ | Get current user |
+| `GET` | `/api/games` | ❌ | List games (search, filter, paginate) |
+| `GET` | `/api/games/:id` | ❌ | Get single game |
+| `GET` | `/api/cart` | ✅ | Get user's cart |
+| `POST` | `/api/cart/add/:gameId` | ✅ | Add game to cart |
+| `DELETE` | `/api/cart/remove/:gameId` | ✅ | Remove from cart |
+| `POST` | `/api/orders/checkout` | ✅ | Checkout (deducts wallet) |
+| `POST` | `/api/orders/wallet/add` | ✅ | Add funds to wallet |
+| `POST` | `/api/payment/create-order` | ✅ | Create Razorpay order |
+| `POST` | `/api/payment/verify` | ✅ | Verify payment signature |
+| `GET` | `/api/rag/search?q=...` | ✅ | AI game recommendation |
+| `GET` | `/api/health` | ❌ | Service health check |
+
+---
+
+## 🧠 AI Architecture (RAG Pipeline)
+
+```
+User Query → Intent Parsing (Groq LLM)
+                ↓
+         Gemini Embedding (3072-dim vector)
+                ↓
+         MongoDB Atlas Vector Search (top 50 candidates)
+                ↓
+         Price/Budget Post-Filter
+                ↓
+         Context Building (game data → prompt)
+                ↓
+         Groq LLM Response Generation
+                ↓
+         Redis Session Memory (conversation context)
+```
+
+---
+
+## 📄 License
+
+This project is open source and available for educational purposes.
+
+---
+
+**Built with ❤️ by Abdul Asath** 🎮

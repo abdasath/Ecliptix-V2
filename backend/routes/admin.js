@@ -50,8 +50,8 @@ const isAdmin = (req, res, next) => {
   if (req.user && req.user.role === 'admin') {
     return next();
   }
-  // Fallback: allow for demo (same as before)
-  next();
+  console.warn(`⛔ Admin access denied for ${req.user ? req.user._id : 'unauthenticated'}`);
+  return res.status(403).json({ message: 'Access denied. Admin only.' });
 };
 
 // Get all games (admin view) — no cache, always fresh
@@ -60,7 +60,8 @@ router.get('/games', auth, isAdmin, async (req, res) => {
     const games = await Game.find().sort({ createdAt: -1 });
     res.json(games);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Ecliptix route error:', error);
+    res.status(500).json({ message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -91,7 +92,8 @@ router.post('/games', auth, isAdmin, async (req, res) => {
 
     res.status(201).json(game);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('Create/update game error:', error);
+    res.status(400).json({ message: 'Invalid input data. Please check your fields.' });
   }
 });
 
@@ -117,7 +119,8 @@ router.put('/games/:id', auth, isAdmin, async (req, res) => {
 
     res.json(game);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('Create/update game error:', error);
+    res.status(400).json({ message: 'Invalid input data. Please check your fields.' });
   }
 });
 
@@ -135,8 +138,11 @@ router.delete('/games/:id', auth, isAdmin, async (req, res) => {
 
     res.json({ message: 'Game deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Ecliptix route error:', error);
+    res.status(500).json({ message: 'Something went wrong. Please try again.' });
   }
 });
 
 module.exports = router;
+// Test hook: exported so security unit-tests can verify the admin boundary
+module.exports.isAdmin = isAdmin;

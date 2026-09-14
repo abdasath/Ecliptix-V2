@@ -47,7 +47,8 @@ router.get('/', auth, async (req, res) => {
       .sort({ createdAt: -1 });
     res.json(orders);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Ecliptix route error:', error);
+    res.status(500).json({ message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -113,7 +114,8 @@ router.post('/checkout', auth, async (req, res) => {
     const populatedOrder = await Order.findById(order._id).populate('games.game');
     res.status(201).json(populatedOrder);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Ecliptix route error:', error);
+    res.status(500).json({ message: 'Something went wrong. Please try again.' });
   }
 });
 
@@ -186,7 +188,7 @@ router.post('/wallet/add', auth, walletLimiter, async (req, res) => {
 
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'Something went wrong. Please try again.' });
   }
 });
 
