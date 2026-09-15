@@ -66,8 +66,14 @@ window.formatAIMarkdown = formatAIMarkdown;
   function hideWelcome() {
     if (!hasStartedChat) {
       hasStartedChat = true;
-      if (welcomeEl) welcomeEl.classList.add('ai-hidden');
-      if (chipsEl) chipsEl.classList.add('ai-hidden');
+      if (welcomeEl) {
+        welcomeEl.classList.add('ai-hidden');
+        setTimeout(() => welcomeEl.style.display = 'none', 300);
+      }
+      if (chipsEl) {
+        chipsEl.classList.add('ai-hidden');
+        setTimeout(() => chipsEl.style.display = 'none', 300);
+      }
     }
   }
 

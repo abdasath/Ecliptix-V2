@@ -3352,7 +3352,6 @@ a[href="admin.html"] {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 16px;
 }
 
 /* Individual message row */
@@ -3370,7 +3369,7 @@ a[href="admin.html"] {
 /* User message — right-aligned */
 .ai-msg-user {
   justify-content: flex-end;
-  margin-top: 24px; /* Gap above the user's question */
+  margin-top: 12px; /* Matches the gap between messages */
 }
 .ai-bubble-user {
   background: rgba(255, 255, 255, 0.12);
