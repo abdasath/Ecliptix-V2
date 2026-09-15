@@ -320,21 +320,24 @@ html.modal-open, body.modal-open {
 }
 
 .wallet {
-    color: #fff;
-    font-weight: 700;
+    color: var(--text-primary);
+    font-weight: 600;
     font-size: 0.95rem;
-    padding: 0.5rem 1.25rem;
-    background: linear-gradient(135deg, var(--accent-base), var(--accent-dark));
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-    transition: all var(--transition-fast);
+    padding: 0.4rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
 }
 
 .wallet:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.25);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.5);
-    background: linear-gradient(135deg, var(--accent-light), var(--accent-base));
 }
 
 
@@ -4027,4 +4030,10 @@ a[href="admin.html"] {
 }
 ::view-transition-group(chat-fab) {
     z-index: 9999;
+}
+/* Ensure the user menu items (wallet + buttons) stay on the same line horizontally */
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
