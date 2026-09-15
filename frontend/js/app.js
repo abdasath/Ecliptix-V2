@@ -13,7 +13,29 @@ document.addEventListener('DOMContentLoaded', () => {
 // Setup universal search bar for non-store pages
 function setupGlobalSearch() {
     const searchInput = document.getElementById('searchInput');
+    const searchClearBtn = document.getElementById('searchClearBtn');
     if (!searchInput) return;
+
+    if (searchClearBtn) {
+        // Toggle clear button visibility based on input
+        searchInput.addEventListener('input', () => {
+            if (searchInput.value.trim().length > 0) {
+                searchClearBtn.style.display = 'block';
+            } else {
+                searchClearBtn.style.display = 'none';
+            }
+        });
+
+        // Clear input when clicked
+        searchClearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            searchClearBtn.style.display = 'none';
+            searchInput.focus();
+            
+            // Trigger input/change event so that any live search (like in admin or index) updates
+            searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+    }
 
     searchInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
