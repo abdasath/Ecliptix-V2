@@ -256,6 +256,7 @@ html.modal-open, body.modal-open {
     /* Explicitly set a smaller max-height if needed */
     height: 34px;
     align-items: center;
+    width: 250px; /* Fixed width prevents the bar from growing when X icon appears */
 }
 
 /* Update the actual text input field */
@@ -264,7 +265,8 @@ html.modal-open, body.modal-open {
     border: none;
     color: var(--text-primary);
     outline: none;
-    width: 200px;
+    flex: 1; /* Automatically shrinks to fit the X icon without growing the parent */
+    width: auto;
     /* Reduced font size slightly for a tighter look */
     font-size: 0.85rem;
 }
@@ -2421,6 +2423,7 @@ a[href="admin.html"] {
         background: transparent !important;
         border: none !important;
         padding: 0 !important;
+        width: auto !important; /* Reset fixed width on mobile */
     }
 
     .search-box .search-input {
