@@ -4008,3 +4008,23 @@ a[href="admin.html"] {
     border: 1px solid rgba(255, 255, 255, 0.25) !important;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
 }
+/* Fix View Transition overlaps by giving fixed elements their own transition names */
+.navbar {
+    view-transition-name: top-navbar;
+}
+.ai-chat-panel {
+    view-transition-name: chat-panel;
+}
+
+::view-transition-group(top-navbar) {
+    z-index: 1000;
+}
+::view-transition-group(chat-panel) {
+    z-index: 9998;
+}
+.ai-fab {
+    view-transition-name: chat-fab;
+}
+::view-transition-group(chat-fab) {
+    z-index: 9999;
+}
