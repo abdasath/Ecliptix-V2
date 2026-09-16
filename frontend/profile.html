@@ -164,29 +164,36 @@
     </main>
 
     
-    <!-- Footer -->
+        <!-- Footer -->
     <footer class="site-footer">
         <div class="footer-container">
             <div class="footer-brand">
                 <h2>Ecliptix</h2>
                 <p>Your ultimate destination for premium, DRM-free games. Explore, purchase, and play instantly.</p>
+                <div class="newsletter-box" style="margin-top: 1.5rem;">
+                    <h4 style="color: #fff; margin-bottom: 0.5rem; font-size: 0.9rem;">Subscribe to our Newsletter</h4>
+                    <form onsubmit="event.preventDefault(); alert('Thank you for subscribing to Ecliptix!'); this.reset();" style="display: flex; gap: 0.5rem;">
+                        <input type="email" required placeholder="Enter your email" style="padding: 0.6rem; border-radius: 4px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; flex: 1;">
+                        <button type="submit" class="btn-primary" style="padding: 0.6rem 1rem;">Subscribe</button>
+                    </form>
+                </div>
             </div>
             <div class="footer-links">
                 <div class="footer-col">
-                    <h3>Quick Links</h3>
+                    <h3>Explore</h3>
                     <ul>
                         <li><a href="index.html">Store</a></li>
-                        <li><a href="library.html">Library</a></li>
-                        <li><a href="profile.html">Profile</a></li>
-                        <li><a href="help.html">Support</a></li>
+                        <li><a href="index.html#featuredGames">Featured Games</a></li>
+                        <li><a href="index.html">New Releases</a></li>
+                        <li><a href="help.html">Help & Support</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
                     <h3>Legal</h3>
                     <ul>
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Refund Policy</a></li>
+                        <li><a href="legal.html#terms">Terms of Service</a></li>
+                        <li><a href="legal.html#privacy">Privacy Policy</a></li>
+                        <li><a href="legal.html#refund">Refund Policy</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
@@ -195,12 +202,13 @@
                         <a href="#"><i class='bx bxl-discord-alt'></i></a>
                         <a href="#"><i class='bx bxl-twitter'></i></a>
                         <a href="#"><i class='bx bxl-youtube'></i></a>
+                        <a href="#"><i class='bx bxl-instagram'></i></a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 Ecliptix. All rights reserved.</p>
+            <p>&copy; 2026 Ecliptix. All rights reserved. Prices include VAT where applicable.</p>
         </div>
     </footer>
 

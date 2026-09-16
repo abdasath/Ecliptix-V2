@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecliptix - Your Ultimate Gaming Platform</title>
+    <meta name="description"
+        content="Ecliptix is a premium full-stack game marketplace with 800+ games, real Razorpay payments, an intelligent game advisor chatbot, and a stunning dark-themed UI. Built with Node.js, Express, MongoDB, and Vanilla JavaScript.">
+
+    <!-- OpenGraph (LinkedIn / Social Media Previews) -->
+    <meta property="og:title" content="Ecliptix — Full-Stack Game Marketplace">
+    <meta property="og:description"
+        content="A full-stack game store with 800+ titles, smart recommendations (RAG + Vector Search), real Razorpay payments, JWT auth, and a premium gaming UI.">
+    <meta property="og:image" content="images/icon.png">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="icon" type="image/png" href="images/icon.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <button class="menu-toggle">
+                <span class="icon hamburger">☰</span>
+                <span class="icon close">✕</span>
+            </button>
+            <div class="nav-brand">
+                <a href="index.html">
+                    <h1>Ecliptix</h1>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="menu-close">✕</li>
+
+                <!-- Gamer Card (Populated by JS) -->
+                <li id="navGamerCard" class="nav-gamer-card mobile-only">
+                    <div class="nav-avatar"><i class='bx bx-user'></i></div>
+                    <div class="nav-user-info">
+                        <span class="nav-username">Welcome, Guest!</span>
+                        <span class="nav-wallet">Please sign in</span>
+                    </div>
+                </li>
+
+                <!-- Main Links -->
+                <li><a href="index.html"><i class='bx bxs-home mobile-only'></i> Store</a></li>
+                <li class="auth-only-nav" style="display: none;"><a href="library.html"><i class='bx bx-library mobile-only'></i> Library</a></li>
+                <li class="auth-only-nav" style="display: none;"><a href="profile.html"> <i class='bx bx-user-circle mobile-only'></i> Profile</a></li>
+                <li><a href="help.html"><i class='bx bx-help-circle mobile-only'></i> Support</a></li>
+                <li id="adminNavLink" style="display: none;"><a href="admin.html"><i
+                            class='bx bx-shield-quarter mobile-only'></i> Admin</a></li>
+
+                <!-- Browse Genres -->
+                <li class="nav-subheader mobile-only">BROWSE GENRES</li>
+                <li class="mobile-only"><a href="#"><i class='bx bx-crosshair'></i> Action</a></li>
+                <li class="mobile-only"><a href="#"><i class='bx bx-compass'></i> Adventure</a></li>
+                <li class="mobile-only"><a href="#"><i class='bx bx-ghost'></i> Horror</a></li>
+                <li class="mobile-only"><a href="#"><i class='bx bx-world'></i> Open World</a></li>
+                <li class="mobile-only"><a href="#"><i class='bx bx-map-alt'></i> RPG</a></li>
+
+
+                <!-- Mobile Logout (Hidden by default, shown by JS if logged in) -->
+                <li id="navMobileLogout" class="mobile-only" style="display: none; margin-top: auto;">
+                    <a href="#" onclick="logout(); return false;" style="color: #ff4747;"><i class='bx bx-log-out'></i>
+                        Log Out</a>
+                </li>
+            </ul>
+            <div class="nav-actions">
+                <div class="search-box">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search games...">
+                    <button id="searchClearBtn" class="search-btn" style="display: none; font-size: 1.2rem; color: #a1a1aa; padding: 0 4px;" title="Clear search">
+                        <i class='bx bx-x'></i>
+                    </button>
+
+                    <button id="searchBtn" class="search-btn">
+                        <i class='bx bx-search'></i>
+                    </button>
+                </div>
+                <div class="cart-icon" id="cartIcon">
+                    <i class='bx bx-cart'></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+                <div class="user-menu">
+                    <span id="userWallet" class="wallet">₹0</span>
+                    <button id="loginBtn" class="btn-primary">Login</button>
+                    <button id="logoutBtn" class="btn-secondary" style="display: none;">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Carousel Section -->
+    <section class="hero-carousel" id="heroCarousel">
+        <div class="carousel-inner" id="carouselInner">
+            <!-- Carousel slides will be injected here by JS -->
+        </div>
+
+        <!-- Carousel Controls -->
+        <button class="carousel-control prev" id="carouselPrev"><i class='bx bx-chevron-left'></i></button>
+        <button class="carousel-control next" id="carouselNext"><i class='bx bx-chevron-right'></i></button>
+
+        <!-- Carousel Indicators -->
+        <div class="carousel-indicators" id="carouselIndicators"></div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <section class="legal-section">
+            <h2 class="section-title">Legal Policies</h2>
+            <div class="legal-container" style="display: flex; gap: 3rem; margin-top: 2rem;">
+                
+                <!-- Sidebar Nav -->
+                <aside class="legal-sidebar" style="flex: 0 0 250px; position: sticky; top: 100px; height: max-content;">
+                    <ul style="list-style: none; padding: 0; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden;">
+                        <li><a href="#terms" style="display: block; padding: 1rem; color: #fff; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s;">Terms of Service</a></li>
+                        <li><a href="#privacy" style="display: block; padding: 1rem; color: #fff; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s;">Privacy Policy</a></li>
+                        <li><a href="#refund" style="display: block; padding: 1rem; color: #fff; text-decoration: none; transition: background 0.2s;">Refund Policy</a></li>
+                    </ul>
+                </aside>
+
+                <!-- Content Area -->
+                <div class="legal-content" style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 3rem; color: #a1a1aa; line-height: 1.8;">
+                    
+                    <div id="terms" style="margin-bottom: 4rem; scroll-margin-top: 100px;">
+                        <h3 style="color: #fff; font-size: 1.8rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">Terms of Service</h3>
+                        <p style="margin-bottom: 1rem;">Welcome to Ecliptix. By accessing or using our platform, you agree to be bound by these Terms of Service. Please read them carefully.</p>
+                        <h4 style="color: #00ff88; margin-top: 1.5rem; margin-bottom: 0.5rem;">1. Account Registration</h4>
+                        <p style="margin-bottom: 1rem;">You must register for an account to purchase and download games. You are responsible for maintaining the confidentiality of your login credentials.</p>
+                        <h4 style="color: #00ff88; margin-top: 1.5rem; margin-bottom: 0.5rem;">2. License to Play</h4>
+                        <p style="margin-bottom: 1rem;">Games purchased on Ecliptix are provided with a non-exclusive, personal license. You may not distribute, sell, or broadcast the games without explicit permission from the publishers.</p>
+                    </div>
+
+                    <div id="privacy" style="margin-bottom: 4rem; scroll-margin-top: 100px;">
+                        <h3 style="color: #fff; font-size: 1.8rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">Privacy Policy</h3>
+                        <p style="margin-bottom: 1rem;">At Ecliptix, we value your privacy. We collect only the data necessary to provide you with a seamless gaming experience.</p>
+                        <h4 style="color: #00ff88; margin-top: 1.5rem; margin-bottom: 0.5rem;">Data Collection</h4>
+                        <p style="margin-bottom: 1rem;">We collect your email address for account management and transaction histories. We do not store your credit card information directly; all payments are securely processed by Razorpay.</p>
+                    </div>
+
+                    <div id="refund" style="scroll-margin-top: 100px;">
+                        <h3 style="color: #fff; font-size: 1.8rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">Refund Policy</h3>
+                        <p style="margin-bottom: 1rem;">We want you to love the games you buy. If a game doesn't work or isn't what you expected, you can request a refund under the following conditions:</p>
+                        <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                            <li>The refund is requested within 14 days of purchase.</li>
+                            <li>The game has been played for less than 2 hours.</li>
+                        </ul>
+                        <p>To initiate a refund, please contact us via the <a href="help.html" style="color: #00ff88; text-decoration: none;">Support</a> page.</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    
+        <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h2>Ecliptix</h2>
+                <p>Your ultimate destination for premium, DRM-free games. Explore, purchase, and play instantly.</p>
+                <div class="newsletter-box" style="margin-top: 1.5rem;">
+                    <h4 style="color: #fff; margin-bottom: 0.5rem; font-size: 0.9rem;">Subscribe to our Newsletter</h4>
+                    <form onsubmit="event.preventDefault(); alert('Thank you for subscribing to Ecliptix!'); this.reset();" style="display: flex; gap: 0.5rem;">
+                        <input type="email" required placeholder="Enter your email" style="padding: 0.6rem; border-radius: 4px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; flex: 1;">
+                        <button type="submit" class="btn-primary" style="padding: 0.6rem 1rem;">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h3>Explore</h3>
+                    <ul>
+                        <li><a href="index.html">Store</a></li>
+                        <li><a href="index.html#featuredGames">Featured Games</a></li>
+                        <li><a href="index.html">New Releases</a></li>
+                        <li><a href="help.html">Help & Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="legal.html#terms">Terms of Service</a></li>
+                        <li><a href="legal.html#privacy">Privacy Policy</a></li>
+                        <li><a href="legal.html#refund">Refund Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Connect</h3>
+                    <div class="social-icons">
+                        <a href="#"><i class='bx bxl-discord-alt'></i></a>
+                        <a href="#"><i class='bx bxl-twitter'></i></a>
+                        <a href="#"><i class='bx bxl-youtube'></i></a>
+                        <a href="#"><i class='bx bxl-instagram'></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Ecliptix. All rights reserved. Prices include VAT where applicable.</p>
+        </div>
+    </footer>
+
+<div id="loginModal" class="modal">
+        <div class="container-auth" id="authContainer">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+
+            <div class="form-box login">
+                <form id="loginForm">
+                    <h1>Login</h1>
+                    <div class="input-box">
+                        <input type="email" id="loginEmail" placeholder="Email" required>
+                        <i class='bx bxs-envelope'></i>
+                    </div>
+                    <div class="input-box">
+                        <input type="password" id="loginPassword" placeholder="Password" required>
+                        <i class='bx bxs-lock-alt'></i>
+                    </div>
+                    <button type="button" id="loginSubmitBtn" class="btn-auth">Login</button>
+
+                    <p class="mobile-auth-switch">
+                        Don't have an account? <b id="mobileToRegister">Register</b>
+                    </p>
+                </form>
+            </div>
+
+            <div class="form-box register">
+                <form id="registerForm">
+                    <h1>Registration</h1>
+                    <div class="input-box">
+                        <input type="text" id="regUsername" placeholder="Username" required>
+                        <i class='bx bxs-user'></i>
+                    </div>
+                    <div class="input-box">
+                        <input type="email" id="regEmail" placeholder="Email" required>
+                        <i class='bx bxs-envelope'></i>
+                    </div>
+                    <div class="input-box">
+                        <input type="password" id="regPassword" placeholder="Password" required>
+                        <i class='bx bxs-lock-alt'></i>
+                    </div>
+                    <button type="button" id="registerSubmitBtn" class="btn-auth">Register</button>
+
+                    <p class="mobile-auth-switch">
+                        Already have an account? <b id="mobileToLogin">Login</b>
+                    </p>
+                </form>
+            </div>
+
+            <div class="toggle-box">
+                <div class="toggle-panel toggle-left">
+                    <h1>Welcome to Ecliptix</h1>
+                    <p>Create an account to get started.</p>
+                    <button class="btn-auth toggle-btn" id="toRegister">Create Account</button>
+                </div>
+                <div class="toggle-panel toggle-right">
+                    <h1>Welcome Back</h1>
+                    <p>Sign in to continue.</p>
+                    <button class="btn-auth toggle-btn" id="toLogin">Sign In</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Shopping Cart</h2>
+            <div id="cartItems">
+                <!-- Cart items will be loaded here -->
+            </div>
+            <div class="cart-total">
+                <strong>Total: ₹<span id="cartTotal">0</span></strong>
+            </div>
+            <button id="checkoutBtn" class="btn-primary">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Game Details Modal -->
+    <div id="gameModal" class="modal modal-large">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="gameDetails">
+                <!-- Game details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ── AI Game Finder (Floating Chat Widget) ── -->
+    <!-- Floating trigger button -->
+    <button class="ai-fab" id="aiFab" title="AI Game Finder">
+        <span class="ai-fab-icon ai-fab-open"><i class='bx bx-bot'></i></span>
+        <span class="ai-fab-icon ai-fab-close" ><i class='bx bx-x'></i></span>
+        <span class="ai-fab-pulse"></span>
+    </button>
+
+    <!-- Chat popup panel -->
+    <div class="ai-chat-panel" id="aiChatPanel">
+        <!-- Header -->
+        <div class="ai-chat-header">
+            <div class="ai-chat-header-left">
+                <div class="ai-chat-avatar"><i class='bx bx-bot'></i></div>
+                <div>
+                    <div class="ai-chat-name">Ecliptix AI</div>
+                    <div class="ai-chat-status"><span class="ai-status-dot"></span> Game Advisor</div>
+                </div>
+            </div>
+            <button class="ai-chat-close" id="aiChatClose"><i class='bx bx-x'></i></button>
+        </div>
+
+        <!-- Body -->
+        <div class="ai-chat-body" id="aiChatBody">
+            <!-- Welcome message -->
+            <div class="ai-welcome" id="aiWelcome">
+                <p>Ask me anything! I'll find the perfect game for you.</p>
+            </div>
+
+            <!-- Suggestion chips -->
+            <div class="ai-chips" id="aiChips">
+                <button class="ai-suggestion-chip">Action games under ₹500</button>
+                <button class="ai-suggestion-chip">RPGs like The Witcher</button>
+                <button class="ai-suggestion-chip">Best horror games</button>
+                <button class="ai-suggestion-chip">Open-world adventures</button>
+                <button class="ai-suggestion-chip">Top-rated games</button>
+            </div>
+
+            <!-- Dynamic conversation messages go here -->
+            <div class="ai-messages" id="aiMessages"></div>
+        </div>
+
+        <!-- Input bar -->
+        <div class="ai-chat-footer">
+            <input type="text" id="aiSearchInput" class="ai-chat-input"
+                placeholder='e.g. "RPG like Witcher" or "horror game"' autocomplete="off">
+            <button id="aiSearchBtn" class="ai-chat-send">
+                <i class='bx bx-send'></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/games.js"></script>
+    <script src="js/filter-dropdowns.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/ai-search.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 50,
+            easing: "ease-out-cubic"
+        });
+    </script>
+</body>
+
+</html>
