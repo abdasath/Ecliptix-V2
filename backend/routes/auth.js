@@ -195,10 +195,16 @@ router.post('/google', async (req, res) => {
         googleId: googleId,
         // password is omitted because schema allows it if googleId is present
       });
-    } else if (!user.googleId) {
-      // If user exists but hasn't linked Google yet, link it now
-      user.googleId = googleId;
-      await user.save();
+    } else {
+      // User already exists
+      if (mode === 'register') {
+        return res.status(400).json({ message: 'Account already exists. Please switch to Sign In.' });
+      }
+      // If they are logging in but haven't linked Google yet, link it now
+      if (!user.googleId) {
+        user.googleId = googleId;
+        await user.save();
+      }
     }
 
     // Auto-grant admin role for specific email
