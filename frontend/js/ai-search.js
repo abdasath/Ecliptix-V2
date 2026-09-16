@@ -32,14 +32,12 @@ window.formatAIMarkdown = formatAIMarkdown;
   window.resetAIChat = function() {
     if (messagesEl) messagesEl.innerHTML = '';
     if (welcomeEl) {
-      welcomeEl.style.opacity = '1';
-      welcomeEl.style.maxHeight = '500px';
-      welcomeEl.style.display = 'block';
+      welcomeEl.classList.remove('ai-hidden');
+      welcomeEl.style.cssText = '';
     }
     if (chipsEl) {
-      chipsEl.style.opacity = '1';
-      chipsEl.style.maxHeight = '200px';
-      chipsEl.style.display = 'flex';
+      chipsEl.classList.remove('ai-hidden');
+      chipsEl.style.cssText = '';
     }
     hasStartedChat = false;
   };
