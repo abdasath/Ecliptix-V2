@@ -112,6 +112,7 @@ body {
 /* Force the main content area to take up all remaining vertical space */
 main {
     flex: 1;
+    width: 100%;
 }
 
 html {
