@@ -102,9 +102,16 @@ body {
     min-height: 100vh;
     line-height: 1.6;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
 
     /* ADD THIS: Pushes content down so Fixed Navbar doesn't cover it */
     padding-top: 85px;
+}
+
+/* Force the main content area to take up all remaining vertical space */
+main {
+    flex: 1;
 }
 
 html {
