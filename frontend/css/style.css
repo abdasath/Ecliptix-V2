@@ -4240,8 +4240,8 @@ a[href="admin.html"] {
 
 .premium-faq[open] {
     background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(0, 255, 136, 0.3);
-    box-shadow: 0 4px 20px rgba(0, 255, 136, 0.05);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
 }
 
 .premium-faq summary {
@@ -4263,7 +4263,7 @@ a[href="admin.html"] {
 }
 
 .premium-faq summary:hover {
-    color: #00ff88;
+    color: #ffffff;
 }
 
 .premium-faq summary i {
@@ -4274,7 +4274,7 @@ a[href="admin.html"] {
 
 .premium-faq[open] summary i {
     transform: rotate(180deg);
-    color: #00ff88;
+    color: #ffffff;
 }
 
 .premium-faq .faq-content {
@@ -4300,5 +4300,5 @@ a[href="admin.html"] {
 
 /* Neon green border when dropdown is open */
 .custom-dropdown.active .dropdown-toggle {
-    border-color: #00ff88 !important;
+    border-color: #ffffff !important;
 }
