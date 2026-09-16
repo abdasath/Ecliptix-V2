@@ -57,11 +57,15 @@ router.get('/search', auth, async (req, res) => {
       cached: false
     };
 
-    // ── Cache result in Redis (skip caching AI failures or empty responses) ──
+    // ── Cache result in Redis (skip caching AI failures, empty responses, or general greetings) ──
     try {
       if (redis.status === 'ready' && result.aiResponse && result.aiResponse !== AI_ERROR_RESPONSE) {
-        await redis.setex(cacheKey, CACHE_TTL_SECONDS, JSON.stringify(response));
-        console.log(`🟢 RAG result cached for 1h: "${query}"`);
+        if (result.type !== 'general') {
+          await redis.setex(cacheKey, CACHE_TTL_SECONDS, JSON.stringify(response));
+          console.log(`🟢 RAG result cached for 1h: "${query}"`);
+        } else {
+          console.log(`🟡 RAG result skipped cache (dynamic chat): "${query}"`);
+        }
       } else if (!result.aiResponse || result.aiResponse === AI_ERROR_RESPONSE) {
         console.warn(`🟡 RAG response NOT cached (empty or error): "${query}"`);
       }

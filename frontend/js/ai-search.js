@@ -29,6 +29,30 @@ window.formatAIMarkdown = formatAIMarkdown;
   let isOpen = false;
   let hasStartedChat = false; // tracks whether welcome/chips should be hidden
 
+  window.resetAIChat = function() {
+    if (messagesEl) messagesEl.innerHTML = '';
+    if (welcomeEl) {
+      welcomeEl.style.opacity = '1';
+      welcomeEl.style.maxHeight = '500px';
+      welcomeEl.style.display = 'block';
+    }
+    if (chipsEl) {
+      chipsEl.style.opacity = '1';
+      chipsEl.style.maxHeight = '200px';
+      chipsEl.style.display = 'flex';
+    }
+    hasStartedChat = false;
+  };
+
+
+
+  // Automatically clear chat if auth state changes (login/logout)
+  window.addEventListener('auth-changed', () => {
+    if (typeof window.resetAIChat === 'function') {
+      window.resetAIChat();
+    }
+  });
+
   // ── Toggle panel ──────────────────────────────────────────────
   function openPanel() {
     isOpen = true;

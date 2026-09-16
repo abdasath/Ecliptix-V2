@@ -1487,20 +1487,78 @@ a[href="admin.html"] {
     gap: 1rem;
 }
 
-.filters select {
-    background: var(--card-bg);
+.filters .custom-dropdown {
+    position: relative;
+    /* Removed flex: 1 from here so they don't stretch indefinitely on desktop */
+}
+
+/* The sleek dropdown button (pill shaped to match aesthetics) */
+.filters .dropdown-toggle {
+    background: rgba(255, 255, 255, 0.03);
     color: var(--text-primary);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
+    padding: 0.5rem 1.25rem;
+    border-radius: 20px; /* Sleek pill shape */
     cursor: pointer;
-    outline: none;
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 160px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    backdrop-filter: blur(8px);
+    white-space: nowrap;
+}
+
+.filters .dropdown-toggle:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* The glassmorphic dropdown list */
+.filters .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    width: 100%;
+    min-width: max-content;
+    max-height: 250px;
+    overflow-y: auto;
+    background: rgba(15, 15, 15, 0.95);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px; /* Soft corners for the menu */
+    z-index: 1000;
+    display: none;
+    margin: 0;
+    padding: 0.5rem 0;
+    list-style: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+}
+
+/* Right-align the Sort By menu if it overflows */
+#sortDropdown .dropdown-menu {
+    left: auto;
+    right: 0;
+}
+
+/* Dropdown Items */
+.filters .dropdown-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 500;
     transition: all 0.2s;
 }
 
-.filters select:hover {
-    border-color: rgba(255, 255, 255, 0.2);
-    background: var(--card-hover);
+.filters .dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    padding-left: 20px; /* Slight indent on hover for dynamic feel */
 }
 
 /* Games Grid */
@@ -1650,49 +1708,53 @@ a[href="admin.html"] {
 .pagination {
     display: flex;
     justify-content: center;
-    gap: 0.5rem;
-    margin: 2.5rem 0;
+    gap: 0.6rem;
+    margin: 3rem 0;
 }
 
 .pagination button {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.02);
     color: var(--text-secondary);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 0.6rem 1.1rem;
-    border-radius: 8px; /* Sleeker curves */
-    font-size: 0.95rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.5rem 1rem;
+    border-radius: 20px; /* Sleek pill shapes */
+    font-size: 0.9rem;
     font-weight: 500;
     cursor: pointer;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(8px);
     transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    min-width: 42px; /* Ensure numbers don't look too squished */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .pagination button:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
     color: var(--text-primary);
-    border-color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.25);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .pagination button:disabled {
-    opacity: 0.2;
+    opacity: 0.15;
     cursor: not-allowed;
     background: transparent;
 }
 
 .pagination .active {
-    background: linear-gradient(135deg, var(--highlight-color), #005bb5);
-    color: #ffffff;
-    border-color: var(--highlight-color);
-    box-shadow: 0 4px 15px rgba(0, 116, 228, 0.4);
+    background: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15);
     transform: scale(1.05);
     font-weight: 700;
 }
 
 .pagination .active:hover {
     transform: scale(1.05) translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 116, 228, 0.6);
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.25);
 }
 
 /* Empty State */
@@ -1933,20 +1995,19 @@ a[href="admin.html"] {
     }
 
     /* 3. Force the Select Boxes to Share Space (50% each) */
-    .filters select {
+    .filters .custom-dropdown {
         flex: 1 !important;
-        /* Grow to fill space */
         width: 48% !important;
-        /* Force roughly half width */
         min-width: 0 !important;
-        /* Allow text truncation if needed */
-        max-width: 100% !important;
-        padding: 10px 5px !important;
-        /* Reduce side padding to fit text */
-        font-size: 0.85rem !important;
-        /* Slightly smaller text */
+    }
+
+    .filters .dropdown-toggle {
+        width: 100% !important;
+        min-width: 0 !important;
+        padding: 0.5rem 0.8rem !important;
+        font-size: 0.8rem !important;
         text-overflow: ellipsis;
-        /* Handle long text gracefully */
+        overflow: hidden;
     }
 
 
@@ -2321,7 +2382,7 @@ a[href="admin.html"] {
     .pagination button {
         padding: 0.4rem 0.7rem !important;
         font-size: 0.8rem !important;
-        border-radius: 6px !important;
+        border-radius: 20px !important;
     }
 
     /* Force Previous and Next buttons to be exactly the same size */

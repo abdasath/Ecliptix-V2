@@ -230,7 +230,7 @@ async function generateResponse(userQuery, context, games, intentType) {
   } else if (intentType === "opinion") {
     prompt += `Provide a balanced, subjective opinion on the game(s) mentioned, drawing from the context or general gaming consensus.`;
   } else {
-    prompt += `Answer this general gaming question educationally.`;
+    prompt += `If this is a greeting or casual chat (like "hi", "hello", "how are you"), respond in a friendly, conversational way as Ecliptix AI and ask how you can help them find a game today. If it's a general gaming question, answer it educationally in 2-3 sentences.`;
   }
 
   try {
@@ -278,18 +278,20 @@ async function search(userQuery, limit = 5, sessionId = "anonymous") {
 
   let games = [];
   
-  // 2 & 3. Retrieve games
-  if (type === "recommendation") {
-    // Semantic vector search
-    const queryEmbedding = await embedQuery(intent.searchIntent);
-    games = await vectorSearch(queryEmbedding, intent.maxPrice, Math.min(limit, 8));
-  } else {
-    // Exact text search for QA, comparisons, etc.
-    games = await atlasTextSearch(intent.searchIntent, Math.min(limit, 5));
-    // Fallback to vector search if text search yields nothing
-    if (games.length === 0) {
-       const queryEmbedding = await embedQuery(intent.searchIntent);
-       games = await vectorSearch(queryEmbedding, intent.maxPrice, Math.min(limit, 5));
+  // 2 & 3. Retrieve games safely
+  if (intent.searchIntent && intent.searchIntent.trim().length >= 2) {
+    if (type === "recommendation") {
+      // Semantic vector search
+      const queryEmbedding = await embedQuery(intent.searchIntent);
+      games = await vectorSearch(queryEmbedding, intent.maxPrice, Math.min(limit, 8));
+    } else {
+      // Exact text search for QA, comparisons, etc.
+      games = await atlasTextSearch(intent.searchIntent, Math.min(limit, 5));
+      // Fallback to vector search if text search yields nothing
+      if (games.length === 0) {
+         const queryEmbedding = await embedQuery(intent.searchIntent);
+         games = await vectorSearch(queryEmbedding, intent.maxPrice, Math.min(limit, 5));
+      }
     }
   }
 

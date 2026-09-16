@@ -54,7 +54,7 @@ async function loadGenres() {
     if (!genreDropdownList) return;
 
     // Reset dropdown
-    genreDropdownList.innerHTML = '<li class="dropdown-item" data-value="" style="padding: 10px 15px; cursor: pointer; color: white; transition: background 0.2s;">All Genres</li>';
+    genreDropdownList.innerHTML = '<li class="dropdown-item" data-value="">All Genres</li>';
 
     // Populate
     genres.forEach(genre => {
@@ -62,12 +62,6 @@ async function loadGenres() {
       li.className = 'dropdown-item';
       li.dataset.value = genre;
       li.textContent = genre;
-      li.style.cssText = 'padding: 10px 15px; cursor: pointer; color: white; transition: background 0.2s;';
-      
-      // Hover effect since inline style pseudo-classes aren't standard
-      li.onmouseover = () => li.style.background = 'rgba(255, 255, 255, 0.1)';
-      li.onmouseout = () => li.style.background = 'transparent';
-      
       genreDropdownList.appendChild(li);
     });
     
