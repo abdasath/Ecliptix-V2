@@ -298,10 +298,7 @@ html.modal-open, body.modal-open {
     transition: all 0.2s ease;
 }
 
-.cart-icon:hover {
-    transform: translateY(-2px);
-    text-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
-}
+
 
 .cart-count {
     position: absolute;
