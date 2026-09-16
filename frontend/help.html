@@ -143,12 +143,7 @@
                         </div>
                     </details>
 
-                    <details class="premium-faq">
-                        <summary>How do I contact a game developer? <i class='bx bx-chevron-down'></i></summary>
-                        <div class="faq-content">
-                            <p>If you have a bug report or feature request for a specific game, please visit the developer's official website linked on the game's store page.</p>
-                        </div>
-                    </details>
+
                 </div>
 
                 <!-- Contact Form -->
@@ -418,6 +413,21 @@
                         dropdownBtn.style.borderColor = '#00ff88'; // Highlight border
                         hiddenInput.value = item.getAttribute('data-value');
                         dropdown.classList.remove('active');
+                    });
+                });
+
+                
+                // Exclusive Accordion Logic
+                const faqs = document.querySelectorAll('.premium-faq');
+                faqs.forEach(faq => {
+                    faq.addEventListener('click', (e) => {
+                        if (e.target.closest('summary')) {
+                            faqs.forEach(otherFaq => {
+                                if (otherFaq !== faq) {
+                                    otherFaq.removeAttribute('open');
+                                }
+                            });
+                        }
                     });
                 });
 

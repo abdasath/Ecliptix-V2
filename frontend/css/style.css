@@ -1487,13 +1487,13 @@ a[href="admin.html"] {
     gap: 1rem;
 }
 
-.filters .custom-dropdown {
+.custom-dropdown {
     position: relative;
     /* Removed flex: 1 from here so they don't stretch indefinitely on desktop */
 }
 
 /* The sleek dropdown button (pill shaped to match aesthetics) */
-.filters .dropdown-toggle {
+.dropdown-toggle {
     background: rgba(255, 255, 255, 0.03);
     color: var(--text-primary);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1513,13 +1513,13 @@ a[href="admin.html"] {
     white-space: nowrap;
 }
 
-.filters .dropdown-toggle:hover {
+.dropdown-toggle:hover {
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.25);
 }
 
 /* The glassmorphic dropdown list */
-.filters .dropdown-menu {
+.dropdown-menu {
     position: absolute;
     top: calc(100% + 10px);
     left: 0;
@@ -1546,7 +1546,7 @@ a[href="admin.html"] {
 }
 
 /* Dropdown Items */
-.filters .dropdown-item {
+.dropdown-item {
     padding: 10px 16px;
     cursor: pointer;
     color: var(--text-secondary);
@@ -1555,7 +1555,7 @@ a[href="admin.html"] {
     transition: all 0.2s;
 }
 
-.filters .dropdown-item:hover {
+.dropdown-item:hover {
     background: rgba(255, 255, 255, 0.1);
     color: #ffffff;
     padding-left: 20px; /* Slight indent on hover for dynamic feel */
@@ -2024,13 +2024,13 @@ a[href="admin.html"] {
     }
 
     /* 3. Force the Select Boxes to Share Space (50% each) */
-    .filters .custom-dropdown {
+    .custom-dropdown {
         flex: 1 !important;
         width: 48% !important;
         min-width: 0 !important;
     }
 
-    .filters .dropdown-toggle {
+    .dropdown-toggle {
         width: 100% !important;
         min-width: 0 !important;
         padding: 0.5rem 0.8rem !important;
