@@ -539,7 +539,7 @@ function updateUIForLoggedIn(user) {
 
   // Show auth-only navbar items (Library & Profile)
   document.querySelectorAll('.auth-only-nav').forEach(element => {
-    element.style.display = 'block';
+    element.style.display = 'list-item';
   });
 
   // --- MOBILE NAV GAMER CARD UPDATES ---
