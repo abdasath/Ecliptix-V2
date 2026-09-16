@@ -106,40 +106,45 @@
                 
                 <!-- Sidebar Nav -->
                 <aside class="legal-sidebar" style="flex: 0 0 250px; position: sticky; top: 100px; height: max-content;">
-                    <ul style="list-style: none; padding: 0; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden;">
-                        <li><a href="#terms" style="display: block; padding: 1rem; color: #fff; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s;">Terms of Service</a></li>
-                        <li><a href="#privacy" style="display: block; padding: 1rem; color: #fff; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s;">Privacy Policy</a></li>
-                        <li><a href="#refund" style="display: block; padding: 1rem; color: #fff; text-decoration: none; transition: background 0.2s;">Refund Policy</a></li>
+                    <ul style="list-style: none; padding: 0; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; overflow: hidden;">
+                        <li><a href="#terms" class="legal-nav-btn active" style="display: block; padding: 1.2rem 1.5rem; color: #fff; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.05); transition: all 0.3s; background: rgba(255,255,255,0.1); border-left: 4px solid #fff; font-weight: 600;">Terms of Service</a></li>
+                        <li><a href="#privacy" class="legal-nav-btn" style="display: block; padding: 1.2rem 1.5rem; color: #a1a1aa; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.05); transition: all 0.3s; border-left: 4px solid transparent;">Privacy Policy</a></li>
+                        <li><a href="#refund" class="legal-nav-btn" style="display: block; padding: 1.2rem 1.5rem; color: #a1a1aa; text-decoration: none; transition: all 0.3s; border-left: 4px solid transparent;">Refund Policy</a></li>
                     </ul>
                 </aside>
 
                 <!-- Content Area -->
-                <div class="legal-content" style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 3rem; color: #a1a1aa; line-height: 1.8;">
+                <div class="legal-content" style="flex: 1; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 3.5rem 4rem; color: #a1a1aa; line-height: 1.8; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
                     
-                    <div id="terms" style="margin-bottom: 4rem; scroll-margin-top: 100px;">
-                        <h3 style="color: #fff; font-size: 1.8rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">Terms of Service</h3>
-                        <p style="margin-bottom: 1rem;">Welcome to Ecliptix. By accessing or using our platform, you agree to be bound by these Terms of Service. Please read them carefully.</p>
-                        <h4 style="color: #00ff88; margin-top: 1.5rem; margin-bottom: 0.5rem;">1. Account Registration</h4>
-                        <p style="margin-bottom: 1rem;">You must register for an account to purchase and download games. You are responsible for maintaining the confidentiality of your login credentials.</p>
-                        <h4 style="color: #00ff88; margin-top: 1.5rem; margin-bottom: 0.5rem;">2. License to Play</h4>
-                        <p style="margin-bottom: 1rem;">Games purchased on Ecliptix are provided with a non-exclusive, personal license. You may not distribute, sell, or broadcast the games without explicit permission from the publishers.</p>
+                    <div id="content-terms" class="legal-pane" style="display: block; animation: legalFadeIn 0.4s ease-out;">
+                        <h3 style="color: #fff; font-size: 2.2rem; font-weight: 700; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">Terms of Service</h3>
+                        <p style="margin-bottom: 2.5rem; font-size: 1.1rem;">Welcome to Ecliptix. By accessing or using our platform, you agree to be bound by these Terms of Service. Please read them carefully.</p>
+                        
+                        <h4 style="color: #fff; font-size: 1.3rem; margin-top: 2rem; margin-bottom: 0.8rem;">1. Account Registration</h4>
+                        <p style="margin-bottom: 1.5rem;">You must register for an account to purchase and download games. You are responsible for maintaining the confidentiality of your login credentials.</p>
+                        
+                        <h4 style="color: #fff; font-size: 1.3rem; margin-top: 2rem; margin-bottom: 0.8rem;">2. License to Play</h4>
+                        <p style="margin-bottom: 1.5rem;">Games purchased on Ecliptix are provided with a non-exclusive, personal license. You may not distribute, sell, or broadcast the games without explicit permission from the publishers.</p>
                     </div>
 
-                    <div id="privacy" style="margin-bottom: 4rem; scroll-margin-top: 100px;">
-                        <h3 style="color: #fff; font-size: 1.8rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">Privacy Policy</h3>
-                        <p style="margin-bottom: 1rem;">At Ecliptix, we value your privacy. We collect only the data necessary to provide you with a seamless gaming experience.</p>
-                        <h4 style="color: #00ff88; margin-top: 1.5rem; margin-bottom: 0.5rem;">Data Collection</h4>
-                        <p style="margin-bottom: 1rem;">We collect your email address for account management and transaction histories. We do not store your credit card information directly; all payments are securely processed by Razorpay.</p>
+                    <div id="content-privacy" class="legal-pane" style="display: none; animation: legalFadeIn 0.4s ease-out;">
+                        <h3 style="color: #fff; font-size: 2.2rem; font-weight: 700; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">Privacy Policy</h3>
+                        <p style="margin-bottom: 2.5rem; font-size: 1.1rem;">At Ecliptix, we value your privacy. We collect only the data necessary to provide you with a seamless gaming experience.</p>
+                        
+                        <h4 style="color: #fff; font-size: 1.3rem; margin-top: 2rem; margin-bottom: 0.8rem;">Data Collection</h4>
+                        <p style="margin-bottom: 1.5rem;">We collect your email address for account management and transaction histories. We do not store your credit card information directly; all payments are securely processed by Razorpay.</p>
                     </div>
 
-                    <div id="refund" style="scroll-margin-top: 100px;">
-                        <h3 style="color: #fff; font-size: 1.8rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">Refund Policy</h3>
-                        <p style="margin-bottom: 1rem;">We want you to love the games you buy. If a game doesn't work or isn't what you expected, you can request a refund under the following conditions:</p>
-                        <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
-                            <li>The refund is requested within 14 days of purchase.</li>
-                            <li>The game has been played for less than 2 hours.</li>
+                    <div id="content-refund" class="legal-pane" style="display: none; animation: legalFadeIn 0.4s ease-out;">
+                        <h3 style="color: #fff; font-size: 2.2rem; font-weight: 700; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">Refund Policy</h3>
+                        <p style="margin-bottom: 1.5rem; font-size: 1.1rem;">We want you to love the games you buy. If a game doesn't work or isn't what you expected, you can request a refund under the following conditions:</p>
+                        
+                        <ul style="list-style-type: disc; margin-left: 2rem; margin-bottom: 2.5rem;">
+                            <li style="margin-bottom: 0.5rem;">The refund is requested within 14 days of purchase.</li>
+                            <li style="margin-bottom: 0.5rem;">The game has been played for less than 2 hours.</li>
                         </ul>
-                        <p>To initiate a refund, please contact us via the <a href="help.html" style="color: #00ff88; text-decoration: none;">Support</a> page.</p>
+                        
+                        <p>To initiate a refund, please contact us via the <a href="help.html" style="color: #fff; text-decoration: underline; font-weight: 500;">Support</a> page.</p>
                     </div>
 
                 </div>
@@ -348,6 +353,49 @@
             once: true,
             offset: 50,
             easing: "ease-out-cubic"
+        });
+    </script>
+
+    <style>
+        @keyframes legalFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .legal-nav-btn:hover { background: rgba(255,255,255,0.05) !important; color: #fff !important; }
+        .legal-nav-btn.active:hover { background: rgba(255,255,255,0.1) !important; }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navBtns = document.querySelectorAll('.legal-nav-btn');
+            const panes = document.querySelectorAll('.legal-pane');
+
+            navBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    // Remove active state
+                    navBtns.forEach(b => {
+                        b.classList.remove('active');
+                        b.style.background = 'transparent';
+                        b.style.borderLeftColor = 'transparent';
+                        b.style.color = '#a1a1aa';
+                        b.style.fontWeight = 'normal';
+                    });
+                    
+                    panes.forEach(p => p.style.display = 'none');
+                    
+                    // Set active state
+                    btn.classList.add('active');
+                    btn.style.background = 'rgba(255,255,255,0.1)';
+                    btn.style.borderLeftColor = '#fff';
+                    btn.style.color = '#fff';
+                    btn.style.fontWeight = '600';
+                    
+                    // Show target pane
+                    const targetId = btn.getAttribute('href').replace('#', 'content-');
+                    document.getElementById(targetId).style.display = 'block';
+                });
+            });
         });
     </script>
 </body>
