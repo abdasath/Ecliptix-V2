@@ -537,6 +537,11 @@ function updateUIForLoggedIn(user) {
       element.classList.remove('auth-protected');
   });
 
+  // Hide auth-only navbar items
+  document.querySelectorAll('.auth-only-nav').forEach(element => {
+    element.style.display = 'none';
+  });
+
   // --- MOBILE NAV GAMER CARD UPDATES ---
   const navUsername = document.querySelector('.nav-username');
   const navWallet = document.querySelector('.nav-wallet');
