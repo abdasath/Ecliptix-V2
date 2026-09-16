@@ -410,8 +410,7 @@
                     item.addEventListener('click', (e) => {
                         selectedText.textContent = item.textContent;
                         selectedText.style.color = 'white'; // Change color to indicate selection
-                        dropdownBtn.style.borderColor = '#00ff88'; // Highlight border
-                        hiddenInput.value = item.getAttribute('data-value');
+                                                hiddenInput.value = item.getAttribute('data-value');
                         dropdown.classList.remove('active');
                     });
                 });

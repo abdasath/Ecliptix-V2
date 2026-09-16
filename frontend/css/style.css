@@ -4297,3 +4297,8 @@ a[href="admin.html"] {
 .custom-dropdown.active .dropdown-menu {
     display: block;
 }
+
+/* Neon green border when dropdown is open */
+.custom-dropdown.active .dropdown-toggle {
+    border-color: #00ff88 !important;
+}
