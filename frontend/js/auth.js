@@ -537,9 +537,9 @@ function updateUIForLoggedIn(user) {
       element.classList.remove('auth-protected');
   });
 
-  // Hide auth-only navbar items
+  // Show auth-only navbar items (Library & Profile)
   document.querySelectorAll('.auth-only-nav').forEach(element => {
-    element.style.display = 'none';
+    element.style.display = 'block';
   });
 
   // --- MOBILE NAV GAMER CARD UPDATES ---
@@ -570,6 +570,11 @@ function updateUIForLoggedOut() {
   if (navUsername) navUsername.textContent = 'Welcome, Guest!';
   if (navWallet) navWallet.textContent = 'Please sign in';
   if (navMobileLogout) navMobileLogout.style.display = 'none';
+
+  // Hide auth-only navbar items (Library & Profile)
+  document.querySelectorAll('.auth-only-nav').forEach(element => {
+    element.style.display = 'none';
+  });
 }
 
 // Get current user
