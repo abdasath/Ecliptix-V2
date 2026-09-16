@@ -172,7 +172,7 @@
                 <p>Your ultimate destination for premium, DRM-free games. Explore, purchase, and play instantly.</p>
                 <div class="newsletter-box" style="margin-top: 1.5rem;">
                     <h4 style="color: #fff; margin-bottom: 0.5rem; font-size: 0.9rem;">Subscribe to our Newsletter</h4>
-                    <form onsubmit="event.preventDefault(); alert('Thank you for subscribing to Ecliptix!'); this.reset();" style="display: flex; gap: 0.5rem;">
+                    <form onsubmit="event.preventDefault(); if(window.showNotification) window.showNotification('Thank you for subscribing to Ecliptix!', 'success'); this.reset();" style="display: flex; gap: 0.5rem;">
                         <input type="email" required placeholder="Enter your email" style="padding: 0.6rem; border-radius: 4px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; flex: 1;">
                         <button type="submit" class="btn-primary" style="padding: 0.6rem 1rem;">Subscribe</button>
                     </form>
