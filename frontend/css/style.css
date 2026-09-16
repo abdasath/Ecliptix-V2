@@ -1067,7 +1067,7 @@ html {
 
 .carousel-content {
     position: absolute;
-    top: 50%;
+    top: 42%;
     left: 8%;
     transform: translateY(-50%);
     z-index: 2;
@@ -3272,7 +3272,7 @@ a[href="admin.html"] {
     /* Push content block lower so it clears the carousel nav arrows (◀▶)
        and the View Details button doesn't clash with them visually */
     .carousel-content {
-        top: 58% !important;
+        top: 50% !important;
         transform: translateY(-50%) !important;
         max-width: 90% !important;
         padding-right: 1rem !important;
