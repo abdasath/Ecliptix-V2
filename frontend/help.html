@@ -96,69 +96,97 @@
         </div>
     </nav>
 
-    <!-- Hero Carousel Section -->
-    <section class="hero-carousel" id="heroCarousel">
-        <div class="carousel-inner" id="carouselInner">
-            <!-- Carousel slides will be injected here by JS -->
-        </div>
-
-        <!-- Carousel Controls -->
-        <button class="carousel-control prev" id="carouselPrev"><i class='bx bx-chevron-left'></i></button>
-        <button class="carousel-control next" id="carouselNext"><i class='bx bx-chevron-right'></i></button>
-
-        <!-- Carousel Indicators -->
-        <div class="carousel-indicators" id="carouselIndicators"></div>
-    </section>
+    
 
     <!-- Main Content -->
     <main class="container">
         <section class="support-section">
             <h2 class="section-title">Help & Support</h2>
-            <div class="support-container" style="display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 2rem;">
+            <div class="support-container" style="display: flex; gap: 3rem; flex-wrap: wrap; margin-top: 2rem;">
                 
-                <!-- FAQ Accordion -->
-                <div class="faq-box" style="flex: 1; min-width: 300px;">
-                    <h3 style="margin-bottom: 1.5rem; color: #fff; font-size: 1.5rem;"><i class='bx bx-book-open'></i> Frequently Asked Questions</h3>
+                <!-- Interactive FAQ Accordion -->
+                <div class="faq-box" style="flex: 1.5; min-width: 300px;">
+                    <h3 style="margin-bottom: 2rem; color: #fff; font-size: 1.6rem; font-weight: 700;"><i class='bx bx-book-open'></i> Frequently Asked Questions</h3>
                     
-                    <div class="faq-item" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; margin-bottom: 1rem; padding: 1.2rem;">
-                        <h4 style="color: #00ff88; margin-bottom: 0.5rem;">How do I download my games?</h4>
-                        <p style="color: #a1a1aa; font-size: 0.9rem; line-height: 1.5;">After purchasing, your games will instantly appear in your <strong>Library</strong>. You can download the DRM-free installer directly from there.</p>
-                    </div>
+                    <details class="premium-faq">
+                        <summary>How do I download my games? <i class='bx bx-chevron-down'></i></summary>
+                        <div class="faq-content">
+                            <p>After purchasing, your games will instantly appear in your <strong>Library</strong>. You can download the DRM-free installer directly from there without any extra launcher required.</p>
+                        </div>
+                    </details>
 
-                    <div class="faq-item" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; margin-bottom: 1rem; padding: 1.2rem;">
-                        <h4 style="color: #00ff88; margin-bottom: 0.5rem;">Are my payments secure?</h4>
-                        <p style="color: #a1a1aa; font-size: 0.9rem; line-height: 1.5;">Yes! We use Razorpay to process all transactions securely. Ecliptix does not store your credit card or UPI details on our servers.</p>
-                    </div>
+                    <details class="premium-faq">
+                        <summary>Are my payments secure? <i class='bx bx-chevron-down'></i></summary>
+                        <div class="faq-content">
+                            <p>Yes! We use Razorpay to process all transactions securely. Ecliptix never stores your credit card or UPI details on our servers.</p>
+                        </div>
+                    </details>
 
-                    <div class="faq-item" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; margin-bottom: 1rem; padding: 1.2rem;">
-                        <h4 style="color: #00ff88; margin-bottom: 0.5rem;">Can I refund a game?</h4>
-                        <p style="color: #a1a1aa; font-size: 0.9rem; line-height: 1.5;">We offer a 14-day refund policy for games played less than 2 hours. Submit a ticket below to request a refund.</p>
-                    </div>
+                    <details class="premium-faq">
+                        <summary>Can I refund a game? <i class='bx bx-chevron-down'></i></summary>
+                        <div class="faq-content">
+                            <p>We offer a no-questions-asked 14-day refund policy for games played less than 2 hours. Simply submit a ticket below.</p>
+                        </div>
+                    </details>
+
+                    <details class="premium-faq">
+                        <summary>Do you sell Ecliptix Gift Cards? <i class='bx bx-chevron-down'></i></summary>
+                        <div class="faq-content">
+                            <p>Yes, digital gift cards will be launching later this year. You can use them to add funds directly to your wallet.</p>
+                        </div>
+                    </details>
+
+                    <details class="premium-faq">
+                        <summary>Is Ecliptix available globally? <i class='bx bx-chevron-down'></i></summary>
+                        <div class="faq-content">
+                            <p>Absolutely. You can purchase and play our DRM-free games from anywhere in the world. Pricing will automatically adjust to your local currency.</p>
+                        </div>
+                    </details>
+
+                    <details class="premium-faq">
+                        <summary>How do I contact a game developer? <i class='bx bx-chevron-down'></i></summary>
+                        <div class="faq-content">
+                            <p>If you have a bug report or feature request for a specific game, please visit the developer's official website linked on the game's store page.</p>
+                        </div>
+                    </details>
                 </div>
 
                 <!-- Contact Form -->
-                <div class="contact-box" style="flex: 1; min-width: 300px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 2rem; backdrop-filter: blur(10px);">
-                    <h3 style="margin-bottom: 1.5rem; color: #fff; font-size: 1.5rem;"><i class='bx bx-envelope'></i> Submit a Ticket</h3>
+                <div class="contact-box" style="flex: 1; min-width: 350px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 2.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5); backdrop-filter: blur(10px);">
+                    <h3 style="margin-bottom: 2rem; color: #fff; font-size: 1.6rem; font-weight: 700;"><i class='bx bx-envelope'></i> Submit a Ticket</h3>
                     <form onsubmit="event.preventDefault(); alert('Your ticket has been submitted to Ecliptix Support. We will reply via email within 24 hours!'); this.reset();">
-                        <div style="margin-bottom: 1rem;">
-                            <label style="display: block; margin-bottom: 0.5rem; color: #a1a1aa; font-size: 0.9rem;">Email Address</label>
-                            <input type="email" required style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: white;">
-                        </div>
-                        <div style="margin-bottom: 1rem;">
-                            <label style="display: block; margin-bottom: 0.5rem; color: #a1a1aa; font-size: 0.9rem;">Issue Topic</label>
-                            <select required style="width: 100%; padding: 0.8rem; background: #111; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: white;">
-                                <option value="">Select a topic...</option>
-                                <option value="payment">Payment / Wallet Issue</option>
-                                <option value="download">Game Download Issue</option>
-                                <option value="refund">Request a Refund</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
+                        
                         <div style="margin-bottom: 1.5rem;">
-                            <label style="display: block; margin-bottom: 0.5rem; color: #a1a1aa; font-size: 0.9rem;">Message</label>
-                            <textarea required rows="4" style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: white; resize: vertical;"></textarea>
+                            <label style="display: block; margin-bottom: 0.6rem; color: #a1a1aa; font-size: 0.95rem; font-weight: 500;">Email Address</label>
+                            <input type="email" required placeholder="you@example.com" style="width: 100%; padding: 1rem; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 1rem; transition: border-color 0.3s; outline: none;" onfocus="this.style.borderColor='#00ff88'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
                         </div>
-                        <button type="submit" class="btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem; border-radius: 8px;">Submit Ticket</button>
+                        
+                        <div style="margin-bottom: 1.5rem; position: relative;">
+                            <label style="display: block; margin-bottom: 0.6rem; color: #a1a1aa; font-size: 0.95rem; font-weight: 500;">Issue Topic</label>
+                            <!-- Hidden actual input for the form submission -->
+                            <input type="hidden" id="ticketTopic" required>
+                            
+                            <!-- Custom Dropdown UI -->
+                            <div class="custom-dropdown" id="supportDropdown" style="width: 100%; margin: 0;">
+                                <button type="button" class="dropdown-toggle" id="supportDropdownBtn" style="width: 100%; justify-content: space-between; padding: 1rem; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #a1a1aa; font-size: 1rem;">
+                                    <span id="supportSelectedText">Select a topic...</span>
+                                    <i class='bx bx-chevron-down'></i>
+                                </button>
+                                <ul class="dropdown-menu" id="supportDropdownList" style="width: 100%; top: calc(100% + 5px);">
+                                    <li class="dropdown-item" data-value="payment">Payment / Wallet Issue</li>
+                                    <li class="dropdown-item" data-value="download">Game Download Issue</li>
+                                    <li class="dropdown-item" data-value="refund">Request a Refund</li>
+                                    <li class="dropdown-item" data-value="other">Other</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 2rem;">
+                            <label style="display: block; margin-bottom: 0.6rem; color: #a1a1aa; font-size: 0.95rem; font-weight: 500;">Message</label>
+                            <textarea required rows="5" placeholder="Please describe your issue in detail..." style="width: 100%; padding: 1rem; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 1rem; resize: vertical; transition: border-color 0.3s; outline: none;" onfocus="this.style.borderColor='#00ff88'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary" style="width: 100%; padding: 1.2rem; font-size: 1.1rem; border-radius: 8px; font-weight: 600; letter-spacing: 0.5px;">Submit Ticket</button>
                     </form>
                 </div>
             </div>
@@ -366,6 +394,40 @@
             once: true,
             offset: 50,
             easing: "ease-out-cubic"
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropdown = document.getElementById('supportDropdown');
+            const dropdownBtn = document.getElementById('supportDropdownBtn');
+            const selectedText = document.getElementById('supportSelectedText');
+            const dropdownList = document.getElementById('supportDropdownList');
+            const hiddenInput = document.getElementById('ticketTopic');
+
+            if (dropdown && dropdownBtn) {
+                dropdownBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    dropdown.classList.toggle('active');
+                });
+
+                document.querySelectorAll('#supportDropdownList .dropdown-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        selectedText.textContent = item.textContent;
+                        selectedText.style.color = 'white'; // Change color to indicate selection
+                        dropdownBtn.style.borderColor = '#00ff88'; // Highlight border
+                        hiddenInput.value = item.getAttribute('data-value');
+                        dropdown.classList.remove('active');
+                    });
+                });
+
+                // Close dropdown when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!dropdown.contains(e.target)) {
+                        dropdown.classList.remove('active');
+                    }
+                });
+            }
         });
     </script>
 </body>
