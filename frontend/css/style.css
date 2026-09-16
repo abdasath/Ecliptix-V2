@@ -4368,20 +4368,23 @@ a[href="admin.html"] {
 .cart-item-remove {
     background: transparent !important;
     border: none !important;
-    color: #ef4444 !important;
+    color: #888888 !important;
     font-size: 1.5rem !important;
     padding: 8px !important;
     cursor: pointer !important;
-    opacity: 0.7 !important;
     transition: all 0.2s ease !important;
     border-radius: 50% !important;
     margin-left: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 32px !important;
+    height: 32px !important;
 }
 
 .cart-item-remove:hover {
-    opacity: 1 !important;
-    background: rgba(239, 68, 68, 0.1) !important;
-    transform: scale(1.1) !important;
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.1) !important;
 }
 
 /* Total Section */
