@@ -330,15 +330,11 @@ html.modal-open, body.modal-open {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    transition: all 0.3s ease;
     backdrop-filter: blur(8px);
+    cursor: default;
 }
 
-.wallet:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.25);
-    transform: translateY(-2px);
-}
+
 
 
 
