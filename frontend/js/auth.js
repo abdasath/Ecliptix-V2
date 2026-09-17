@@ -524,7 +524,7 @@ function updateUIForLoggedIn(user) {
   if (userWallet) {
     const balance = user.wallet || 0;
 
-    // Sana's Visual Fix: Compact numbers for mobile (e.g., ₹1.2k)
+    // Compact numbers for mobile (e.g., ₹1.2k)
     if (window.innerWidth <= 768 && balance >= 100000) {
       userWallet.textContent = `₹${(balance / 1000).toFixed(1)}k`;
     } else {
