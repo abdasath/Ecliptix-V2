@@ -2496,6 +2496,12 @@ html {
         transform: translate(-50%, 0); /* Drop down perfectly into center */
     }
 
+    
+    /* Fix X button floating in navbar when search has text but is closed on mobile */
+    #searchClearBtn {
+        display: none !important;
+    }
+
     .search-box .search-btn {
         background: transparent !important;
         padding: 8px 0 !important; /* Remove horizontal padding so visual spacing is accurate */
@@ -2783,9 +2789,17 @@ html {
         gap: 8px;
     }
 
-    /* Hide Login/Logout buttons on mobile top navbar to reduce clutter. 
-       Users can login/logout via the slide-out sidebar instead. */
-    #loginBtn,
+    /* Login button: shown in mobile top navbar near wallet/cart.
+       Logout is hidden here — it lives in the slide-out sidebar instead. */
+    #loginBtn {
+        display: inline-flex !important;
+        align-items: center !important;
+        padding: 5px 12px !important;
+        font-size: 0.78rem !important;
+        min-height: 30px !important;
+        border-radius: 4px !important;
+        white-space: nowrap !important;
+    }
     #logoutBtn {
         display: none !important;
     }
@@ -3106,9 +3120,9 @@ html {
         display: flex !important;
     }
     
-    /* Exception for the Logout button to make it a list item block */
+    /* Logout button: JS controls visibility, CSS must NOT use !important here */
     li#navMobileLogout.mobile-only {
-        display: block !important;
+        display: none; /* hidden by default; JS sets display:block on login */
     }
     
     /* Gamer Card styling */
@@ -3174,6 +3188,10 @@ html {
         font-size: 1.3rem;
         color: #aaa;
         transition: color 0.3s ease;
+        /* Fixed icon column width so every link's text starts at the same x-position */
+        width: 1.6rem;
+        text-align: center;
+        flex-shrink: 0;
     }
     
     .nav-menu a:hover i,
@@ -4421,22 +4439,6 @@ html {
     .search-box .search-input {
         padding-right: 45px !important;
     }
-
-    /* Move the Clear (X) button inside the floating search bar */
-    #searchClearBtn {
-        position: fixed !important;
-        top: 65px !important; 
-        right: 38px !important; /* Moved slightly left to look better inside the rounded input */
-        height: 42px !important; 
-        width: 42px !important;
-        padding: 0 !important; 
-        margin: 0 !important;
-        /* Using line-height and text-align instead of flex so JS can control display: none/block */
-        line-height: 42px !important;
-        text-align: center !important;
-        border-radius: 0 12px 12px 0 !important;
-        z-index: 2000 !important;
-    }
 }
 
 
@@ -4500,4 +4502,156 @@ html {
 #adminNavLink a::after {
     background: #e94560 !important;
 }
+}
+
+/* =====================================================
+   MOBILE SIDEBAR: ADMIN LINK UNIFORM ALIGNMENT FIX
+   Only applies inside the slide-out nav on mobile
+   ===================================================== */
+@media (max-width: 768px) {
+    #adminNavLink > a {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 15px !important;
+        padding: 8px 20px !important;
+        margin: 2px 0 !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        font-size: 1rem !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        text-shadow: none !important;
+        color: var(--text-secondary) !important;
+        white-space: nowrap !important;
+    }
+
+    /* Fixed-width icon box so "Admin" text x-position
+       locks to the same column as Library / Profile / Support */
+    #adminNavLink > a > i {
+        display: inline-flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 1.3rem !important;
+        flex-shrink: 0 !important;
+        font-size: 1.3rem !important;
+        color: #aaa !important;
+        line-height: 1 !important;
+    }
+}
+
+/* =====================================================
+   MOBILE: Login / Register modal — NO SCROLL
+   Fit the entire form within the viewport height
+   ===================================================== */
+@media (max-width: 768px) {
+
+    /* Make the backdrop a flex container so we can center the card perfectly */
+    #loginModal {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        overflow: hidden !important;   /* No backdrop scroll */
+        padding: 20px 16px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Constrain the auth card to the visible screen */
+    #loginModal .container-auth {
+        width: 100% !important;
+        max-width: 380px !important;
+        max-height: calc(100svh - 40px) !important;  /* leave 20px top+bottom breathing room */
+        height: auto !important;
+        min-height: unset !important;
+        margin: 0 auto !important;
+        overflow-y: auto !important;    /* if content is truly too tall, scroll INSIDE the card */
+        border-radius: 16px !important;
+    }
+
+    /* Reduce form padding so fields don't eat vertical space */
+    #loginModal .container-auth .form-box {
+        padding: 16px 22px 24px 22px !important;
+    }
+
+    /* Compact heading */
+    #loginModal .container-auth .form-box h1 {
+        font-size: 1.5rem !important;
+        margin-bottom: 0.8rem !important;
+    }
+
+    /* Compact input boxes */
+    #loginModal .container-auth .input-box {
+        margin-bottom: 14px !important;
+    }
+
+    #loginModal .container-auth .input-box input {
+        padding: 10px 14px !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* Compact submit button */
+    #loginModal .container-auth .btn-auth {
+        padding: 10px !important;
+        margin-top: 4px !important;
+        font-size: 0.95rem !important;
+    }
+}
+
+/* =====================================================
+   MOBILE: Help & Support Page Fixes
+   ===================================================== */
+@media (max-width: 768px) {
+    /* Stack the two columns and prevent overflow */
+    .support-container {
+        flex-direction: column !important;
+        gap: 2rem !important;
+        width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    /* 1. Main Heading: Reduce size and weight */
+    div[style*="animation: slideDown"] h2 {
+        font-size: 2rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    div[style*="animation: slideDown"] p {
+        font-size: 0.95rem !important;
+        padding: 0 10px !important;
+    }
+
+    /* 2. Subheadings: Reduce size and weight */
+    .faq-box h3,
+    .contact-box h3 {
+        font-size: 1.25rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 1.2rem !important;
+    }
+
+    /* 3. FAQ Accordions: Reduce font weight and size */
+    .premium-faq summary {
+        font-size: 1rem !important;
+        font-weight: 500 !important;
+        padding: 1rem !important;
+    }
+    
+    /* 4. Ticket Form: Stop overflow by resetting min-width and padding */
+    .contact-box {
+        min-width: 0 !important;
+        width: 100% !important;
+        padding: 1.5rem !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Form inputs should be strictly boxed to prevent right-side overflow */
+    .contact-box input,
+    .contact-box textarea,
+    .contact-box .dropdown-toggle,
+    .contact-box button[type="submit"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        font-size: 0.95rem !important;
+    }
 }

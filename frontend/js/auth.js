@@ -518,7 +518,7 @@ function updateUIForLoggedIn(user) {
   const logoutBtn = document.getElementById('logoutBtn');
   const userWallet = document.getElementById('userWallet');
 
-  if (loginBtn) loginBtn.style.display = 'none';
+  if (loginBtn) loginBtn.style.setProperty('display', 'none', 'important');
   if (logoutBtn) logoutBtn.style.display = 'inline-block';
 
   if (userWallet) {
@@ -549,7 +549,7 @@ function updateUIForLoggedIn(user) {
   
   if (navUsername) navUsername.textContent = user.username || 'Gamer';
   if (navWallet) navWallet.textContent = userWallet ? userWallet.textContent : `₹${(user.wallet || 0)}`;
-  if (navMobileLogout) navMobileLogout.style.display = 'block'; // Make it flex/block based on CSS rules
+  if (navMobileLogout) navMobileLogout.style.setProperty('display', 'flex', 'important'); // Make it flex/block based on CSS rules
 }
 
 // Update UI for logged out user
@@ -569,7 +569,7 @@ function updateUIForLoggedOut() {
   
   if (navUsername) navUsername.textContent = 'Welcome, Guest!';
   if (navWallet) navWallet.textContent = 'Please sign in';
-  if (navMobileLogout) navMobileLogout.style.display = 'none';
+  if (navMobileLogout) navMobileLogout.style.setProperty('display', 'none', 'important');
 
   // Hide auth-only navbar items (Library & Profile)
   document.querySelectorAll('.auth-only-nav').forEach(element => {
