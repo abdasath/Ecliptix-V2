@@ -154,8 +154,12 @@ window.formatAIMarkdown = formatAIMarkdown;
   function navigateToGame(gameTitle) {
     const searchInput = document.getElementById('searchInput');
     const gamesGrid = document.getElementById('gamesGrid');
+    // Close the AI panel so the user can immediately see the store results
+    closePanel();
 
     if (!searchInput) {
+
+
       window.location.href = `/?search=${encodeURIComponent(gameTitle)}`;
       return;
     }
