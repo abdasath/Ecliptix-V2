@@ -2382,9 +2382,9 @@ html {
         max-width: 350px;
         height: 100vh;
         /* Premium Glass Background */
-        background: rgba(12, 12, 15, 0.75) !important;
-        backdrop-filter: blur(24px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+        background: #000000 !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
         border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
         box-shadow: 20px 0 60px rgba(0, 0, 0, 0.8) !important;
         
@@ -2394,7 +2394,7 @@ html {
         padding: 90px 30px 40px 30px !important;
         margin: 0 !important;
         gap: 5px !important;
-        overflow-y: auto;
+        overflow-y: hidden; /* Removed scrolling */
         
         transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important; /* Silky smooth slide */
         z-index: 2000;
@@ -4464,6 +4464,7 @@ html {
 
 
 
+@media (min-width: 769px) {
 /* =========================================
    PERFECT ADMIN NAVIGATION LINK
    ========================================= */
@@ -4484,4 +4485,5 @@ html {
 /* Make the sliding hover underline red instead of white */
 #adminNavLink a::after {
     background: #e94560 !important;
+}
 }
