@@ -1902,6 +1902,27 @@ html {
 
 /* Locate this specific media query in your style.css */
 @media (max-width: 768px) {
+    /* Force exact uniformity for Admin link on mobile side navbar */
+    #adminNavLink a {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 15px !important;
+        color: var(--text-secondary) !important;
+        font-weight: 600 !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        text-shadow: none !important;
+        padding: 8px 20px !important;
+        margin: 2px 0 !important;
+    }
+    
+    #adminNavLink a i {
+        font-size: 1.3rem !important;
+        color: #aaa !important;
+        display: inline-block !important;
+    }
+
 
     /* Add extra breathing room for pages without a Hero banner */
     .library-section,
@@ -2363,6 +2384,27 @@ html {
 }
 
 @media (max-width: 768px) {
+    /* Force exact uniformity for Admin link on mobile side navbar */
+    #adminNavLink a {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 15px !important;
+        color: var(--text-secondary) !important;
+        font-weight: 600 !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        text-shadow: none !important;
+        padding: 8px 20px !important;
+        margin: 2px 0 !important;
+    }
+    
+    #adminNavLink a i {
+        font-size: 1.3rem !important;
+        color: #aaa !important;
+        display: inline-block !important;
+    }
+
 
     /* 1. Fix the Navbar Container */
     .navbar .container {
@@ -2538,6 +2580,27 @@ html {
 }
 
 @media (max-width: 768px) {
+    /* Force exact uniformity for Admin link on mobile side navbar */
+    #adminNavLink a {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 15px !important;
+        color: var(--text-secondary) !important;
+        font-weight: 600 !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        text-shadow: none !important;
+        padding: 8px 20px !important;
+        margin: 2px 0 !important;
+    }
+    
+    #adminNavLink a i {
+        font-size: 1.3rem !important;
+        color: #aaa !important;
+        display: inline-block !important;
+    }
+
 
     body.modal-open main,
     body.modal-open .hero-carousel,
@@ -2569,6 +2632,27 @@ html {
 ================================ */
 
 @media (max-width: 768px) {
+    /* Force exact uniformity for Admin link on mobile side navbar */
+    #adminNavLink a {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 15px !important;
+        color: var(--text-secondary) !important;
+        font-weight: 600 !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        text-shadow: none !important;
+        padding: 8px 20px !important;
+        margin: 2px 0 !important;
+    }
+    
+    #adminNavLink a i {
+        font-size: 1.3rem !important;
+        color: #aaa !important;
+        display: inline-block !important;
+    }
+
     .hero {
         height: auto;
         padding: 40px 16px;
@@ -2600,6 +2684,27 @@ html {
    ============================================================ */
 
 @media (max-width: 768px) {
+    /* Force exact uniformity for Admin link on mobile side navbar */
+    #adminNavLink a {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 15px !important;
+        color: var(--text-secondary) !important;
+        font-weight: 600 !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        text-shadow: none !important;
+        padding: 8px 20px !important;
+        margin: 2px 0 !important;
+    }
+    
+    #adminNavLink a i {
+        font-size: 1.3rem !important;
+        color: #aaa !important;
+        display: inline-block !important;
+    }
+
 
     /* 1. Ensure Navbar Toggle is ALWAYS visible on all pages */
     .menu-toggle {
@@ -2678,6 +2783,27 @@ html {
 
 /* Media query for mobile screens */
 @media (max-width: 768px) {
+    /* Force exact uniformity for Admin link on mobile side navbar */
+    #adminNavLink a {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 15px !important;
+        color: var(--text-secondary) !important;
+        font-weight: 600 !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        text-shadow: none !important;
+        padding: 8px 20px !important;
+        margin: 2px 0 !important;
+    }
+    
+    #adminNavLink a i {
+        font-size: 1.3rem !important;
+        color: #aaa !important;
+        display: inline-block !important;
+    }
+
 
 
 
@@ -2707,6 +2833,27 @@ html {
    ============================================================ */
 
 @media (max-width: 768px) {
+    /* Force exact uniformity for Admin link on mobile side navbar */
+    #adminNavLink a {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 15px !important;
+        color: var(--text-secondary) !important;
+        font-weight: 600 !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        text-shadow: none !important;
+        padding: 8px 20px !important;
+        margin: 2px 0 !important;
+    }
+    
+    #adminNavLink a i {
+        font-size: 1.3rem !important;
+        color: #aaa !important;
+        display: inline-block !important;
+    }
+
 
     /* 1. Show Login Button in Mobile Navbar */
     .user-menu {
@@ -2757,6 +2904,27 @@ html {
    ============================================================ */
 
 @media (max-width: 768px) {
+    /* Force exact uniformity for Admin link on mobile side navbar */
+    #adminNavLink a {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 15px !important;
+        color: var(--text-secondary) !important;
+        font-weight: 600 !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        text-shadow: none !important;
+        padding: 8px 20px !important;
+        margin: 2px 0 !important;
+    }
+    
+    #adminNavLink a i {
+        font-size: 1.3rem !important;
+        color: #aaa !important;
+        display: inline-block !important;
+    }
+
 
     /* 1. Mobile Search Bar is handled in the earlier media query */
     /* Removed display: none for .search-box so the expandable icon works */
@@ -2811,6 +2979,27 @@ html {
 }
 
 @media (max-width: 768px) {
+    /* Force exact uniformity for Admin link on mobile side navbar */
+    #adminNavLink a {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 15px !important;
+        color: var(--text-secondary) !important;
+        font-weight: 600 !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        text-shadow: none !important;
+        padding: 8px 20px !important;
+        margin: 2px 0 !important;
+    }
+    
+    #adminNavLink a i {
+        font-size: 1.3rem !important;
+        color: #aaa !important;
+        display: inline-block !important;
+    }
+
 
     /* 1. Deep Monochrome Background Focus — and kill the scrollbar gutter
        so the popup centers perfectly (no extra right-side gap) */
@@ -2924,6 +3113,27 @@ html {
 
 /* --- Optimized Mobile Navigation Fix in style.css --- */
 @media (max-width: 768px) {
+    /* Force exact uniformity for Admin link on mobile side navbar */
+    #adminNavLink a {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 15px !important;
+        color: var(--text-secondary) !important;
+        font-weight: 600 !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        text-shadow: none !important;
+        padding: 8px 20px !important;
+        margin: 2px 0 !important;
+    }
+    
+    #adminNavLink a i {
+        font-size: 1.3rem !important;
+        color: #aaa !important;
+        display: inline-block !important;
+    }
+
 
     /* 1. Prevent the Brand and Wallet from touching */
     .navbar .container {
@@ -3090,6 +3300,27 @@ html {
 }
 
 @media (max-width: 768px) {
+    /* Force exact uniformity for Admin link on mobile side navbar */
+    #adminNavLink a {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 15px !important;
+        color: var(--text-secondary) !important;
+        font-weight: 600 !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        text-shadow: none !important;
+        padding: 8px 20px !important;
+        margin: 2px 0 !important;
+    }
+    
+    #adminNavLink a i {
+        font-size: 1.3rem !important;
+        color: #aaa !important;
+        display: inline-block !important;
+    }
+
     /* Show mobile-only elements inside the mobile nav */
     .nav-menu .mobile-only {
         display: flex !important;
@@ -4356,6 +4587,27 @@ html {
    MOBILE HERO CAROUSEL REFINEMENTS
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
+    /* Force exact uniformity for Admin link on mobile side navbar */
+    #adminNavLink a {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 15px !important;
+        color: var(--text-secondary) !important;
+        font-weight: 600 !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        text-shadow: none !important;
+        padding: 8px 20px !important;
+        margin: 2px 0 !important;
+    }
+    
+    #adminNavLink a i {
+        font-size: 1.3rem !important;
+        color: #aaa !important;
+        display: inline-block !important;
+    }
+
     /* Move arrows down below the content so they don't cover the game title and description */
     .carousel-control {
         top: auto !important;
@@ -4404,6 +4656,27 @@ html {
    MOBILE SEARCH BAR ENHANCEMENTS
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
+    /* Force exact uniformity for Admin link on mobile side navbar */
+    #adminNavLink a {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 15px !important;
+        color: var(--text-secondary) !important;
+        font-weight: 600 !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        text-shadow: none !important;
+        padding: 8px 20px !important;
+        margin: 2px 0 !important;
+    }
+    
+    #adminNavLink a i {
+        font-size: 1.3rem !important;
+        color: #aaa !important;
+        display: inline-block !important;
+    }
+
     /* Make sure text doesn't hide behind the clear button */
     .search-box .search-input {
         padding-right: 45px !important;
@@ -4431,6 +4704,27 @@ html {
    FIX CONTAINING BLOCK FOR SEARCH UI
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
+    /* Force exact uniformity for Admin link on mobile side navbar */
+    #adminNavLink a {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 15px !important;
+        color: var(--text-secondary) !important;
+        font-weight: 600 !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        text-shadow: none !important;
+        padding: 8px 20px !important;
+        margin: 2px 0 !important;
+    }
+    
+    #adminNavLink a i {
+        font-size: 1.3rem !important;
+        color: #aaa !important;
+        display: inline-block !important;
+    }
+
     /* Remove backdrop-filter to prevent .search-box from acting as a containing block for fixed children */
     .search-box {
         backdrop-filter: none !important;
