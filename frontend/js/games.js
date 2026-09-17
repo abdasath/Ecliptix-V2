@@ -130,10 +130,7 @@ async function loadGames(page = 1) {
     totalPages = data.totalPages || 1;
     currentPage = data.page || 1; // Note: backend returns 'page', not 'currentPage'
 
-    // Shuffle games if no specific sort filter is selected (Dynamic feel)
-    if (!sortFilter) {
-      allGames = allGames.sort(() => Math.random() - 0.5);
-    }
+
 
     displayGames(allGames);
     displayPagination();
@@ -193,18 +190,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('searchInput');
   if (searchBtn && searchInput) {
     searchBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       // Mobile expandable search logic
       if (window.innerWidth <= 768) {
         if (!searchInput.classList.contains('mobile-expanded')) {
-          e.preventDefault();
           searchInput.classList.add('mobile-expanded');
           searchInput.focus();
           return;
         }
         // If it is expanded but empty, just close it
         if (searchInput.value.trim() === '') {
-          e.preventDefault();
           searchInput.classList.remove('mobile-expanded');
+          return;
+        }
+      } else {
+        // Desktop logic: if empty, do absolutely nothing (prevent redundant fetch and AOS animation)
+        if (searchInput.value.trim() === '') {
           return;
         }
       }

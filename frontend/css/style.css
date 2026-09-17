@@ -708,30 +708,7 @@ input:-webkit-autofill:active {
     outline: none;
     transition: border-color 0.3s;
 }
-/* =========================================
-   UNIQUE ADMIN NAVIGATION LINK
-   ========================================= */
-#adminNavLink a {
-    color: #e94560 !important; /* Deep Red */
-    font-weight: 800 !important;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    text-shadow: 0 0 10px rgba(233, 69, 96, 0.6); /* Neon Glow */
-    transition: all 0.3s ease;
-}
 
-/* Update this specific block in your style.css */
-#adminNavLink a:hover {
-    background: transparent !important; 
-    text-shadow: 0 0 15px rgba(233, 69, 96, 1);
-    border-radius: 6px !important; /* Gives the background smooth, pill-like corners */
-}
-
-/* Changes the sliding underline to match the red neon */
-#adminNavLink a::after {
-    background: #e94560 !important;
-    box-shadow: 0 0 8px #e94560;
-}
 .input-box input:focus {
     border-color: #e6e6e6;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
@@ -1243,48 +1220,7 @@ html {
     /* Prevents the menu from collapsing */
 }
 
-/* 3. Make the Admin Link invisible by default (prevents flickering) */
-a[href="admin.html"] {
-    display: none;
-    /* cite: 144 */
-    color: #ff4757;
-    /* Optional: Makes 'Admin' red so it stands out */
-    font-weight: bold;
-    margin-left: 10px;
-}
 
-.nav-menu li:has(a[href="admin.html"]) {
-    display: none;
-}
-
-/* --- Update in style.css --- */
-
-/* 1. Ensure the Admin link follows the exact same style as Store/Library/Profile */
-.nav-menu li a[href="admin.html"] {
-    display: none;
-    /* Controlled by JS checkAdminAccess() */
-    color: var(--text-secondary);
-    /* Same color as others */
-    font-weight: 400;
-    /* Same weight as others */
-    margin-left: 0;
-    /* REMOVE the extra margin that causes floating */
-}
-
-/* 2. Add the dot/indicator effect to the Admin link for Desktop */
-.nav-menu li a[href="admin.html"]::before {
-    content: '•';
-    margin-right: 8px;
-    color: #ff4757;
-    /* Keep the red color only for the dot */
-    font-weight: bold;
-}
-
-/* 3. Re-enable the hover effect so it matches other links */
-.nav-menu li a[href="admin.html"]:hover {
-    color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.05);
-}
 
 /* 4. Ensure the Search Bar area doesn't break the layout */
 .nav-actions {
@@ -1667,13 +1603,13 @@ a[href="admin.html"] {
 }
 
 .discount-badge {
-    background: #00ff88;
-    color: #000000;
+    background: var(--highlight-color);
+    color: #ffffff;
     padding: 0.2rem 0.5rem;
     border-radius: 6px;
     font-size: 0.75rem;
     font-weight: 800;
-    box-shadow: 0 2px 10px rgba(0, 255, 136, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 116, 228, 0.4);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -2598,10 +2534,7 @@ a[href="admin.html"] {
 
     /* Target the Admin link specifically to look like a dot/indicator if desired */
     /* Or simply keep it hidden by default */
-    .nav-menu li:has(a[href="admin.html"]) {
-        display: none;
-        /* Hidden until JS confirms Admin status */
-    }
+    
 }
 
 @media (max-width: 768px) {
@@ -2842,12 +2775,11 @@ a[href="admin.html"] {
         gap: 8px;
     }
 
-    /* Make buttons smaller for mobile header space */
+    /* Hide Login/Logout buttons on mobile top navbar to reduce clutter. 
+       Users can login/logout via the slide-out sidebar instead. */
     #loginBtn,
     #logoutBtn {
-        padding: 5px 12px !important;
-        font-size: 0.8rem !important;
-        min-height: 32px !important;
+        display: none !important;
     }
 
     /* 3. Fix 'Behind Things showing' issue */
@@ -4418,4 +4350,138 @@ a[href="admin.html"] {
 #checkoutBtn:hover {
     background: #e6e6e6 !important;
     box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE HERO CAROUSEL REFINEMENTS
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+    /* Move arrows down below the content so they don't cover the game title and description */
+    .carousel-control {
+        top: auto !important;
+        bottom: 18% !important;
+        transform: translateY(0) !important;
+        width: 40px !important;
+        height: 40px !important;
+        background: rgba(0, 0, 0, 0.4) !important;
+    }
+    
+    .carousel-control.prev {
+        left: 10px !important;
+    }
+    
+    .carousel-control.next {
+        right: 10px !important;
+    }
+
+    /* Transform thumbnail indicators into simple, elegant dots */
+    .carousel-indicators {
+        bottom: 20px !important;
+        gap: 8px !important;
+    }
+
+    .carousel-indicator {
+        width: 10px !important;
+        height: 10px !important;
+        border-radius: 50% !important;
+        background-image: none !important; /* Force hide the image */
+        background-color: rgba(255, 255, 255, 0.3) !important;
+        border: none !important;
+        box-shadow: none !important;
+        transition: all 0.3s ease !important;
+        opacity: 1 !important; /* Reset opacity if it was changed */
+    }
+
+    .carousel-indicator.active {
+        width: 24px !important; /* Elegant pill shape for active dot */
+        border-radius: 5px !important;
+        background-color: #ffffff !important;
+    }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE SEARCH BAR ENHANCEMENTS
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+    /* Make sure text doesn't hide behind the clear button */
+    .search-box .search-input {
+        padding-right: 45px !important;
+    }
+
+    /* Move the Clear (X) button inside the floating search bar */
+    #searchClearBtn {
+        position: fixed !important;
+        top: 65px !important; 
+        right: 38px !important; /* Moved slightly left to look better inside the rounded input */
+        height: 42px !important; 
+        width: 42px !important;
+        padding: 0 !important; 
+        margin: 0 !important;
+        /* Using line-height and text-align instead of flex so JS can control display: none/block */
+        line-height: 42px !important;
+        text-align: center !important;
+        border-radius: 0 12px 12px 0 !important;
+        z-index: 2000 !important;
+    }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   FIX CONTAINING BLOCK FOR SEARCH UI
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+    /* Remove backdrop-filter to prevent .search-box from acting as a containing block for fixed children */
+    .search-box {
+        backdrop-filter: none !important;
+    }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   DESKTOP SEARCH BAR FIX (Hide lens when typing)
+   ═══════════════════════════════════════════════════════════════ */
+@media (min-width: 769px) {
+    /* Hide lens when typing so X replaces it seamlessly */
+    #searchInput:not(:placeholder-shown) ~ #searchBtn {
+        display: none !important;
+    }
+    
+    /* Normalize both buttons so they take up the EXACT same space and position */
+    .search-box .search-btn {
+        width: 24px !important;
+        height: 24px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-size: 1.1rem !important;
+        line-height: 24px !important;
+        text-align: center !important;
+        border-radius: 50% !important;
+        flex-shrink: 0 !important;
+        /* Do NOT force display, let JS hide/show the clear button */
+    }
+}
+
+
+
+/* =========================================
+   PERFECT ADMIN NAVIGATION LINK
+   ========================================= */
+/* Red text, but default hover effects */
+#adminNavLink a {
+    color: #e94560 !important;
+    font-weight: 800 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(233, 69, 96, 0.4);
+}
+
+/* Color the native bullet point red so it has perfect spacing continuity */
+#adminNavLink::marker {
+    color: #e94560;
+}
+
+/* Make the sliding hover underline red instead of white */
+#adminNavLink a::after {
+    background: #e94560 !important;
 }

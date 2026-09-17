@@ -80,13 +80,15 @@ router.get('/', async (req, res) => {
     ];
 
     if (sort === 'priceLowHigh') {
-      pipeline.push({ $sort: { finalPrice: 1 } });
+      pipeline.push({ $sort: { finalPrice: 1, _id: 1 } });
     } else if (sort === 'priceHighLow') {
-      pipeline.push({ $sort: { finalPrice: -1 } });
+      pipeline.push({ $sort: { finalPrice: -1, _id: 1 } });
     } else if (sort === 'highestRated') {
-      pipeline.push({ $sort: { rating: -1 } });
+      pipeline.push({ $sort: { rating: -1, _id: 1 } });
     } else {
-      pipeline.push({ $sort: { createdAt: -1 } });
+      // Add _id as a secondary sort key to guarantee a stable sort order
+      // since seeded games often share the exact same createdAt timestamp
+      pipeline.push({ $sort: { createdAt: -1, _id: 1 } });
     }
 
     pipeline.push(
