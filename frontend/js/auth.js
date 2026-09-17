@@ -549,7 +549,7 @@ function updateUIForLoggedIn(user) {
   
   if (navUsername) navUsername.textContent = user.username || 'Gamer';
   if (navWallet) navWallet.textContent = userWallet ? userWallet.textContent : `₹${(user.wallet || 0)}`;
-  if (navMobileLogout) navMobileLogout.style.setProperty('display', 'flex', 'important'); // Make it flex/block based on CSS rules
+  if (navMobileLogout) navMobileLogout.style.setProperty('display', window.innerWidth <= 768 ? 'flex' : 'none', 'important'); // Make it flex/block based on CSS rules
 }
 
 // Update UI for logged out user
@@ -685,5 +685,13 @@ document.addEventListener('click', (e) => {
   // We removed "|| e.target === loginModal" so background clicks do nothing
   if (e.target.classList.contains('close')) { 
     closeLoginModal();
+  }
+});
+
+// Ensure the mobile logout button stays hidden on desktop if the window is resized
+window.addEventListener('resize', () => {
+  const navMobileLogout = document.getElementById('navMobileLogout');
+  if (navMobileLogout && currentUser) {
+    navMobileLogout.style.setProperty('display', window.innerWidth <= 768 ? 'flex' : 'none', 'important');
   }
 });
