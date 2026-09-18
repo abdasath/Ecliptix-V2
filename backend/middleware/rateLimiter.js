@@ -2,6 +2,9 @@ const rateLimit = require('express-rate-limit');
 const { RedisStore } = require('rate-limit-redis');
 const redis = require('../config/redis');
 
+// Only use Redis for rate limiting if a remote REDIS_URL is provided
+const useRedis = process.env.REDIS_URL && !process.env.REDIS_URL.includes('localhost');
+
 // ─────────────────────────────────────────────
 // Login Rate Limiter
 // Max: 10 attempts per 15 minutes per IP
@@ -14,11 +17,10 @@ const loginLimiter = rateLimit({
   message: {
     message: '⛔ Too many login attempts. Please wait 15 minutes and try again.'
   },
-  store: new RedisStore({
+  store: useRedis ? new RedisStore({
     sendCommand: (...args) => redis.call(...args),
     prefix: 'ratelimit:login:',
-  }),
-  skip: () => redis.status !== 'ready',
+  }) : undefined,
 });
 
 // ─────────────────────────────────────────────
@@ -33,11 +35,10 @@ const registerLimiter = rateLimit({
   message: {
     message: '⛔ Too many accounts created from this IP. Please wait 1 hour.'
   },
-  store: new RedisStore({
+  store: useRedis ? new RedisStore({
     sendCommand: (...args) => redis.call(...args),
     prefix: 'ratelimit:register:',
-  }),
-  skip: () => redis.status !== 'ready',
+  }) : undefined,
 });
 
 // ─────────────────────────────────────────────
@@ -56,11 +57,10 @@ const walletLimiter = rateLimit({
   },
   keyGenerator: (req) => `wallet-${req.user?._id?.toString() || 'anon'}`,
   validate: { xForwardedForHeader: false },
-  store: new RedisStore({
+  store: useRedis ? new RedisStore({
     sendCommand: (...args) => redis.call(...args),
     prefix: 'ratelimit:wallet:',
-  }),
-  skip: () => redis.status !== 'ready',
+  }) : undefined,
 });
 
 module.exports = { loginLimiter, registerLimiter, walletLimiter };
