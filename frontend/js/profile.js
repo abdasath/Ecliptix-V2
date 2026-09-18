@@ -66,13 +66,13 @@ function displayProfile(user) {
     dateEl.textContent = date.toLocaleDateString();
   }
   if (walletEl) {
-    walletEl.textContent = (user.wallet || 0).toLocaleString('en-IN');
+    walletEl.textContent = (user.wallet || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 });
   }
 
   // Update wallet in nav
   const userWallet = document.getElementById('userWallet');
   if (userWallet) {
-    userWallet.textContent = `₹${(user.wallet || 0).toLocaleString('en-IN')}`;
+    userWallet.textContent = `₹${(user.wallet || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
   }
 
   // Show Admin Controls if applicable
@@ -103,8 +103,8 @@ async function manipulateWallet(action) {
       const walletEl = document.getElementById('profileWallet');
       const navWalletEl = document.getElementById('userWallet');
       
-      if (walletEl) walletEl.textContent = res.wallet.toLocaleString('en-IN');
-      if (navWalletEl) navWalletEl.textContent = `₹${res.wallet.toLocaleString('en-IN')}`;
+      if (walletEl) walletEl.textContent = res.wallet.toLocaleString('en-IN', { maximumFractionDigits: 0 });
+      if (navWalletEl) navWalletEl.textContent = `₹${res.wallet.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
       
       amountInput.value = ''; // clear input
       
@@ -145,14 +145,14 @@ function displayOrderHistory(orders) {
     const date = new Date(order.createdAt).toLocaleDateString();
     const gamesList = order.games.map(item => {
       const game = item.game;
-      return `<div class="order-game">• ${escapeHTML(game && game.title)} - ₹${(item.price || 0).toLocaleString('en-IN')}</div>`;
+      return `<div class="order-game">• ${escapeHTML(game && game.title)} - ₹${(item.price || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</div>`;
     }).join('');
 
     return `
       <div class="order-item">
         <div class="order-header">
           <span class="order-date">${date}</span>
-          <span class="order-total">Total: ₹${order.totalAmount.toLocaleString('en-IN')}</span>
+          <span class="order-total">Total: ₹${order.totalAmount.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
         </div>
         <div class="order-games">
           ${gamesList}
@@ -228,7 +228,7 @@ async function handleRazorpayPayment() {
       amount: orderData.amount,         // in paise
       currency: orderData.currency,
       name: 'Ecliptix',
-      description: `Add ₹${amount.toLocaleString('en-IN')} to Wallet`,
+      description: `Add ₹${amount.toLocaleString('en-IN', { maximumFractionDigits: 0 })} to Wallet`,
       image: 'https://i.pinimg.com/736x/07/3e/90/073e9014436b6ce0c67ebded83e854ff.jpg',
       order_id: orderData.orderId,
 
@@ -251,8 +251,8 @@ async function handleRazorpayPayment() {
           // Refresh wallet display
           const walletEl = document.getElementById('profileWallet');
           const navWallet = document.getElementById('userWallet');
-          if (walletEl) walletEl.textContent = result.wallet.toLocaleString('en-IN');
-          if (navWallet) navWallet.textContent = `₹${result.wallet.toLocaleString('en-IN')}`;
+          if (walletEl) walletEl.textContent = result.wallet.toLocaleString('en-IN', { maximumFractionDigits: 0 });
+          if (navWallet) navWallet.textContent = `₹${result.wallet.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
 
           // Update localStorage user info
           const savedUser = JSON.parse(localStorage.getItem('userInfo') || '{}');

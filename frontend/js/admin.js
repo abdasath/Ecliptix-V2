@@ -140,7 +140,7 @@ function createAdminGameCard(game, isFeaturedList = false) {
         <p class="game-description" style="font-size: 0.85rem; color: #aaa; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${escapeHTML(game.shortDescription || (game.description || '').substring(0, 100))}...</p>
         <div class="game-meta" style="margin-bottom: 16px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px;">
           <div class="game-price" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-            <div class="price-current" style="font-size: 1.2rem; font-weight: bold; color: #00ff88;">₹${finalPrice.toLocaleString('en-IN')}</div>
+            <div class="price-current" style="font-size: 1.2rem; font-weight: bold; color: #00ff88;">₹${finalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</div>
             ${game.discount > 0 ? `<span class="discount-badge" style="background: rgba(0, 255, 136, 0.2); color: #00ff88; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">-${escapeHTML(game.discount)}%</span>` : ''}
           </div>
         </div>

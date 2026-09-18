@@ -311,7 +311,7 @@ function setupHeroCarousel(games) {
           <div class="carousel-actions">
             <button class="btn-primary" onclick="viewGameDetails('${escapeHTML(game._id)}')">View Details</button>
             <div class="carousel-price" style="display:flex; align-items:center;">
-              ${finalPrice === 0 ? 'FREE' : '₹' + finalPrice.toLocaleString('en-IN')}
+              ${finalPrice === 0 ? 'FREE' : '₹' + finalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
             </div>
           </div>
         </div>
@@ -435,10 +435,10 @@ function createGameCard(game, isFeatured = false) {
     ? `<div class="price-current" style="color: #00ff88;">FREE</div>`
     : game.discount > 0
       ? `
-      <div class="price-current">₹${finalPrice.toLocaleString('en-IN')}</div>
-      <div class="price-original">₹${game.price.toLocaleString('en-IN')}</div>
+      <div class="price-current">₹${finalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</div>
+      <div class="price-original">₹${game.price.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</div>
     `
-      : `<div class="price-current">₹${finalPrice.toLocaleString('en-IN')}</div>`;
+      : `<div class="price-current">₹${finalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</div>`;
 
   const genres = game.genres?.slice(0, 2).map(genre =>
     `<span class="genre-tag">${escapeHTML(genre)}</span>`
@@ -565,11 +565,11 @@ function displayGameDetails(game) {
     ? `<div class="price-current" style="font-size: 2rem; color: #00ff88;">FREE</div>`
     : game.discount > 0
       ? `<div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-           <span class="price-current" style="font-size: 2rem;">₹${finalPrice.toLocaleString('en-IN')}</span>
-           <span class="price-original" style="font-size: 1.1rem;">₹${game.price.toLocaleString('en-IN')}</span>
+           <span class="price-current" style="font-size: 2rem;">₹${finalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
+           <span class="price-original" style="font-size: 1.1rem;">₹${game.price.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
            ${discountBadge}
          </div>`
-      : `<div class="price-current" style="font-size: 2rem;">₹${finalPrice.toLocaleString('en-IN')}</div>`;
+      : `<div class="price-current" style="font-size: 2rem;">₹${finalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</div>`;
 
   const genres = game.genres?.map(g => `<span class="genre-tag">${escapeHTML(g)}</span>`).join('') || '';
   const tags = game.tags?.map(t => `<span class="genre-tag">${escapeHTML(t)}</span>`).join('') || '';

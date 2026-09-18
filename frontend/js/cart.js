@@ -141,7 +141,7 @@ function updateCartUI() {
             <img src="${escapeHTML(game.coverImage)}" alt="${escapeHTML(game.title)}" class="cart-item-image">
             <div class="cart-item-info">
               <h4>${escapeHTML(game.title)}</h4>
-              <p class="cart-item-price">₹${finalPrice.toLocaleString('en-IN')}</p>
+              <p class="cart-item-price">₹${finalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
             </div>
             <button class="cart-item-remove" onclick="removeFromCart('${escapeHTML(game._id)}')">×</button>
           </div>
@@ -149,7 +149,7 @@ function updateCartUI() {
       }).join('');
 
       if (cartTotal) {
-        cartTotal.textContent = total.toLocaleString('en-IN');
+        cartTotal.textContent = total.toLocaleString('en-IN', { maximumFractionDigits: 0 });
       }
     }
   }

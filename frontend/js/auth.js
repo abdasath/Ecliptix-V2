@@ -528,7 +528,7 @@ function updateUIForLoggedIn(user) {
     if (window.innerWidth <= 768 && balance >= 100000) {
       userWallet.textContent = `₹${(balance / 1000).toFixed(1)}k`;
     } else {
-      userWallet.textContent = `₹${balance.toLocaleString('en-IN')}`;
+      userWallet.textContent = `₹${balance.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
     }
   }
 

@@ -188,8 +188,8 @@ window.formatAIMarkdown = formatAIMarkdown;
   // ── Render a game card ────────────────────────────────────────
   function renderCard(game) {
     const finalPrice = game.discount > 0
-      ? `<span class="ai-price-original">₹${game.price.toLocaleString('en-IN')}</span><span class="ai-price-final">₹${Math.round(game.price * (1 - game.discount / 100)).toLocaleString('en-IN')}</span>`
-      : `<span class="ai-price-final">₹${game.price.toLocaleString('en-IN')}</span>`;
+      ? `<span class="ai-price-original">₹${game.price.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span><span class="ai-price-final">₹${Math.round(game.price * (1 - game.discount / 100)).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>`
+      : `<span class="ai-price-final">₹${game.price.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>`;
 
     const genres = (game.genres || []).slice(0, 2).join(' · ');
     const stars  = '★'.repeat(Math.round(game.rating || 0)) + '☆'.repeat(5 - Math.round(game.rating || 0));
