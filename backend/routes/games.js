@@ -39,15 +39,8 @@ router.get('/', async (req, res) => {
   try {
     const { page = 1, limit = 20, search = '', genre, sort } = req.query;
 
-    // Only cache unfiltered first page requests
-    const isDefaultQuery = !search && !genre && !sort && Number(page) === 1;
-    if (isDefaultQuery) {
-      const cached = await cacheGet('games:all:default');
-      if (cached) {
-        console.log('⚡ Cache HIT: games:all:default');
-        return res.json(cached);
-      }
-    }
+    // We no longer cache the default query so that the random $sample is fresh on every reload
+    const isDefaultQuery = false;
 
     const query = {};
     if (search) {
@@ -81,29 +74,22 @@ router.get('/', async (req, res) => {
 
     if (sort === 'priceLowHigh') {
       pipeline.push({ $sort: { finalPrice: 1, _id: 1 } });
+      pipeline.push({ $skip: (page - 1) * limit }, { $limit: Number(limit) });
     } else if (sort === 'priceHighLow') {
       pipeline.push({ $sort: { finalPrice: -1, _id: 1 } });
+      pipeline.push({ $skip: (page - 1) * limit }, { $limit: Number(limit) });
     } else if (sort === 'highestRated') {
       pipeline.push({ $sort: { rating: -1, _id: 1 } });
+      pipeline.push({ $skip: (page - 1) * limit }, { $limit: Number(limit) });
     } else {
-      // Add _id as a secondary sort key to guarantee a stable sort order
-      // since seeded games often share the exact same createdAt timestamp
-      pipeline.push({ $sort: { createdAt: -1, _id: 1 } });
+      // Shuffled random feed for the default view (makes the homepage dynamic)
+      pipeline.push({ $sample: { size: Number(limit) } });
     }
-
-    pipeline.push(
-      { $skip: (page - 1) * limit },
-      { $limit: Number(limit) }
-    );
 
     const games = await Game.aggregate(pipeline);
     const response = { games, page: Number(page), totalPages: Math.ceil(total / limit) };
 
-    // Cache only default query results
-    if (isDefaultQuery) {
-      await cacheSet('games:all:default', response, CACHE_TTL.GAMES_LIST);
-      console.log('💾 Cache SET: games:all:default');
-    }
+    // No longer caching the default query
 
     res.json(response);
   } catch (err) {

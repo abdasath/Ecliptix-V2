@@ -118,13 +118,14 @@ function updateCartUI() {
   if (cartCount) {
     const count = isAuthenticated() ? cartItems.length : 0;
     cartCount.textContent = count;
-    cartCount.style.display = count > 0 ? 'flex' : 'none';
+    cartCount.style.display = 'flex'; // Always show the badge, even if 0
   }
 
   // Update cart items display
   if (cartItemsContainer) {
     if (cartItems.length === 0) {
       cartItemsContainer.innerHTML = '<p class="empty-state">Your cart is empty</p>';
+      if (cartTotal) cartTotal.textContent = '0'; // Reset total when empty
     } else {
       let total = 0;
       cartItemsContainer.innerHTML = cartItems.map(item => {
