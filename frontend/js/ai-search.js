@@ -53,6 +53,17 @@ window.formatAIMarkdown = formatAIMarkdown;
 
   // ── Toggle panel ──────────────────────────────────────────────
   function openPanel() {
+    // 1. Close side navbar on mobile if it's open
+    if (window.innerWidth <= 768) {
+      const navMenu = document.querySelector('.nav-menu');
+      const menuBtn = document.querySelector('.menu-toggle');
+      if (navMenu && navMenu.classList.contains('open')) {
+        navMenu.classList.remove('open');
+        if (menuBtn) menuBtn.classList.remove('active');
+        document.body.classList.remove('menu-open');
+      }
+    }
+
     isOpen = true;
     panel.classList.add('active');
     fab.classList.add('active');

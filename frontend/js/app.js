@@ -85,6 +85,15 @@ if (menuBtn) {
         
         // 2. Lock the Scroll & Blur Background
         document.body.classList.toggle('menu-open');
+
+        // 3. Close AI Chatbot if opening side menu on mobile
+        if (window.innerWidth <= 768 && navMenu.classList.contains('open')) {
+            const aiPanel = document.getElementById('aiChatPanel');
+            const aiCloseBtn = document.getElementById('aiChatClose');
+            if (aiPanel && aiPanel.classList.contains('active') && aiCloseBtn) {
+                aiCloseBtn.click();
+            }
+        }
     });
 }
 
