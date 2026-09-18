@@ -3216,8 +3216,8 @@ html {
        MINUS the mobile browser address bar. This guarantees the banner perfectly fits 
        the screen on any device (phone or tablet) without manual guessing. */
     .hero-carousel {
-        height: 90svh !important;  /* Slightly shorter than full screen to feel less overwhelming */
-        min-height: 90svh !important;
+        height: 89svh !important;  /* Slightly shorter than full screen to feel less overwhelming */
+        min-height: 89svh !important;
         margin-bottom: 3rem !important;
     }
 
