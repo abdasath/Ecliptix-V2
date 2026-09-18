@@ -96,8 +96,8 @@ Return strictly valid JSON with keys: intentType, maxPrice, searchIntent.`;
     return parsed;
   } catch (err) {
     console.error(`[RAG] Intent parsing failed | Provider: Groq | Model: ${GROQ_MODEL} | Status: ${err.status || 'N/A'} | Code: ${err.code || 'N/A'} | Error: ${err.message}`);
-    // Graceful fallback to prevent scary errors on rate limit
-    return { intentType: "off_topic", maxPrice: 99999, searchIntent: "" };
+    // Fall back to basic recommendation search using raw query — never block the user
+    return { intentType: "recommendation", maxPrice: 99999, searchIntent: query };
   }
 }
 
@@ -250,9 +250,11 @@ async function generateResponse(userQuery, context, games, intentType) {
     });
     return response.choices[0].message.content.trim();
   } catch (err) {
-    console.error(`[RAG] Groq generation failed | Provider: Groq | Model: ${GROQ_MODEL} | Status: ${err.status || 'N/A'} | Code: ${err.code || 'N/A'} | Error: ${err.message}`);
-    // Graceful fallback string for when API limits are hit on production
-    return "I'm here to help you discover and discuss video games as your Ecliptix Game Advisor. Let me know what gaming topics or titles you'd like to explore!";
+    const status = err.status || err.statusCode || 'N/A';
+    const code   = err.code || 'N/A';
+    console.error(`[RAG] Groq generation failed | Model: ${GROQ_MODEL} | HTTP ${status} | Code: ${code} | ${err.message}`);
+    // Return a neutral placeholder — the game cards from DB will still show below
+    return `Here are some games that match your search! (AI commentary unavailable — HTTP ${status})`;
   }
 }
 
