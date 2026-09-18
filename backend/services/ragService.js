@@ -20,7 +20,7 @@ const OpenAI = require('openai');
 const GEMINI_API_KEY   = process.env.GEMINI_API_KEY;
 const GROQ_API_KEY     = process.env.GROQ_API_KEY;
 const EMBEDDING_MODEL  = 'gemini-embedding-001'; // 3072 dims
-const GROQ_MODEL       = 'llama-3.3-70b-versatile'; // Supports JSON mode, free tier, stable
+const GROQ_MODEL       = 'openai/gpt-oss-120b'; // Restored model specific to this API key
 const VECTOR_INDEX_NAME = 'game_vector_index';
 
 // ── Gemini client (ONLY for embeddings) ──────────────────────────────────────
