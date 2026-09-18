@@ -96,7 +96,8 @@ Return strictly valid JSON with keys: intentType, maxPrice, searchIntent.`;
     return parsed;
   } catch (err) {
     console.error(`[RAG] Intent parsing failed | Provider: Groq | Model: ${GROQ_MODEL} | Status: ${err.status || 'N/A'} | Code: ${err.code || 'N/A'} | Error: ${err.message}`);
-    throw new Error('The AI service is temporarily unavailable. Please try again in a moment.');
+    // Graceful fallback to prevent scary errors on rate limit
+    return { intentType: "off_topic", maxPrice: 99999, searchIntent: "" };
   }
 }
 
@@ -250,7 +251,8 @@ async function generateResponse(userQuery, context, games, intentType) {
     return response.choices[0].message.content.trim();
   } catch (err) {
     console.error(`[RAG] Groq generation failed | Provider: Groq | Model: ${GROQ_MODEL} | Status: ${err.status || 'N/A'} | Code: ${err.code || 'N/A'} | Error: ${err.message}`);
-    throw new Error('The AI service is temporarily unavailable. Please try again in a moment.');
+    // Graceful fallback string for when API limits are hit on production
+    return "I'm here to help you discover and discuss video games as your Ecliptix Game Advisor. Let me know what gaming topics or titles you'd like to explore!";
   }
 }
 
