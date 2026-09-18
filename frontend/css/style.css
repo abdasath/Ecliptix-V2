@@ -4412,28 +4412,44 @@ html {
         right: 10px !important;
     }
 
-    /* Transform thumbnail indicators into simple, elegant dots */
+    /* Premium Glassmorphism Mobile Indicators */
     .carousel-indicators {
-        bottom: 20px !important;
-        gap: 8px !important;
+        bottom: 25px !important;
+        gap: 10px !important;
+        background: rgba(0, 0, 0, 0.45) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        padding: 8px 14px !important;
+        border-radius: 30px !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
     }
 
     .carousel-indicator {
-        width: 10px !important;
-        height: 10px !important;
+        width: 6px !important;
+        height: 6px !important;
         border-radius: 50% !important;
-        background-image: none !important; /* Force hide the image */
-        background-color: rgba(255, 255, 255, 0.3) !important;
+        background-image: none !important;
+        background-color: rgba(255, 255, 255, 0.25) !important;
         border: none !important;
         box-shadow: none !important;
-        transition: all 0.3s ease !important;
-        opacity: 1 !important; /* Reset opacity if it was changed */
+        transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
+        opacity: 1 !important;
+        margin: 0 !important;
     }
 
     .carousel-indicator.active {
-        width: 24px !important; /* Elegant pill shape for active dot */
-        border-radius: 5px !important;
+        width: 28px !important;
+        height: 6px !important;
+        border-radius: 10px !important;
         background-color: #ffffff !important;
+        box-shadow: 0 0 12px rgba(255, 255, 255, 0.5) !important;
+    }
+
+    /* Disable the hover pop-up effect on touch devices */
+    .carousel-indicator:hover, 
+    .carousel-indicator:active {
+        transform: none !important;
     }
 }
 
