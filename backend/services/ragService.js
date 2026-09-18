@@ -20,7 +20,7 @@ const OpenAI = require('openai');
 const GEMINI_API_KEY   = process.env.GEMINI_API_KEY;
 const GROQ_API_KEY     = process.env.GROQ_API_KEY;
 const EMBEDDING_MODEL  = 'gemini-embedding-001'; // 3072 dims
-const GROQ_MODEL       = 'llama3-70b-8192'; // Battle-tested Groq free model
+const GROQ_MODEL       = 'llama-3.3-70b-versatile'; // Supports JSON mode, free tier, stable
 const VECTOR_INDEX_NAME = 'game_vector_index';
 
 // ── Gemini client (ONLY for embeddings) ──────────────────────────────────────
@@ -86,12 +86,14 @@ Return strictly valid JSON with keys: intentType, maxPrice, searchIntent.`;
       model: GROQ_MODEL,
       messages: [{ role: "user", content: prompt }],
       temperature: 0.1,
-      response_format: { type: "json_object" },
       max_tokens: 512,
     });
     
     let rawText = response.choices[0].message.content.trim();
-    const parsed = JSON.parse(rawText);
+    // Extract JSON block if the model wraps it in markdown code fences
+    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('No JSON found in model response');
+    const parsed = JSON.parse(jsonMatch[0]);
     parsed.intentType = (parsed.intentType || "recommendation").toLowerCase();
     return parsed;
   } catch (err) {
