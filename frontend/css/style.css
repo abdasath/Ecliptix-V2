@@ -106,6 +106,20 @@ body {
 
     /* ADD THIS: Pushes content down so Fixed Navbar doesn't cover it */
     padding-top: 85px;
+
+    /* Prevent text selection globally (app-like feel) */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Allow text selection inside inputs and textareas */
+input, textarea {
+    -webkit-user-select: auto !important;
+    -moz-user-select: auto !important;
+    -ms-user-select: auto !important;
+    user-select: auto !important;
 }
 
 /* Force the main content area to take up all remaining vertical space */
