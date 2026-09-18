@@ -84,6 +84,10 @@ router.get('/search', auth, async (req, res) => {
     if (error.message.includes('vectorSearch') || error.message.includes('index')) {
       return res.status(503).json({ message: 'Vector search index not ready. Please run the indexing script first.' });
     }
+    
+    if (error.message.includes('temporarily unavailable')) {
+      return res.status(503).json({ message: error.message });
+    }
 
     res.status(500).json({ message: 'AI recommendation failed. Please try again.' });
   }
