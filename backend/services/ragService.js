@@ -20,7 +20,7 @@ const OpenAI = require('openai');
 const GEMINI_API_KEY   = process.env.GEMINI_API_KEY;
 const GROQ_API_KEY     = process.env.GROQ_API_KEY;
 const EMBEDDING_MODEL  = 'gemini-embedding-001'; // 3072 dims
-const GROQ_MODEL       = 'llama-3.3-70b-versatile'; // Free-tier Groq model, works on all deployments
+const GROQ_MODEL       = 'llama3-70b-8192'; // Battle-tested Groq free model
 const VECTOR_INDEX_NAME = 'game_vector_index';
 
 // ── Gemini client (ONLY for embeddings) ──────────────────────────────────────
