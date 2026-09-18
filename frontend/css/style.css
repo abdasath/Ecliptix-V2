@@ -85,9 +85,7 @@ textarea:focus {
 html,
 body {
     width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
-    /* Cuts off any element spilling over the edge */
+    max-width: 100vw;
 }
 
 /* 1. HIDE the "Switch" links on Desktop by default */
@@ -102,6 +100,7 @@ body {
     min-height: 100vh;
     line-height: 1.6;
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch; /* Force smooth momentum scrolling on iOS */
     display: flex;
     flex-direction: column;
 
