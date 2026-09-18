@@ -85,6 +85,7 @@ if (menuBtn) {
         
         // 2. Lock the Scroll & Blur Background
         document.body.classList.toggle('menu-open');
+        document.documentElement.classList.toggle('menu-open');
 
         // 3. Close AI Chatbot if opening side menu on mobile
         if (window.innerWidth <= 768 && navMenu.classList.contains('open')) {
@@ -102,7 +103,8 @@ if (menuClose) {
     menuClose.addEventListener('click', () => {
         navMenu.classList.remove('open');
         menuBtn.classList.remove('active');
-        document.body.classList.remove('menu-open'); // Unlock scroll
+        document.body.classList.remove('menu-open');
+        document.documentElement.classList.remove('menu-open'); // Unlock scroll
     });
 }
 
@@ -119,6 +121,7 @@ document.querySelectorAll('.nav-menu a').forEach(link => {
             navMenu.classList.remove('open');
             if (menuBtn) menuBtn.classList.remove('active');
             document.body.classList.remove('menu-open');
+        document.documentElement.classList.remove('menu-open');
             
             // 2. Check if we are on the store page (index.html)
             const path = window.location.pathname;
@@ -153,6 +156,7 @@ document.querySelectorAll('.nav-menu a').forEach(link => {
             navMenu.classList.remove('open');
             if (menuBtn) menuBtn.classList.remove('active');
             document.body.classList.remove('menu-open');
+        document.documentElement.classList.remove('menu-open');
         }
     });
 });

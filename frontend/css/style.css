@@ -1929,8 +1929,10 @@ html {
 
     /* 2. PROFESSIONAL MENU: Lock Scroll & Blur Background */
     /* This class is added by JS when the menu opens */
+    html.menu-open,
     body.menu-open {
         overflow: hidden !important;
+        overscroll-behavior: none !important;
         /* 🛑 STOPS SCROLLING */
     }
 
@@ -3123,7 +3125,7 @@ html {
     /* Logout button: JS controls visibility, CSS must NOT use !important here */
     li#navMobileLogout.mobile-only {
         display: none; /* hidden by default; JS sets display:block on login */
-        margin-top: 5rem !important; /* Overrides inline margin-top: auto to pull the button up */
+        margin-top: 8rem !important; /* Overrides inline margin-top: auto to pull the button up */
     }
     
     /* Gamer Card styling */

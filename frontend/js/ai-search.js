@@ -61,6 +61,7 @@ window.formatAIMarkdown = formatAIMarkdown;
         navMenu.classList.remove('open');
         if (menuBtn) menuBtn.classList.remove('active');
         document.body.classList.remove('menu-open');
+        document.documentElement.classList.remove('menu-open');
       }
     }
 
