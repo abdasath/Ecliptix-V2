@@ -3123,7 +3123,7 @@ html {
     /* Logout button: JS controls visibility, CSS must NOT use !important here */
     li#navMobileLogout.mobile-only {
         display: none; /* hidden by default; JS sets display:block on login */
-        margin-top: 2rem !important; /* Overrides inline margin-top: auto to pull the button up */
+        margin-top: 5rem !important; /* Overrides inline margin-top: auto to pull the button up */
     }
     
     /* Gamer Card styling */
