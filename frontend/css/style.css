@@ -3325,7 +3325,9 @@ html {
   z-index: 9998;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: auto; /* Changed from hidden to trap scroll events */
+  overscroll-behavior: contain; /* Traps all scroll events within the panel */
+  scrollbar-width: none; /* Hide scrollbar for the panel itself */
   opacity: 0;
   transform: translateY(24px) scale(0.96);
   pointer-events: none;
@@ -3400,6 +3402,7 @@ html {
 .ai-chat-body {
   flex: 1;
   overflow-y: auto;
+  overscroll-behavior: contain; /* Prevents scroll chaining to the background */
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -3724,7 +3727,9 @@ html {
   z-index: 9998;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: auto; /* Changed from hidden to trap scroll events */
+  overscroll-behavior: contain; /* Traps all scroll events within the panel */
+  scrollbar-width: none; /* Hide scrollbar for the panel itself */
 
   /* Idea 1: Morph from the FAB corner */
   opacity: 0;
@@ -3802,6 +3807,7 @@ html {
 .ai-chat-body {
   flex: 1;
   overflow-y: auto;
+  overscroll-behavior: contain; /* Prevents scroll chaining to the background */
   padding: 16px;
   display: flex;
   flex-direction: column;
