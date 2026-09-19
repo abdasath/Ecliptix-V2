@@ -30,18 +30,7 @@ router.get('/search', auth, async (req, res) => {
   const query     = q.trim().toLowerCase();
   const cacheKey  = `rag:search:${query}:${limit}`;
 
-  // ── Try Redis cache first ──
-  try {
-    if (redis.status === 'ready') {
-      const cached = await redis.get(cacheKey);
-      if (cached) {
-        console.log(`🔵 RAG cache hit: "${query}"`);
-        return res.json({ ...JSON.parse(cached), cached: true });
-      }
-    }
-  } catch (cacheErr) {
-    console.warn('Redis cache read failed:', cacheErr.message);
-  }
+  // ── Cache bypassed for dynamic AI responses ──
 
   // ── Run RAG pipeline ──
   try {

@@ -3137,8 +3137,8 @@ html {
     
     /* Logout button: JS controls visibility, CSS must NOT use !important here */
     li#navMobileLogout.mobile-only {
-        display: none; /* hidden by default; JS sets display:block on login */
-        margin-top: 18rem !important; /* Overrides inline margin-top to push button down */
+        display: none; /* hidden by default; JS sets display:flex on login */
+        margin-top: auto !important; /* Pushes button to bottom dynamically instead of a fixed 18rem which causes overflow */
     }
     
     /* Gamer Card styling */
@@ -4531,9 +4531,21 @@ html {
     text-shadow: 0 0 10px rgba(233, 69, 96, 0.4);
 }
 
-/* Color the native bullet point red so it has perfect spacing continuity */
-#adminNavLink::marker {
+/* Ensure the flex container allows absolute positioning of the dot */
+#adminNavLink {
+    position: relative;
+    align-items: center;
+}
+
+/* Use ::before instead of ::marker — positioned identically to native bullets */
+#adminNavLink::before {
+    content: '•';
     color: #e94560;
+    font-size: 1.8rem; /* Increased to precisely match native bullet weight and size */
+    position: absolute;
+    left: -1rem;
+    top: 50%;
+    transform: translateY(-56%); /* Moved slightly up to match the text baseline visual center */
 }
 
 /* Make the sliding hover underline red instead of white */
@@ -4542,39 +4554,34 @@ html {
 }
 }
 
+/* Hide the ::before dot on mobile — mobile nav has its own icon-based layout */
+@media (max-width: 768px) {
+    #adminNavLink::before {
+        display: none !important;
+    }
+}
+
 /* =====================================================
    MOBILE SIDEBAR: ADMIN LINK UNIFORM ALIGNMENT FIX
    Only applies inside the slide-out nav on mobile
    ===================================================== */
 @media (max-width: 768px) {
+    /* Remove all custom padding/gap overrides so it aligns perfectly with Store/Library. 
+       Only apply the glowing red color from desktop. */
     #adminNavLink > a {
         display: flex !important;
         flex-direction: row !important;
         align-items: center !important;
-        gap: 15px !important;
-        padding: 8px 20px !important;
-        margin: 2px 0 !important;
-        border-radius: 8px !important;
-        font-weight: 600 !important;
-        font-size: 1rem !important;
-        text-transform: none !important;
-        letter-spacing: normal !important;
-        text-shadow: none !important;
-        color: var(--text-secondary) !important;
-        white-space: nowrap !important;
+        color: #e94560 !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        text-shadow: 0 0 10px rgba(233, 69, 96, 0.4) !important;
     }
 
-    /* Fixed-width icon box so "Admin" text x-position
-       locks to the same column as Library / Profile / Support */
+    /* Make the shield icon red to match */
     #adminNavLink > a > i {
-        display: inline-flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-        width: 1.3rem !important;
-        flex-shrink: 0 !important;
-        font-size: 1.3rem !important;
-        color: #aaa !important;
-        line-height: 1 !important;
+        color: #e94560 !important;
     }
 }
 
@@ -4691,5 +4698,28 @@ html {
         max-width: 100% !important;
         box-sizing: border-box !important;
         font-size: 0.95rem !important;
+    }
+}
+
+/* =========================================================================
+   LEGAL HUB MOBILE FIX
+   Overrides the inline styles on legal.html for responsive layout
+   ========================================================================= */
+@media (max-width: 768px) {
+    .legal-container {
+        flex-direction: column !important;
+        gap: 1.5rem !important;
+        margin-top: 1rem !important;
+    }
+    .legal-sidebar {
+        flex: none !important;
+        width: 100% !important;
+        position: static !important;
+    }
+    .legal-content {
+        padding: 1.5rem !important;
+    }
+    .legal-pane h3 {
+        font-size: 1.8rem !important;
     }
 }

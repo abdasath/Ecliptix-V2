@@ -213,7 +213,7 @@ function checkAdminAccess() {
 
     if (user.role === 'admin') {
       // Show the list item if they are an admin
-      adminNavItem.style.setProperty('display', 'list-item', 'important');
+      adminNavItem.style.setProperty('display', 'flex', 'important');
     } else {
       // Hide it for regular users
       adminNavItem.style.setProperty('display', 'none', 'important');

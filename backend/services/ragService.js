@@ -137,8 +137,20 @@ async function vectorSearch(queryEmbedding, maxPrice = 99999, limit = 5) {
     });
   }
 
-  // Cap it to the final requested limit (usually 5)
-  pipeline.push({ $limit: limit });
+  // To ensure the AI recommends the BEST games (like God of War), we sort the top 50 semantic matches by rating descending!
+  pipeline.push({
+    $sort: { rating: -1 }
+  });
+
+  // To ensure the AI doesn't give the exact same list every time, we take the top 15 highest-rated relevant games...
+  pipeline.push({
+    $limit: 15
+  });
+
+  // ...and then randomly pick the requested amount (usually 5) to give fresh, varied recommendations!
+  pipeline.push({ 
+    $sample: { size: limit } 
+  });
 
   pipeline.push({
     $project: {
@@ -174,7 +186,10 @@ async function atlasTextSearch(query, limit = 5) {
         }
       }
     },
-    { $limit: limit },
+    { $limit: 20 },
+    { $sort: { rating: -1 } },
+    { $limit: 10 },
+    { $sample: { size: limit } },
     {
       $project: {
         _id: 1,

@@ -187,10 +187,17 @@ router.post('/google', async (req, res) => {
       // 2. Register them automatically (if mode === 'register' or legacy missing mode)
       // We generate a clean username from their name + a random number to avoid collisions
       const baseUsername = name.replace(/\s+/g, '').slice(0, 15);
-      const randomNum = Math.floor(1000 + Math.random() * 9000);
+      
+      // Try to use the clean base username first. Only append a number if it's already taken.
+      let finalUsername = baseUsername;
+      let existingUsername = await User.findOne({ username: finalUsername });
+      if (existingUsername) {
+        const randomNum = Math.floor(1000 + Math.random() * 9000);
+        finalUsername = `${baseUsername}${randomNum}`;
+      }
       
       user = await User.create({
-        username: `${baseUsername}${randomNum}`,
+        username: finalUsername,
         email: email,
         googleId: googleId,
         // password is omitted because schema allows it if googleId is present
