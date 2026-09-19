@@ -4566,12 +4566,21 @@ html {
    Only applies inside the slide-out nav on mobile
    ===================================================== */
 @media (max-width: 768px) {
-    /* Remove all custom padding/gap overrides so it aligns perfectly with Store/Library. 
-       Only apply the glowing red color from desktop. */
+    /* The LI must be block (like every other li), NOT flex.
+       JS sets display:flex on this li for desktop dot alignment,
+       but on mobile that breaks the layout. Override it here. */
+    #adminNavLink {
+        display: block !important;
+        width: 100% !important;
+    }
+
+    /* The A tag inside uses flex-row so icon + text sit side by side,
+       with gap:15px to exactly match Store/Library/Profile/Support. */
     #adminNavLink > a {
         display: flex !important;
         flex-direction: row !important;
         align-items: center !important;
+        gap: 15px !important;
         color: #e94560 !important;
         font-weight: 800 !important;
         text-transform: uppercase !important;
