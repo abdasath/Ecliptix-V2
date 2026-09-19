@@ -2411,7 +2411,7 @@ html {
         padding: 90px 30px 40px 30px !important;
         margin: 0 !important;
         gap: 5px !important;
-        overflow-y: hidden; /* Removed scrolling */
+        overflow-y: auto !important; /* Added scrolling back for small screens */
         
         transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important; /* Silky smooth slide */
         z-index: 2000;
