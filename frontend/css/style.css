@@ -2546,6 +2546,7 @@ html {
         /* Subtle highlight behind text */
     }
 
+    .nav-menu a:hover::after,
     .nav-menu a.active::after {
         width: 40px !important;
         /* Smaller, cleaner indicator line */
@@ -4566,14 +4567,6 @@ html {
    Only applies inside the slide-out nav on mobile
    ===================================================== */
 @media (max-width: 768px) {
-    /* The LI must be block (like every other li), NOT flex.
-       JS sets display:flex on this li for desktop dot alignment,
-       but on mobile that breaks the layout. Override it here. */
-    #adminNavLink {
-        display: block !important;
-        width: 100% !important;
-    }
-
     /* The A tag inside uses flex-row so icon + text sit side by side,
        with gap:15px to exactly match Store/Library/Profile/Support. */
     #adminNavLink > a {
