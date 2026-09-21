@@ -152,7 +152,7 @@ router.get('/featured/list', async (req, res) => {
 
     const games = await Game.aggregate([
       { $match: { featured: true } },
-      { $sample: { size: 10 } }
+      { $sample: { size: 16 } }
     ]);
 
     await cacheSet('games:featured', games, CACHE_TTL.FEATURED);

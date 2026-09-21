@@ -11,7 +11,7 @@ let totalPages = 1;
 async function loadFeaturedGames() {
   try {
     const res = await fetch(
-      `${API_BASE_URL}/api/games/featured/random`
+      `${API_BASE_URL}/api/games/featured/list`
     );
 
     if (!res.ok) throw new Error('Failed to load featured games');
