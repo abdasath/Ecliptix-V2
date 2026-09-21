@@ -2398,6 +2398,8 @@ html {
         width: 85%;
         max-width: 350px;
         height: 100vh;
+        box-sizing: border-box !important;
+        padding-bottom: 80px !important; /* Push the logout button significantly higher up on the screen */
         /* Premium Glass Background */
         background: #000000 !important;
         backdrop-filter: none !important;
@@ -2425,30 +2427,8 @@ html {
     /* Sleek Stagger Animation for Menu Items */
     .nav-menu li {
         width: 100%;
-        opacity: 0;
-        transform: translateX(-25px);
-        transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        /* Removed buggy opacity/transform animation that caused the blank slate glitch */
     }
-    
-    /* When menu opens, elements slide into place */
-    .nav-menu.open li {
-        opacity: 1;
-        transform: translateX(0);
-    }
-    
-    /* Stagger Delays */
-    .nav-menu.open li:nth-child(1) { transition-delay: 0.05s; }
-    .nav-menu.open li:nth-child(2) { transition-delay: 0.1s; }
-    .nav-menu.open li:nth-child(3) { transition-delay: 0.15s; }
-    .nav-menu.open li:nth-child(4) { transition-delay: 0.2s; }
-    .nav-menu.open li:nth-child(5) { transition-delay: 0.25s; }
-    .nav-menu.open li:nth-child(6) { transition-delay: 0.3s; }
-    .nav-menu.open li:nth-child(7) { transition-delay: 0.35s; }
-    .nav-menu.open li:nth-child(8) { transition-delay: 0.4s; }
-    .nav-menu.open li:nth-child(9) { transition-delay: 0.45s; }
-    .nav-menu.open li:nth-child(10) { transition-delay: 0.5s; }
-    .nav-menu.open li:nth-child(11) { transition-delay: 0.55s; }
-    .nav-menu.open li:nth-child(12) { transition-delay: 0.6s; }
 
     /* 3. High-End Link Styling */
     .nav-menu li {
@@ -2656,8 +2636,8 @@ html {
         border-bottom: none !important;
     }
 
-    /* Single, unified blurred overlay for the entire screen */
-    body.menu-open .navbar::before {
+    /* Single, unified blurred overlay for the entire screen (Now with smooth fade OUT) */
+    .navbar::before {
         content: '';
         position: fixed;
         top: 0;
@@ -2669,13 +2649,14 @@ html {
         backdrop-filter: blur(16px); 
         -webkit-backdrop-filter: blur(16px);
         z-index: 1900;
-        pointer-events: auto;
-        animation: cinematicOverlay 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    @keyframes cinematicOverlay {
-        from { opacity: 0; }
-        to { opacity: 1; }
+    body.menu-open .navbar::before {
+        opacity: 1;
+        pointer-events: auto;
     }
 
     /* 3. Modal & Grid Fixes (Prevents spilling out of the box) */
@@ -3140,6 +3121,7 @@ html {
     li#navMobileLogout.mobile-only {
         display: none; /* hidden by default; JS sets display:flex on login */
         margin-top: auto !important; /* Pushes button to bottom dynamically instead of a fixed 18rem which causes overflow */
+        margin-bottom: 60px !important; /* Pushes the button higher up the screen as requested */
     }
     
     /* Gamer Card styling */
@@ -3292,7 +3274,7 @@ html {
   background: linear-gradient(135deg, #ffffff 0%, #c0c0c0 100%);
   border: none;
   cursor: pointer;
-  z-index: 9999;
+  z-index: 20001;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3336,7 +3318,7 @@ html {
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 20px;
   box-shadow: 0 24px 64px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
-  z-index: 9998;
+  z-index: 20000;
   display: flex;
   flex-direction: column;
   overflow: auto; /* Changed from hidden to trap scroll events */
@@ -3694,7 +3676,7 @@ html {
   background: linear-gradient(135deg, #ffffff 0%, #c0c0c0 100%);
   border: none;
   cursor: pointer;
-  z-index: 9999;
+  z-index: 20001;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3738,7 +3720,7 @@ html {
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 20px;
   box-shadow: 0 24px 64px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
-  z-index: 9998;
+  z-index: 20000;
   display: flex;
   flex-direction: column;
   overflow: auto; /* Changed from hidden to trap scroll events */
@@ -4100,13 +4082,13 @@ html {
     z-index: 1000;
 }
 ::view-transition-group(chat-panel) {
-    z-index: 9998;
+    z-index: 20000;
 }
 .ai-fab {
     view-transition-name: chat-fab;
 }
 ::view-transition-group(chat-fab) {
-    z-index: 9999;
+    z-index: 20001;
 }
 /* Ensure the user menu items (wallet + buttons) stay on the same line horizontally */
 .user-menu {
@@ -4569,21 +4551,40 @@ html {
 @media (max-width: 768px) {
     /* The A tag inside uses flex-row so icon + text sit side by side,
        with gap:15px to exactly match Store/Library/Profile/Support. */
+    /* Completely new UI for the Admin Panel on mobile! 
+       Turns it into a sleek, glowing red button and removes the shield icon */
+    /* NEW UI ATTEMPT 5: Simple, Clean, Professional 
+       A minimalist modern dashboard card aesthetic */
     #adminNavLink > a {
         display: flex !important;
         flex-direction: row !important;
+        flex-wrap: nowrap !important;
         align-items: center !important;
-        gap: 15px !important;
-        color: #e94560 !important;
-        font-weight: 800 !important;
-        text-transform: uppercase !important;
-        letter-spacing: 1px !important;
-        text-shadow: 0 0 10px rgba(233, 69, 96, 0.4) !important;
+        gap: 12px !important;
+        
+        /* Clean minimalist UI */
+        background: rgba(255, 255, 255, 0.04) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 6px !important;
+        padding: 0.7rem 1rem !important;
+        margin: 10px 20px 10px 0 !important; /* Slight padding to keep it contained nicely */
+        
+        color: #e0e0e0 !important; /* Professional soft white/grey */
+        font-weight: 500 !important; /* Clean, modern font weight */
+        text-transform: none !important; /* Standard title case: "Admin" */
+        letter-spacing: normal !important;
+        
+        /* Remove all glows and shadows */
+        box-shadow: none !important;
+        text-shadow: none !important;
     }
 
-    /* Make the shield icon red to match */
+    /* Minimalist Shield Icon */
     #adminNavLink > a > i {
-        color: #e94560 !important;
+        display: block !important;
+        color: #e94560 !important; /* Subtle Ecliptix red accent */
+        font-size: 1.3rem !important;
+        filter: none !important; /* No glows */
     }
 }
 
@@ -4723,5 +4724,60 @@ html {
     }
     .legal-pane h3 {
         font-size: 1.8rem !important;
+    }
+}
+
+/* =====================================================
+   ADMIN PAGE MOBILE FIXES
+   ===================================================== */
+@media (max-width: 768px) {
+    /* Stack games into a single column so they aren't squished */
+    .games-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+
+    /* Make the Add Game button span full width if it wraps */
+    .admin-tabs-container > div {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+    
+    .admin-tabs-container #btnOpenAddGame {
+        width: 100% !important;
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    /* Make the featured/all games buttons flexible */
+    .admin-tabs-container {
+        justify-content: center;
+    }
+    .admin-tabs-container > button {
+        flex: 1;
+        text-align: center;
+        padding: 8px 10px !important;
+        font-size: 0.9rem !important;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Fix Admin Game Form Modal Layout */
+    #gameForm {
+        grid-template-columns: 1fr !important;
+        padding: 20px !important;
+        gap: 15px !important;
+    }
+    
+    /* Make inline 2-column grids inside the form stack into 1 column on mobile */
+    #gameForm > div[style*="display: grid"] {
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+    }
+    
+    /* Ensure the full description textarea is reasonably tall */
+    #gameForm textarea {
+        min-height: 120px !important;
     }
 }
