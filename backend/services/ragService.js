@@ -95,6 +95,11 @@ Return strictly valid JSON with keys: intentType, maxPrice, searchIntent.`;
     if (!jsonMatch) throw new Error('No JSON found in model response');
     const parsed = JSON.parse(jsonMatch[0]);
     parsed.intentType = (parsed.intentType || "recommendation").toLowerCase();
+    
+    // Safely parse maxPrice to a Number to prevent DB crash
+    let priceNum = parseInt(parsed.maxPrice);
+    parsed.maxPrice = isNaN(priceNum) ? 99999 : priceNum;
+    
     return parsed;
   } catch (err) {
     console.error(`[RAG] Intent parsing failed | Provider: Groq | Model: ${GROQ_MODEL} | Status: ${err.status || 'N/A'} | Code: ${err.code || 'N/A'} | Error: ${err.message}`);
@@ -137,19 +142,9 @@ async function vectorSearch(queryEmbedding, maxPrice = 99999, limit = 5) {
     });
   }
 
-  // To ensure the AI recommends the BEST games (like God of War), we sort the top 50 semantic matches by rating descending!
+  // Strictly limit to the most relevant matches to ensure exact games (like Batman) appear at the very top.
   pipeline.push({
-    $sort: { rating: -1 }
-  });
-
-  // To ensure the AI doesn't give the exact same list every time, we take the top 15 highest-rated relevant games...
-  pipeline.push({
-    $limit: 15
-  });
-
-  // ...and then randomly pick the requested amount (usually 5) to give fresh, varied recommendations!
-  pipeline.push({ 
-    $sample: { size: limit } 
+    $limit: limit
   });
 
   pipeline.push({
@@ -186,10 +181,7 @@ async function atlasTextSearch(query, limit = 5) {
         }
       }
     },
-    { $limit: 20 },
-    { $sort: { rating: -1 } },
-    { $limit: 10 },
-    { $sample: { size: limit } },
+    { $limit: limit },
     {
       $project: {
         _id: 1,
@@ -233,7 +225,7 @@ function buildContext(games) {
 
 // ── Step 6: Generate AI recommendation ───────────────────────────────────────
 async function generateResponse(userQuery, context, games, intentType) {
-  const systemInstruction = `You are Ecliptix AI, a premium video game advisor. You must ALWAYS provide a friendly, conversational text response to the user, even if their query is just a few words (like "Best rated games"). Answer factual game questions in 2–3 concise sentences (25–60 words). Avoid filler, unnecessary history, and long explanations. Use the retrieved database context when available, but improve the answer using your general gaming knowledge when necessary. Format game titles in **bold**.`;
+  const systemInstruction = `You are Ecliptix AI, a premium video game advisor. You must ALWAYS provide a friendly, conversational text response to the user.\nCRITICAL INSTRUCTION: You MUST base your recommendations STRICTLY on the retrieved database context provided below. If the user asks for a specific game (e.g., "GTA V" or "Batman") and it is NOT in the database context, you MUST politely state that the game is not currently available in the store, and instead recommend the alternative games provided in the context. DO NOT recommend or hallucinate games that are not in the context. Format game titles in **bold**. KEEP YOUR ENTIRE RESPONSE UNDER 3 SENTENCES TOTAL. Never write long paragraphs.`;
 
   let prompt = `User's Query: "${userQuery}"\nIntent Type: ${intentType}\n\n`;
   if (context) {
@@ -241,7 +233,7 @@ async function generateResponse(userQuery, context, games, intentType) {
   }
   
   if (intentType === "recommendation") {
-    prompt += `Based on these games, give a personalized, enthusiastic recommendation. Explain why these games match what the user is looking for. Avoid generic marketing language. Do not hallucinate unavailable games. Keep responses concise.`;
+    prompt += `Give a very short, enthusiastic 1-2 sentence introduction to the games found in the context. DO NOT write paragraphs for each game. DO NOT list prices or long descriptions. The user can already see the game cards below your text, so just provide a snappy, engaging 1-liner to introduce them.`;
   } else if (intentType === "qa") {
     prompt += `For storyline questions, answer in exactly **2 concise sentences (25–50 words)**. Always mention **who the protagonist is, what their main goal or conflict is, and what makes the story compelling**. Do not describe gameplay mechanics, reviews, genres, or overall impressions unless the user specifically asks about them. The answer should feel like a premium game-store story summary.`;
   } else if (intentType === "comparison") {

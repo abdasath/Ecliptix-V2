@@ -43,6 +43,29 @@ async function invalidateGameCache(gameId = null) {
   }
 }
 
+
+// ─────────────────────────────────────────────
+// AI Indexing Helper
+// Triggers the Gemini embedding script in the
+// background so new games become searchable
+// ─────────────────────────────────────────────
+function triggerAIIndexing() {
+  setImmediate(() => {
+    try {
+      const { execFile } = require('child_process');
+      const path = require('path');
+      const scriptPath = path.join(__dirname, '../scripts/generateEmbeddings.js');
+      console.log('🤖 Triggering background AI indexing for new/updated game...');
+      execFile('node', [scriptPath], (error, stdout, stderr) => {
+        if (error) console.error('⚠️ Indexing error:', error.message);
+        if (stdout) console.log(stdout.trim());
+      });
+    } catch (err) {
+      console.error('⚠️ Failed to start indexing:', err.message);
+    }
+  });
+}
+
 // ─────────────────────────────────────────────
 // Admin check middleware
 // ─────────────────────────────────────────────
@@ -89,6 +112,7 @@ router.post('/games', auth, isAdmin, async (req, res) => {
 
     // Invalidate all game caches so new game appears immediately
     await invalidateGameCache();
+    triggerAIIndexing();
 
     res.status(201).json(game);
   } catch (error) {
@@ -116,6 +140,7 @@ router.put('/games/:id', auth, isAdmin, async (req, res) => {
 
     // Invalidate cache for this specific game + all list caches
     await invalidateGameCache(req.params.id);
+    triggerAIIndexing();
 
     res.json(game);
   } catch (error) {
