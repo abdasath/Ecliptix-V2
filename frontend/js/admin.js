@@ -134,7 +134,7 @@ function createAdminGameCard(game, isFeaturedList = false) {
   return `
     <div class="game-card admin-game-card" style="position: relative; border: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.4);">
       ${featuredBadge}
-      <img src="${escapeHTML(game.coverImage)}" alt="${escapeHTML(game.title)}" class="game-image" style="height: 160px; object-fit: cover;">
+      <img src="${escapeHTML(game.coverImage)}" alt="${escapeHTML(game.title)}" onclick="viewGameDetails('${escapeHTML(game._id)}')" class="game-image" style="height: 160px; object-fit: cover; cursor: pointer;">
       <div class="game-info" style="padding: 16px;">
         <h3 class="game-title" style="font-size: 1.1rem; margin-bottom: 8px;">${escapeHTML(game.title)}</h3>
         <p class="game-description" style="font-size: 0.85rem; color: #aaa; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${escapeHTML(game.shortDescription || (game.description || '').substring(0, 100))}...</p>
@@ -232,30 +232,10 @@ async function handleAddGame() {
     featured: document.getElementById('gameFeatured').checked
   };
 
-  // Add system requirements (basic)
-  formData.systemRequirements = {
-    minimum: {
-      os: 'Windows 10/11',
-      processor: 'Intel Core i5 (12th gen) / AMD Ryzen 5 (5000-series) or better',
-      memory: '16 GB RAM',
-      graphics: 'NVIDIA GeForce RTX 3050 / 4050 (or equivalent) with 6 GB VRAM (mobile GPU)',
-      storage: '50 GB (SSD preferred; NVMe SSD strongly recommended)'
-    },
-    recommended: {
-      os: 'Windows 11',
-      processor: 'Intel Core i7 (13th-14th gen) / AMD Ryzen 7 (7000-series) or better',
-      memory: '16–32 GB RAM (DDR5 or high-speed DDR4)',
-      graphics: 'NVIDIA GeForce RTX 4060 / 4050 (or better) with ≥8 GB VRAM (mobile GPU)',
-      storage: '50 GB on SSD (ideally NVMe SSD, 512 GB+ total storage)'
-    },
-    ideal: {
-      os: 'Windows 11',
-      processor: 'Intel Core i7/i9 (latest gen) or AMD Ryzen 9 (latest gen)',
-      memory: '32 GB RAM (DDR5)',
-      graphics: 'NVIDIA GeForce RTX 4060 Ti / 4070 or AMD RX 7000-series (mobile GPU) with ≥8 GB VRAM',
-      storage: '1 TB NVMe SSD'
-    }
-  };
+  // Use real system requirements if fetched, otherwise leave blank
+  if (window.fetchedSystemRequirements) {
+    formData.systemRequirements = window.fetchedSystemRequirements;
+  }
 
 
   try {
@@ -408,5 +388,201 @@ document.addEventListener('click', (e) => {
         e.preventDefault();
         console.log("Fallback click caught!");
         openAddGameModal(false);
+    }
+});
+
+// --- MODAL FUNCTIONALITY FOR ADMIN PANEL ---
+
+window.viewGameDetails = async function(gameId) {
+    const modal = document.getElementById('gameModal');
+    const contentContainer = document.getElementById('gameDetails');
+
+    if (!modal || !contentContainer) return;
+
+    contentContainer.innerHTML = `
+        <div style="display:flex; justify-content:center; align-items:center; height:300px;">
+            <div class="loading"></div>
+        </div>
+    `;
+
+    modal.style.display = 'block';
+    requestAnimationFrame(() => {
+        modal.classList.add('show');
+    });
+
+    try {
+        const game = await window.gamesAPI.getById(gameId);
+        displayGameDetails(game);
+    } catch (error) {
+        contentContainer.innerHTML = `<p class="empty-state">Failed to load game details.</p>`;
+    }
+};
+
+function displayGameDetails(game) {
+  const container = document.getElementById('gameDetails');
+  const modal = document.getElementById('gameModal');
+  if (!modal || !container) return;
+
+  const finalPrice = game.discount > 0
+  ? Math.round(game.price * (1 - game.discount / 100))
+  : game.price;
+
+  const discountBadge = game.discount > 0
+    ? `<span class="discount-badge">-${game.discount}% OFF</span>`
+    : '';
+
+  const priceDisplay = finalPrice === 0
+    ? `<div class="price-current" style="font-size: 2rem; color: #00ff88;">FREE</div>`
+    : game.discount > 0
+      ? `<div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+           <span class="price-current" style="font-size: 2rem;">₹${finalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
+           <span class="price-original" style="font-size: 1.1rem;">₹${game.price.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
+           ${discountBadge}
+         </div>`
+      : `<div class="price-current" style="font-size: 2rem;">₹${finalPrice.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</div>`;
+
+  const genres = game.genres?.map(g => `<span class="genre-tag">${escapeHTML(g)}</span>`).join('') || '';
+  const tags = game.tags?.map(t => `<span class="genre-tag">${escapeHTML(t)}</span>`).join('') || '';
+
+  const systemReq = game.systemRequirements ? `
+   <div class="system-requirements">
+      <h4>System Requirements</h4>
+      <div class="req-grid" style="display: grid; gap: 2rem;">
+        <div>
+          <h5>Minimum</h5>
+          <p><strong>OS:</strong> ${escapeHTML(game.systemRequirements.minimum?.os || 'N/A')}</p>
+          <p><strong>Processor:</strong> ${escapeHTML(game.systemRequirements.minimum?.processor || 'N/A')}</p>
+          <p><strong>Memory:</strong> ${escapeHTML(game.systemRequirements.minimum?.memory || 'N/A')}</p>
+          <p><strong>Graphics:</strong> ${escapeHTML(game.systemRequirements.minimum?.graphics || 'N/A')}</p>
+          <p><strong>Storage:</strong> ${escapeHTML(game.systemRequirements.minimum?.storage || 'N/A')}</p>
+        </div>
+        <div>
+          <h5>Recommended</h5>
+          <p><strong>OS:</strong> ${escapeHTML(game.systemRequirements.recommended?.os || 'N/A')}</p>
+          <p><strong>Processor:</strong> ${escapeHTML(game.systemRequirements.recommended?.processor || 'N/A')}</p>
+          <p><strong>Memory:</strong> ${escapeHTML(game.systemRequirements.recommended?.memory || 'N/A')}</p>
+          <p><strong>Graphics:</strong> ${escapeHTML(game.systemRequirements.recommended?.graphics || 'N/A')}</p>
+          <p><strong>Storage:</strong> ${escapeHTML(game.systemRequirements.recommended?.storage || 'N/A')}</p>
+        </div>
+      </div>
+   </div>` : '';
+
+  container.innerHTML = `
+    <div class="game-details">
+      <div class="game-details-header">
+        <img src="${escapeHTML(game.images[0] || game.coverImage)}" alt="${escapeHTML(game.title)}" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 10px; margin-bottom: 2rem;">
+        <h2>${escapeHTML(game.title)}</h2>
+        <div class="game-details-meta">
+          <p><strong>Developer:</strong> ${escapeHTML(game.developer || 'N/A')}</p>
+          <p><strong>Publisher:</strong> ${escapeHTML(game.publisher || 'N/A')}</p>
+          <p><strong>Release Date:</strong> ${game.releaseDate ? escapeHTML(new Date(game.releaseDate).toLocaleDateString()) : 'N/A'}</p>
+          <div class="game-rating" style="margin-top: 1rem;">⭐ ${escapeHTML(game.rating?.toFixed(1) || '0.0')} Rating</div>
+        </div>
+      </div>
+      <div class="game-details-content">
+        <div class="game-description-full">
+          <h3>About</h3>
+          ${(game.description || '')
+              .split(/\n\s*\n/)
+              .map(paragraph => `<p>${escapeHTML(paragraph.trim())}</p>`)
+              .join('')
+            }
+        </div>
+        <div class="game-genres-tags">
+          <h4>Genres</h4>
+          <div class="game-genres">${genres}</div>
+          ${tags ? `<h4 style="margin-top: 1rem;">Tags</h4><div class="game-genres">${tags}</div>` : ''}
+        </div>
+        ${systemReq}
+      </div>
+    </div>
+  `;
+}
+
+// Close modal when clicking outside of it
+window.addEventListener('click', (e) => {
+    const modal = document.getElementById('gameModal');
+    if (e.target === modal) {
+        modal.style.display = 'none';
+        modal.classList.remove('show');
+    }
+});
+
+// Ensure the X close button works properly
+document.addEventListener('DOMContentLoaded', () => {
+    const closeBtn = document.querySelector('.modal .close');
+    if (closeBtn) {
+        closeBtn.onclick = function() {
+            const modal = document.getElementById('gameModal');
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('show');
+            }
+        };
+    }
+});
+
+// --- STEAM AUTO-FETCH LOGIC ---
+window.fetchedSystemRequirements = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const fetchBtn = document.getElementById('fetchSteamBtn');
+    if (fetchBtn) {
+        fetchBtn.addEventListener('click', async () => {
+            const titleInput = document.getElementById('gameTitle');
+            const title = titleInput.value.trim();
+            
+            if (!title) {
+                alert('Please enter a game title first!');
+                return;
+            }
+
+            const originalText = fetchBtn.innerText;
+            fetchBtn.innerText = 'Searching...';
+            fetchBtn.disabled = true;
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'http://localhost:5000'}/api/admin/fetch-igdb?title=${encodeURIComponent(title)}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.message || 'Failed to fetch from IGDB');
+                }
+
+                const data = await response.json();
+
+                // Populate fields
+                document.getElementById('gameShortDesc').value = data.shortDescription || '';
+                document.getElementById('gameDescription').value = data.description || '';
+                document.getElementById('gameDeveloper').value = data.developer || '';
+                document.getElementById('gamePublisher').value = data.publisher || '';
+                
+                // IGDB provides accurate release dates, so we map it now
+                if (data.releaseDate) document.getElementById('gameReleaseDate').value = data.releaseDate;
+
+                document.getElementById('gameGenres').value = (data.genres || []).join(', ');
+                document.getElementById('gameTags').value = (data.tags || []).join(', ');
+                
+                // Map AI fetched price and rating
+                if (data.price !== undefined && data.price !== null) document.getElementById('gamePrice').value = data.price;
+                if (data.rating !== undefined && data.rating !== null) document.getElementById('gameRating').value = data.rating;
+                
+                document.getElementById('gameCoverImage').value = data.coverImage || '';
+                document.getElementById('gameImages').value = (data.images || []).join(', ');
+                
+                // Save system requirements to inject into the form save payload later
+                window.fetchedSystemRequirements = data.systemRequirements;
+                
+            } catch (err) {
+                console.error(err);
+                alert(err.message);
+            } finally {
+                fetchBtn.innerText = originalText;
+                fetchBtn.disabled = false;
+            }
+        });
     }
 });

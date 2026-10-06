@@ -121,7 +121,7 @@
                 <form id="gameForm">
                     <div class="form-group">
                         <label>Title *</label>
-                        <input type="text" id="gameTitle" required>
+                        <div style="display: flex; gap: 10px;"><input type="text" id="gameTitle" required style="flex: 1;"><button type="button" id="fetchSteamBtn" class="btn-secondary" style="padding: 0.5rem 1rem;">Auto-Fetch</button></div>
                     </div>
                     <div class="form-group">
                         <label>Short Description *</label>
@@ -233,6 +233,16 @@
             <p>&copy; 2026 Ecliptix. All rights reserved. Prices include VAT where applicable.</p>
         </div>
     </footer>
+
+    <!-- Game Details Modal -->
+    <div id="gameModal" class="modal modal-large">
+        <div class="modal-content">
+            <span class="close" onclick="const m=document.getElementById('gameModal'); m.style.display='none'; m.classList.remove('show');">&#215;</span>
+            <div id="gameDetails">
+                <!-- Game details will be loaded here -->
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
