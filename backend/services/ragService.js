@@ -119,7 +119,7 @@ async function embedQuery(query) {
 }
 
 // ── Step 3 & 4: MongoDB Atlas Vector Search + Post-Filter ────────────────────
-async function vectorSearch(queryEmbedding, maxPrice = 99999, limit = 5) {
+async function vectorSearch(queryEmbedding, maxPrice = 99999, limit = 5, shuffle = false) {
   const Game = require('../models/Game');
   const db   = mongoose.connection.db;
 
@@ -142,9 +142,9 @@ async function vectorSearch(queryEmbedding, maxPrice = 99999, limit = 5) {
     });
   }
 
-  // Strictly limit to the most relevant matches to ensure exact games (like Batman) appear at the very top.
+  // Fetch a wider pool if we plan to shuffle, otherwise strict limit
   pipeline.push({
-    $limit: limit
+    $limit: shuffle ? 25 : limit
   });
 
   pipeline.push({
@@ -165,7 +165,24 @@ async function vectorSearch(queryEmbedding, maxPrice = 99999, limit = 5) {
     }
   });
 
-  return await db.collection('games').aggregate(pipeline).toArray();
+  let results = await db.collection('games').aggregate(pipeline).toArray();
+  
+  if (shuffle && results.length > 1) {
+    // Keep the absolute #1 best match just in case they searched something specific
+    const topMatch = results[0];
+    const rest = results.slice(1);
+    
+    // Fisher-Yates Shuffle on the remaining top matches
+    for (let i = rest.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [rest[i], rest[j]] = [rest[j], rest[i]];
+    }
+    
+    // Pick enough to satisfy the requested limit
+    results = [topMatch, ...rest].slice(0, limit);
+  }
+  
+  return results;
 }
 
 // ── Atlas Text Search for QA/General ─────────────────────────────────────────
@@ -299,7 +316,7 @@ async function search(userQuery, limit = 5, sessionId = "anonymous") {
     if (type === "recommendation") {
       // Semantic vector search
       const queryEmbedding = await embedQuery(intent.searchIntent);
-      games = await vectorSearch(queryEmbedding, intent.maxPrice, Math.min(limit, 8));
+      games = await vectorSearch(queryEmbedding, intent.maxPrice, Math.min(limit, 8), true);
     } else {
       // Exact text search for QA, comparisons, etc.
       games = await atlasTextSearch(intent.searchIntent, Math.min(limit, 5));
