@@ -5,7 +5,7 @@ require('dotenv').config();
 
 const Game = require('../models/Game');
 
-// Using the Groq API via OpenAI wrapper because it successfully formatted the priority games perfectly.
+// Initialize Groq API client
 const groq = new OpenAI({
   apiKey: process.env.GROQ_API_KEY,
   baseURL: "https://api.groq.com/openai/v1"
@@ -64,7 +64,7 @@ async function run() {
         await processGame(game);
         
         // HUGE 2-second delay. This means only 30 requests per minute.
-        // This makes it completely invisible to Groq rate limits, so your Chatbot is 100% safe.
+        // Process sequentially to respect rate limits.
         await new Promise(resolve => setTimeout(resolve, 2000)); 
         processed++;
       } else {

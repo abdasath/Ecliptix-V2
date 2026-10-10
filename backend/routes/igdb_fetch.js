@@ -5,7 +5,7 @@ const auth = require('../middleware/auth');
 const { isAdmin } = require('./admin');
 const { OpenAI } = require('openai'); // Same setup as enrichAll.js
 
-// Setup Groq for 3-paragraph formatting (using the user's specific working model)
+// Initialize Groq AI client for formatting
 const apiKey = process.env.GROQ_ADMIN_API_KEY && process.env.GROQ_ADMIN_API_KEY !== 'your_new_admin_api_key_here' ? process.env.GROQ_ADMIN_API_KEY : process.env.GROQ_API_KEY;
 const groq = apiKey ? new OpenAI({
     apiKey: apiKey,
